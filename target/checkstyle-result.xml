@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="7.5.1">
+<file name="/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/producer/ChargesDeltaProducer.java">
+</file>
+<file name="/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/config/ApplicationConfig.java">
+</file>
+<file name="/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/config/KafkaConfig.java">
+</file>
+<file name="/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/config/LoggingConfig.java">
+</file>
+<file name="/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/transformer/ChargesApiTransformer.java">
+</file>
+<file name="/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/serialization/ChsDeltaDeserializer.java">
+</file>
+<file name="/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/serialization/ChsDeltaSerializer.java">
+</file>
+<file name="/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/processor/ChargesDeltaProcessor.java">
+</file>
+<file name="/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/controller/HealthCheckController.java">
+</file>
+<file name="/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/ChargesDeltaConsumerApplication.java">
+</file>
+<file name="/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/consumer/ChargesDeltaConsumer.java">
+</file>
+<file name="/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/service/ChargesApiService.java">
+</file>
+<file name="/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/exception/NonRetryableErrorException.java">
+</file>
+<file name="/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/exception/RetryableErrorException.java">
+</file>
+</checkstyle>

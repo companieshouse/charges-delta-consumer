@@ -1,0 +1,14 @@
+/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/exception/RetryableErrorException.java
+/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/config/LoggingConfig.java
+/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/serialization/ChsDeltaDeserializer.java
+/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/config/KafkaConfig.java
+/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/service/ChargesApiService.java
+/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/processor/ChargesDeltaProcessor.java
+/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/config/ApplicationConfig.java
+/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/serialization/ChsDeltaSerializer.java
+/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/controller/HealthCheckController.java
+/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/producer/ChargesDeltaProducer.java
+/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/ChargesDeltaConsumerApplication.java
+/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/consumer/ChargesDeltaConsumer.java
+/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/exception/NonRetryableErrorException.java
+/Users/gseregni/Downloads/charges-delta-consumer/src/main/java/uk/gov/companieshouse/charges/delta/transformer/ChargesApiTransformer.java
