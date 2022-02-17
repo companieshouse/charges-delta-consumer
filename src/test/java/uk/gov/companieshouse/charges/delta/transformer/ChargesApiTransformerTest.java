@@ -11,6 +11,7 @@ public class ChargesApiTransformerTest {
 
     @Test
     public void transformSuccessfully() {
+        //TODO To change the InsolvencyDelta class to ChargesDelta when this will be available
         final InsolvencyDelta input = new InsolvencyDelta();
         assertThat(transformer.transform(input)).isEqualTo(input.toString());
     }

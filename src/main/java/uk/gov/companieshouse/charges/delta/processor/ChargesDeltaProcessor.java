@@ -40,11 +40,11 @@ public class ChargesDeltaProcessor {
             final ChsDelta payload = chsDelta.getPayload();
 
             ObjectMapper mapper = new ObjectMapper();
-            //TO DO: To use the ChargesDelta
-            InsolvencyDelta insolvencyDelta = mapper.readValue(payload.getData(),
-                    InsolvencyDelta.class);
+            //TODO: To use the ChargesDelta
+            //InsolvencyDelta insolvencyDelta = mapper.readValue(payload.getData(),
+            //        InsolvencyDelta.class);
 
-            transformer.transform(insolvencyDelta);
+            //transformer.transform(insolvencyDelta);
         } catch (RetryableErrorException ex) {
             retryDeltaMessage(chsDelta);
         } catch (Exception ex) {

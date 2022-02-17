@@ -41,12 +41,13 @@ public class ChargesDeltaProcessorTest {
     @DisplayName("Transforms a kafka message containing a ChsDelta payload into an ChargesDelta")
     void When_ValidChsDeltaMessage_Expect_ValidChargesDeltaMapping() throws IOException {
         Message<ChsDelta> mockChsDeltaMessage = createChsDeltaMessage();
-        InsolvencyDelta expectedInsolvencyDelta = createChargesDelta();
-        when(transformer.transform(expectedInsolvencyDelta)).thenCallRealMethod();
+        //TODO To change the InsolvencyDelta class to ChargesDelta when this will be available
+        InsolvencyDelta expectedChargesDelta = createChargesDelta();
+        when(transformer.transform(expectedChargesDelta)).thenCallRealMethod();
 
         deltaProcessor.processDelta(mockChsDeltaMessage);
 
-        verify(transformer).transform(expectedInsolvencyDelta);
+        verify(transformer).transform(expectedChargesDelta);
     }
 
     private Message<ChsDelta> createChsDeltaMessage() throws IOException {
@@ -66,7 +67,8 @@ public class ChargesDeltaProcessorTest {
                 .setHeader("CHARGES_DELTA_RETRY_COUNT", 1)
                 .build();
     }
-
+    //TODO To change the InsolvencyDelta return type to ChargesDelta when this will be available
+    //TODO and implement the method building the ChargesDelta object
     private InsolvencyDelta createChargesDelta() {
         PractitionerAddress address = new PractitionerAddress();
         address.setAddressLine1("Yerrill Murphy Edelman House");
