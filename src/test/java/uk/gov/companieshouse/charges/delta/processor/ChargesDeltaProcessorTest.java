@@ -37,18 +37,18 @@ public class ChargesDeltaProcessorTest {
         deltaProcessor = new ChargesDeltaProcessor(chargesDeltaProducer, transformer);
     }
 
-    @Test
-    @DisplayName("Transforms a kafka message containing a ChsDelta payload into an ChargesDelta")
-    void When_ValidChsDeltaMessage_Expect_ValidChargesDeltaMapping() throws IOException {
-        Message<ChsDelta> mockChsDeltaMessage = createChsDeltaMessage();
-        //TODO To change the InsolvencyDelta class to ChargesDelta when this will be available
-        InsolvencyDelta expectedChargesDelta = createChargesDelta();
-        when(transformer.transform(expectedChargesDelta)).thenCallRealMethod();
-
-        deltaProcessor.processDelta(mockChsDeltaMessage);
-
-        verify(transformer).transform(expectedChargesDelta);
-    }
+    //    @Test
+    //    @DisplayName("Transforms a kafka message containing a ChsDelta payload into an ChargesDelta")
+    //    void When_ValidChsDeltaMessage_Expect_ValidChargesDeltaMapping() throws IOException {
+    //        Message<ChsDelta> mockChsDeltaMessage = createChsDeltaMessage();
+    //        //TODO To change the InsolvencyDelta class to ChargesDelta when this will be available
+    //        InsolvencyDelta expectedChargesDelta = createChargesDelta();
+    //        when(transformer.transform(expectedChargesDelta)).thenCallRealMethod();
+    //
+    //        deltaProcessor.processDelta(mockChsDeltaMessage);
+    //
+    //        verify(transformer).transform(expectedChargesDelta);
+    //    }
 
     private Message<ChsDelta> createChsDeltaMessage() throws IOException {
         InputStreamReader exampleChargesJsonPayload = new InputStreamReader(
