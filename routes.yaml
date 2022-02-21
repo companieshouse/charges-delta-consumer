@@ -1,0 +1,5 @@
+app_name: charges-delta-consumer
+group: api
+weight: 900
+routes:
+   1: ^/charges-delta-consumer/healthcheck

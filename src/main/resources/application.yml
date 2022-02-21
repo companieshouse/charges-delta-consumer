@@ -1,0 +1,26 @@
+server:
+  port: 8081
+
+springfox:
+  documentation:
+    auto-startup: false
+
+spring:
+  kafka:
+    bootstrap-servers: ${DATA_SYNC_KAFKA_BROKER_URL:localhost:9092}
+
+charges:
+  delta:
+    group-id: charges-delta-consumer
+    main-id: charges-main-consumer
+    retry-id: charges-retry-consumer
+    topic:
+      main: charges-delta
+      retry: charges-topic-retry
+      error: charges-topic-error
+
+logger:
+  namespace: charges-delta-consumer
+
+api:
+  endpoint: ${CHARGES_DATA_API_URL:localhost}
