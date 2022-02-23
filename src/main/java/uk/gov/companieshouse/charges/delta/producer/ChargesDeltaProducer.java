@@ -16,10 +16,15 @@ import uk.gov.companieshouse.kafka.producer.ProducerConfig;
 public class ChargesDeltaProducer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChargesDeltaProducer.class);
 
-    @Value("${spring.kafka.bootstrap-servers}")
-    private String bootstrapServers;
+
+    private final String bootstrapServers;
 
     private CHKafkaProducer chKafkaProducer;
+
+    public ChargesDeltaProducer(@Value("${spring.kafka.bootstrap-servers}")
+                                        String bootstrapServers) {
+        this.bootstrapServers = bootstrapServers;
+    }
 
     /**
      * Post construct init.
