@@ -18,8 +18,13 @@ import uk.gov.companieshouse.delta.ChsDelta;
 @Configuration
 @Profile("!test")
 public class KafkaConfig {
-    @Value("${spring.kafka.bootstrap-servers}")
-    private String bootstrapServers;
+
+    private final String bootstrapServers;
+
+    public KafkaConfig(@Value("${spring.kafka.bootstrap-servers}")
+                               String bootstrapServers) {
+        this.bootstrapServers = bootstrapServers;
+    }
 
     /**
      * Kafka Consumer Factory Message.
