@@ -32,7 +32,7 @@ public class ChargesDeltaConsumer {
     public void receiveMainMessages(Message<ChsDelta> chsDeltaMessage) {
         LOGGER.info("A new message read from MAIN topic with payload: "
                 + chsDeltaMessage.getPayload());
-        //deltaProcessor.processDelta(chsDeltaMessage);
+        deltaProcessor.processDelta(chsDeltaMessage);
     }
 
     /**
@@ -45,7 +45,7 @@ public class ChargesDeltaConsumer {
     public void receiveRetryMessages(Message<ChsDelta> message) {
         LOGGER.info(String.format("A new message read from RETRY topic with payload:%s "
                 + "and headers:%s ", message.getPayload(), message.getHeaders()));
-        //deltaProcessor.processDelta(message);
+        deltaProcessor.processDelta(message);
     }
 
 }

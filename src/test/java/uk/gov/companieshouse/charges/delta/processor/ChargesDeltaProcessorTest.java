@@ -10,16 +10,22 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.FileCopyUtils;
-import uk.gov.companieshouse.api.delta.*;
-import uk.gov.companieshouse.delta.ChsDelta;
+import uk.gov.companieshouse.api.delta.AdditionalNotice;
+import uk.gov.companieshouse.api.delta.Charge;
+import uk.gov.companieshouse.api.delta.ChargesDelta;
+import uk.gov.companieshouse.api.delta.Person;
 import uk.gov.companieshouse.charges.delta.producer.ChargesDeltaProducer;
 import uk.gov.companieshouse.charges.delta.transformer.ChargesApiTransformer;
+import uk.gov.companieshouse.delta.ChsDelta;
+import uk.gov.companieshouse.logging.Logger;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ChargesDeltaProcessorTest {
@@ -32,27 +38,36 @@ public class ChargesDeltaProcessorTest {
     @Mock
     private ChargesApiTransformer transformer;
 
+    @Mock
+    private Logger logger;
+
     @BeforeEach
     void setUp() {
-        deltaProcessor = new ChargesDeltaProcessor(chargesDeltaProducer, transformer);
+        deltaProcessor = new ChargesDeltaProcessor(chargesDeltaProducer, transformer, logger);
     }
 
-    //    @Test
-    //    @DisplayName("Transforms a kafka message containing a ChsDelta payload into an ChargesDelta")
-    //    void When_ValidChsDeltaMessage_Expect_ValidChargesDeltaMapping() throws IOException {
-    //        Message<ChsDelta> mockChsDeltaMessage = createChsDeltaMessage();
-    //        //TODO To change the InsolvencyDelta class to ChargesDelta when this will be available
-    //        InsolvencyDelta expectedChargesDelta = createChargesDelta();
-    //        when(transformer.transform(expectedChargesDelta)).thenCallRealMethod();
-    //
-    //        deltaProcessor.processDelta(mockChsDeltaMessage);
-    //
-    //        verify(transformer).transform(expectedChargesDelta);
-    //    }
+    @Test
+    @DisplayName("Transforms a kafka message containing a ChsDelta payload into an ChargesDelta")
+    void When_ValidChsDeltaMessage_Expect_ValidChargesDeltaMapping() throws IOException {
+        Message<ChsDelta> mockChsDeltaMessage = createChsDeltaMessage("charges-delta-example.json");
+        ChargesDelta expectedChargesDelta = createChargesDelta();
+        Charge charge = expectedChargesDelta.getCharges().get(0);
+        when(transformer.transform(charge)).thenCallRealMethod();
+        deltaProcessor.processDelta(mockChsDeltaMessage);
+        verify(transformer).transform(charge);
+    }
 
-    private Message<ChsDelta> createChsDeltaMessage() throws IOException {
+    @Test
+    @DisplayName("Transforms a kafka message containing a ChsDelta payload into an ChargesDelta with no items")
+    void When_InValidChsDeltaMessage_Expect_Exception() throws IOException {
+        Message<ChsDelta> mockChsDeltaMessage = createChsDeltaMessage("charges-delta-example-no-charge.json");
+        deltaProcessor.processDelta(mockChsDeltaMessage);
+        verifyNoInteractions(transformer);
+    }
+
+    private Message<ChsDelta> createChsDeltaMessage(String fileName) throws IOException {
         InputStreamReader exampleChargesJsonPayload = new InputStreamReader(
-                ClassLoader.getSystemClassLoader().getResourceAsStream("charges-delta-example.json"));
+                Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(fileName)));
         String chargesData = FileCopyUtils.copyToString(exampleChargesJsonPayload);
 
         ChsDelta mockChsDelta = ChsDelta.newBuilder()
@@ -67,36 +82,47 @@ public class ChargesDeltaProcessorTest {
                 .setHeader("CHARGES_DELTA_RETRY_COUNT", 1)
                 .build();
     }
-    //TODO To change the InsolvencyDelta return type to ChargesDelta when this will be available
-    //TODO and implement the method building the ChargesDelta object
-    private InsolvencyDelta createChargesDelta() {
-        PractitionerAddress address = new PractitionerAddress();
-        address.setAddressLine1("Yerrill Murphy Edelman House");
-        address.setAddressLine2("1238 High Road");
-        address.setLocality("Whetstone");
-        address.setRegion("London");
-        address.setPostalCode("N20 0LH");
 
-        Appointment appointment = new Appointment();
-        appointment.setForename("Bernard");
-        appointment.setSurname("Hoffman");
-        appointment.setApptType(Appointment.ApptTypeEnum.NUMBER_1);
-        appointment.setApptDate("20200506");
-        appointment.setPractitionerAddress(address);
+    private ChargesDelta createChargesDelta() {
 
-        CaseNumber caseNumber = new CaseNumber();
-        caseNumber.setCaseNumber(1);
-        caseNumber.setCaseType(CaseNumber.CaseTypeEnum.MEMBERS_VOLUNTARY_LIQUIDATION);
-        caseNumber.setCaseTypeId(CaseNumber.CaseTypeIdEnum.NUMBER_1);
-        caseNumber.setSwornDate("20200429");
-        caseNumber.windUpDate("20200506");
-        caseNumber.addAppointmentsItem(appointment);
+        ChargesDelta chargesDelta = new ChargesDelta();
+        Charge charge = new Charge();
+        charge.setCompanyNumber("01099198");
+        charge.setDeltaAt("20211029142043360560");
+        charge.setId("3387778");
 
-        Insolvency insolvency = new Insolvency();
-        insolvency.setDeltaAt("20211008152823383176");
-        insolvency.setCompanyNumber("02588581");
-        insolvency.addCaseNumbersItem(caseNumber);
+        List<Person> personList = new ArrayList<>();
+        Person person = new Person();
+        person.setPerson("LOMBARD NORTH CENTRAL PLC");
+        personList.add(person);
+        charge.setPersonsEntitled(personList);
 
-        return new InsolvencyDelta().addInsolvencyItem(insolvency);
+        charge.noticeType("395");
+        charge.setTransDesc("PARTICULARS OF MORTGAGE/CHARGE");
+        charge.submissionType("9");
+        charge.deliveredOn("20070609");
+
+
+        List<AdditionalNotice> additionalNoticeList = new ArrayList<>();
+        AdditionalNotice additionalNotice = new AdditionalNotice();
+        additionalNotice.setNoticeType("403a");
+        additionalNotice.setTransId("3387778");
+        additionalNotice.setTransDesc("DECLARATION OF SATISFACTION OF MORTGAGE/CHARGE");
+        additionalNotice.setSubmissionType("9");
+        additionalNotice.setDeliveredOn("20070809");
+        additionalNoticeList.add(additionalNotice);
+        charge.setAdditionalNotices(additionalNoticeList);
+
+        charge.setChargeNumber(Integer.valueOf("577"));
+        charge.setMigratedFrom("STEM");
+        charge.setAmountSecured("£48,000.00                               AND ALL OTHER MONIES DUE OR TO BECOME DUE");
+        charge.setType("MARINE MORTGAGE                         ");
+        charge.setShortParticulars("LEGEND 33 HULL ID: LUH33057L405         ");
+        charge.setStatus(Integer.valueOf("1"));
+        charge.setSatisfiedOn("20070809");
+        charge.setCreatedOn("20070605");
+        chargesDelta.addChargesItem(charge);
+
+        return chargesDelta;
     }
 }

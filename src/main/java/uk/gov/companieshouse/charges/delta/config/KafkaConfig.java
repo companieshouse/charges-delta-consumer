@@ -19,10 +19,12 @@ import uk.gov.companieshouse.delta.ChsDelta;
 @Profile("!test")
 public class KafkaConfig {
 
+    private final ChsDeltaDeserializer chsDeltaDeserializer;
     private final String bootstrapServers;
 
-    public KafkaConfig(@Value("${spring.kafka.bootstrap-servers}")
-                               String bootstrapServers) {
+    public KafkaConfig(ChsDeltaDeserializer chsDeltaDeserializer, @Value("${spring.kafka"
+            + ".bootstrap-servers}") String bootstrapServers) {
+        this.chsDeltaDeserializer = chsDeltaDeserializer;
         this.bootstrapServers = bootstrapServers;
     }
 
@@ -30,9 +32,9 @@ public class KafkaConfig {
      * Kafka Consumer Factory Message.
      */
     @Bean
-    public ConsumerFactory<String, ChsDelta> consumerFactoryMessage() {
+    public ConsumerFactory<String, ChsDelta> kafkaConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(),
-                new ChsDeltaDeserializer());
+                chsDeltaDeserializer);
     }
 
     /**
@@ -42,7 +44,7 @@ public class KafkaConfig {
     public ConcurrentKafkaListenerContainerFactory<String, ChsDelta> listenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, ChsDelta> factory
                 = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactoryMessage());
+        factory.setConsumerFactory(kafkaConsumerFactory());
         return factory;
     }
 

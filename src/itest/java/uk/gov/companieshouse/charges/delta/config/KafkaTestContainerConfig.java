@@ -7,7 +7,9 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
@@ -16,9 +18,20 @@ import org.testcontainers.utility.DockerImageName;
 import uk.gov.companieshouse.charges.delta.serialization.ChsDeltaSerializer;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.charges.delta.serialization.ChsDeltaDeserializer;
+import uk.gov.companieshouse.kafka.producer.CHKafkaProducer;
 
 @TestConfiguration
 public class KafkaTestContainerConfig {
+
+    @MockBean
+    private CHKafkaProducer chKafkaProducer;
+
+    private final ChsDeltaDeserializer chsDeltaDeserializer;
+
+    @Autowired
+    public KafkaTestContainerConfig(ChsDeltaDeserializer chsDeltaDeserializer) {
+        this.chsDeltaDeserializer = chsDeltaDeserializer;
+    }
 
     @Bean
     public KafkaContainer kafkaContainer() {
@@ -28,16 +41,18 @@ public class KafkaTestContainerConfig {
     }
 
     @Bean
-    ConcurrentKafkaListenerContainerFactory<Integer, String> listenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<Integer, String> factory =
+    ConcurrentKafkaListenerContainerFactory<String, ChsDelta> listenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, ChsDelta> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(kafkaConsumerFactory());
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<Integer, String> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigs(kafkaContainer()));
+    public ConsumerFactory<String, ChsDelta> kafkaConsumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs(kafkaContainer()),
+                new StringDeserializer(),
+                chsDeltaDeserializer);
     }
 
     @Bean
