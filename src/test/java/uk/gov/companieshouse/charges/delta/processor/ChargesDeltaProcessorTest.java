@@ -6,15 +6,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.FileCopyUtils;
+import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.delta.AdditionalNotice;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
 import uk.gov.companieshouse.api.delta.Person;
+import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.charges.delta.producer.ChargesDeltaProducer;
+import uk.gov.companieshouse.charges.delta.service.api.ApiClientService;
 import uk.gov.companieshouse.charges.delta.transformer.ChargesApiTransformer;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.logging.Logger;
@@ -25,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,9 +46,15 @@ public class ChargesDeltaProcessorTest {
     @Mock
     private Logger logger;
 
+    @Mock
+    private ApiClientService apiClientService;
+
+    private Encoder encoder;
+
     @BeforeEach
     void setUp() {
-        deltaProcessor = new ChargesDeltaProcessor(chargesDeltaProducer, transformer, logger);
+        encoder = new Encoder("some_salt");
+        deltaProcessor = new ChargesDeltaProcessor(chargesDeltaProducer, transformer, logger, apiClientService, encoder);
     }
 
     @Test
@@ -63,6 +74,24 @@ public class ChargesDeltaProcessorTest {
         Message<ChsDelta> mockChsDeltaMessage = createChsDeltaMessage("charges-delta-example-no-charge.json");
         deltaProcessor.processDelta(mockChsDeltaMessage);
         verifyNoInteractions(transformer);
+    }
+
+    @Test
+    @DisplayName("Transforms ChsDelta payload into an ChargesDelta and then calls Charges Data Api")
+    void When_ValidChsDeltaMessage_Invoke_Data_Api_And_Get_Response() throws IOException {
+        Message<ChsDelta> mockChsDeltaMessage = createChsDeltaMessage("charges-delta-example.json");
+        ChargesDelta expectedChargesDelta = createChargesDelta();
+        Charge charge = expectedChargesDelta.getCharges().get(0);
+        final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
+        when(transformer.transform(charge)).thenCallRealMethod();
+        when(apiClientService.putCharge(eq("context_id"), eq("01099198"),
+                eq("ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA=="), eq(mockInternalChargeApi())))
+                .thenReturn(response);
+        deltaProcessor.processDelta(mockChsDeltaMessage);
+        verify(transformer).transform(charge);
+        verify(apiClientService).putCharge("context_id", "01099198",
+                "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA==", mockInternalChargeApi());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     private Message<ChsDelta> createChsDeltaMessage(String fileName) throws IOException {
@@ -124,5 +153,11 @@ public class ChargesDeltaProcessorTest {
         chargesDelta.addChargesItem(charge);
 
         return chargesDelta;
+    }
+
+    private InternalChargeApi mockInternalChargeApi()
+    {
+        return new InternalChargeApi();
+
     }
 }

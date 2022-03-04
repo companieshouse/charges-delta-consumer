@@ -1,9 +1,8 @@
 package uk.gov.companieshouse.charges.delta.transformer;
 
 import org.junit.jupiter.api.Test;
+import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.delta.Charge;
-import uk.gov.companieshouse.api.delta.ChargesDelta;
-import uk.gov.companieshouse.api.delta.InsolvencyDelta;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,9 +12,9 @@ public class ChargesApiTransformerTest {
 
     @Test
     public void transformSuccessfully() {
-        //TODO To change the InsolvencyDelta class to ChargesDelta when this will be available
+        //TODO Transform ChargesDelta to InternalChargeApi model
         final Charge input = new Charge();
-        assertThat(transformer.transform(input)).isEqualTo(input.toString());
+        assertThat(transformer.transform(input)).isEqualTo(new InternalChargeApi());
     }
 
 }
