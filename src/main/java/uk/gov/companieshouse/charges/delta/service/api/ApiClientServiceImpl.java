@@ -60,7 +60,7 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
     public ApiResponse<Void> putCharge(final String log, String companyNumber,
                                        final String chargeId,
                                        InternalChargeApi internalChargeApi) {
-        final String uri = String.format("/company/%s/charge/%/internal", companyNumber, chargeId);
+        final String uri = String.format("/company/%s/charge/%s/internal", companyNumber, chargeId);
 
         Map<String, Object> logMap = createLogMap(companyNumber, "PUT", uri, chargeId);
         logger.infoContext(log, String.format("PUT %s", uri), logMap);
