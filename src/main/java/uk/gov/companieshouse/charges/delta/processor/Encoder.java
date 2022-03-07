@@ -30,8 +30,10 @@ public class Encoder {
      * @return returns      byte array
      */
     public byte[] getSha1Digest(final String plainValue) {
-
+        //concatenate chargeId with salt. Salt is externalized
         byte[] byteValue = (plainValue + API_SALT).getBytes(StandardCharsets.UTF_8);
+        //get sha1 hash value using commons-codec.
+        // Please note that this is a 40 char hex representation of a 20 byte value.
         String sha1Value = DigestUtils.sha1Hex(byteValue);
         return sha1Value.getBytes(StandardCharsets.UTF_8);
     }

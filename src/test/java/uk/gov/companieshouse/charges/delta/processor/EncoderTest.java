@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(
         properties = {
-                "api.salt=some_salt"
+                "api.salt=jkdhjdio"
         }
 )
 @ExtendWith(SpringExtension.class)
@@ -28,10 +28,10 @@ class EncoderTest {
 
     @Test
     void encode() {
-        String expectedValue = "YjYwNGZhYzBhMWJjYTA0NGY4Y2EwM2JlMzFkNjhjNGFjOTYxZWY2Ng=="
+        String expectedValue = "MDkwZWZkY2JiZjc1MjFlNDcwOTExZGMyMzQ5MzEyMzkzMzVjNTg4MA=="
                 .replace("+", "-")
                 .replace("/", "_");
-        String encodeValue = encoder.encode("some_value1");
+        String encodeValue = encoder.encode("3000117455");
         assertThat(encodeValue).isEqualTo(expectedValue);
     }
 }
