@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.charges.delta.consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
@@ -30,8 +29,9 @@ public class ChargesDeltaConsumer {
             groupId = "${charges.delta.group-id}",
             containerFactory = "listenerContainerFactory")
     public void receiveMainMessages(Message<ChsDelta> chsDeltaMessage) {
-        logger.info(String.format("DSND-493: New message read from MAIN topic with payload: %s",
-                chsDeltaMessage.getPayload()));
+        logger.info("A new message read from MAIN topic with payload: "
+                + chsDeltaMessage.getPayload());
+        deltaProcessor.processDelta(chsDeltaMessage);
     }
 
     /**
@@ -44,7 +44,7 @@ public class ChargesDeltaConsumer {
     public void receiveRetryMessages(Message<ChsDelta> message) {
         logger.info(String.format("A new message read from RETRY topic with payload:%s "
                 + "and headers:%s ", message.getPayload(), message.getHeaders()));
-
+        deltaProcessor.processDelta(message);
     }
 
 }
