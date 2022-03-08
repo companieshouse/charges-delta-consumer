@@ -22,9 +22,7 @@ import uk.gov.companieshouse.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ChargesDeltaProcessorTest {
@@ -81,9 +79,9 @@ public class ChargesDeltaProcessorTest {
         Charge charge = expectedChargesDelta.getCharges().get(0);
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
         when(transformer.transform(charge)).thenCallRealMethod();
-        when(apiClientService.putCharge(eq("context_id"), eq("01099198"),
-                eq("ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA=="), eq(testData.mockInternalChargeApi())))
-                .thenReturn(response);
+        doReturn(response).when(apiClientService).putCharge(eq("context_id"), eq("01099198"),
+                eq("ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA=="), eq(testData.mockInternalChargeApi()));
+
         deltaProcessor.processDelta(mockChsDeltaMessage);
         verify(transformer).transform(charge);
         verify(apiClientService).putCharge("context_id", "01099198",
