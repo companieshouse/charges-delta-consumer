@@ -15,6 +15,7 @@ import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.logging.Logger;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -44,13 +45,16 @@ class ApiClientServiceImplTest {
                 anyString(),
                 any(PrivateChargesUpsert.class));
 
-        apiClientService2.putCharge("context_id", "12345678",
+        ApiResponse<Void> response2 = apiClientService2.putCharge("context_id", "12345678",
                 "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA==",
                 new InternalChargeApi());
         verify(apiClientService2).executeOp(anyString(), eq("putCharge"),
                 eq("/company/12345678/charge/" +
                         "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA==/internal"),
                 any(PrivateChargesUpsert.class));
+
+        assertThat(response2).isEqualTo(response);
+
     }
 
 
