@@ -26,12 +26,12 @@ public class ChsDeltaDeserializer implements Deserializer<ChsDelta> {
     @Override
     public ChsDelta deserialize(String topic, byte[] data) {
         try {
-            logger.trace(String.format("Message picked up from topic with data: %s",
+            logger.trace(String.format("DSND-514: Message picked up from topic with data: %s",
                     new String(data)));
             Decoder decoder = DecoderFactory.get().binaryDecoder(data, null);
             DatumReader<ChsDelta> reader = new ReflectDatumReader<>(ChsDelta.class);
             ChsDelta chsDelta = reader.read(null, decoder);
-            logger.trace(String.format("Message successfully de-serialised into "
+            logger.trace(String.format("DSND-514: Message successfully de-serialised into "
                     + "Avro ChsDelta object: %s", chsDelta));
             return chsDelta;
         } catch (Exception ex) {
