@@ -65,7 +65,7 @@ public class ChargesDeltaProcessor {
 
             ObjectMapper mapper = new ObjectMapper();
             ChargesDelta chargesDelta = mapper.readValue(payload.getData(), ChargesDelta.class);
-            logger.trace(String.format("ChargesDelta extracted "
+            logger.trace(String.format("DSND-514: ChargesDelta extracted "
                     + "from a Kafka message: %s", chargesDelta));
             if (chargesDelta.getCharges().size() > 0) {
                 // assuming we always get only one charge item inside charges delta
