@@ -65,8 +65,10 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
         Map<String, Object> logMap = createLogMap(companyNumber, "PUT", uri, chargeId);
         logger.infoContext(log, String.format("PUT %s", uri), logMap);
 
-        return executeOp(log, "putCharge", uri, getApiClient(log)
-                .privateDeltaChargeResourceHandler().putCharge().upsert(uri, internalChargeApi));
+        return executeOp(log, "putCharge", uri,
+                getApiClient(log).privateDeltaChargeResourceHandler()
+                        .putCharge()
+                        .upsert(uri, internalChargeApi));
     }
 
     private Map<String, Object> createLogMap(String companyNumber, String method, String path,
