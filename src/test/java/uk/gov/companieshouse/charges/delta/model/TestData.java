@@ -4,6 +4,7 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.FileCopyUtils;
+import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.delta.AdditionalNotice;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
@@ -48,12 +49,12 @@ public class TestData {
         additionalNoticeList.add(additionalNotice);
         charge.setAdditionalNotices(additionalNoticeList);
 
-        charge.setChargeNumber(Integer.valueOf("577"));
-        charge.setMigratedFrom("STEM");
+        charge.setChargeNumber("577");
+        charge.setMigratedFrom(Charge.MigratedFromEnum.STEM);
         charge.setAmountSecured("£48,000.00                               AND ALL OTHER MONIES DUE OR TO BECOME DUE");
         charge.setType("MARINE MORTGAGE                         ");
         charge.setShortParticulars("LEGEND 33 HULL ID: LUH33057L405         ");
-        charge.setStatus(Integer.valueOf("1"));
+        charge.setStatus("1");
         charge.setSatisfiedOn("20070809");
         charge.setCreatedOn("20070605");
         chargesDelta.addChargesItem(charge);
@@ -77,5 +78,11 @@ public class TestData {
                 .setHeader(KafkaHeaders.RECEIVED_TOPIC, "test")
                 .setHeader("CHARGES_DELTA_RETRY_COUNT", 1)
                 .build();
+    }
+
+    public InternalChargeApi mockInternalChargeApi()
+    {
+        return new InternalChargeApi();
+
     }
 }
