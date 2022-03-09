@@ -27,10 +27,6 @@ clean:
 
 .PHONY: build
 build:
-	export LANG=LANG=en_GB.UTF-8
-	set MAVEN_OPTS= -Dfile.encoding=UTF-8
-	$(info DEBUG: Get env)
-	mvn help:system
 	@# Help: Pull down any dependencies and compile code into an executable if required
 	$(info Setting version: $(version))
 	mvn versions:set -DnewVersion=$(version) -DgenerateBackupPoms=false
