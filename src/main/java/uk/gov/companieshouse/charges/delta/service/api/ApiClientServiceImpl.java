@@ -25,9 +25,6 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
     @Value("${api.internal-api-key}")
     private String chsApiKey;
 
-    @Value("${api.api-url}")
-    private String apiUrl;
-
     @Value("${api.internal-api-url}")
     private String internalApiUrl;
 
@@ -44,7 +41,6 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
     @Override
     public InternalApiClient getApiClient(String contextId) {
         InternalApiClient internalApiClient = new InternalApiClient(getHttpClient(contextId));
-        internalApiClient.setBasePath(apiUrl);
         internalApiClient.setInternalBasePath(internalApiUrl);
 
         return internalApiClient;

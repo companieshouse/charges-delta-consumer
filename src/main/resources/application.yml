@@ -23,8 +23,6 @@ logger:
   namespace: charges-delta-consumer
 
 api:
-  endpoint: ${CHARGES_DATA_API_URL:localhost}
-  internal-api-key: ${CHS_INTERNAL_API_KEY:localhost}
-  api-url: ${API_URL:localhost}
+  internal-api-key: ${CHARGES_DATA_API_KEY:localhost}
   internal-api-url: ${INTERNAL_API_URL:localhost}
-  salt: ${CHS_INTERNAL_API_SALT:test}
+  salt: ${CHARGES_INTERNAL_API_SALT:test}
