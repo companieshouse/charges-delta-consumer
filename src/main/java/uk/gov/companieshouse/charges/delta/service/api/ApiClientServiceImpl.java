@@ -22,11 +22,11 @@ import uk.gov.companieshouse.logging.Logger;
 @Service
 public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements ApiClientService {
 
-    @Value("${api.internal-api-key}")
+    @Value("${api.charges-data-api-key}")
     private String chsApiKey;
 
-    @Value("${api.internal-api-url}")
-    private String internalApiUrl;
+    @Value("${api.api-url}")
+    private String apiUrl;
 
     /**
      * Construct an {@link ApiClientServiceImpl}.
@@ -41,8 +41,7 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
     @Override
     public InternalApiClient getApiClient(String contextId) {
         InternalApiClient internalApiClient = new InternalApiClient(getHttpClient(contextId));
-        internalApiClient.setInternalBasePath(internalApiUrl);
-
+        internalApiClient.setBasePath(apiUrl);
         return internalApiClient;
     }
 
