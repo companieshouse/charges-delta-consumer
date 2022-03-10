@@ -36,8 +36,6 @@ class ApiClientServiceImplTest {
         apiClientService = new ApiClientServiceImpl(logger);
         ReflectionTestUtils.setField(apiClientService, "chsApiKey", "apiKey");
         ReflectionTestUtils.setField(apiClientService, "apiUrl", "https://api.companieshouse.gov.uk");
-        ReflectionTestUtils.setField(apiClientService, "internalApiUrl", "https://internal-api.companieshouse.gov.uk");
-
     }
 
     @Test
