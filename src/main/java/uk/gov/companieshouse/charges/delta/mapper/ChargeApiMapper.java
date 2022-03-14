@@ -16,7 +16,8 @@ import uk.gov.companieshouse.api.delta.ShortParticularFlags;
 @Mapper(componentModel = "spring", uses = {
         PersonsEntitledApiMapper.class,
         InsolvencyCasesApiMapper.class,
-        ParticularsApiMapper.class }
+        ParticularsApiMapper.class,
+        TransactionsApiMapper.class}
 )
 public interface ChargeApiMapper {
 
@@ -35,8 +36,9 @@ public interface ChargeApiMapper {
             source = "alterationsToProhibitions")
     @Mapping(target = "moreThanFourPersonsEntitled",
             source = "moreThan4Persons")
-    @Mapping(target = "transactions", ignore = true)
+    @Mapping(target = "transactions", source = "additionalNotices")
     @Mapping(target = "links", ignore = true)
+    @Mapping(target = "insolvencyCases", source = "insolvencyCases")
     ChargeApi chargeToChargeApi(Charge sourceCharge);
 
     /**
@@ -150,15 +152,14 @@ public interface ChargeApiMapper {
         }
     }
 
+
     /**
-     * Maps property in Charge to enum in SecuredDetailsApi model.
+     * Generic method that maps property in Charge to enum in a model.
      */
-    /*private void stringToEnum(String property, Object obj, Class clazz,
-                                               Enum theEnum) throws NoSuchMethodException {
+    /*private <T> void stringToEnum(String property, T obj) throws NoSuchMethodException {
         if (!StringUtils.isEmpty(property)) {
 
-            obj.getClass().getMethod("setType", theEnum.getClass());
-            obj.getClass().getMethod("setDescription", String.class);
+           obj.se
         }
     }*/
 }
