@@ -48,6 +48,9 @@ public interface ChargeApiMapper {
     @Mapping(target = "deliveredOn", ignore = true)
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "satisfiedOn", ignore = true)
+    @Mapping(target = "acquiredOn", ignore = true)
+    @Mapping(target = "assetsCeasedReleased", ignore = true)
+    @Mapping(target = "coveringInstrumentDate", ignore = true)
     ChargeApi chargeToChargeApi(Charge sourceCharge);
 
     /**
@@ -209,8 +212,67 @@ public interface ChargeApiMapper {
             chargeApi.setSatisfiedOn(LocalDate.parse(charge.getSatisfiedOn(),
                     DateTimeFormatter.ofPattern("yyyyMMdd")));
         }
+        if (charge.getAcquiredOn() != null) {
+            chargeApi.setAcquiredOn(LocalDate.parse(charge.getAcquiredOn(),
+                    DateTimeFormatter.ofPattern("yyyyMMdd")));
+        }
+        if (charge.getCoveringInstrumentDate() != null) {
+            chargeApi.setCoveringInstrumentDate(LocalDate.parse(charge.getCoveringInstrumentDate(),
+                    DateTimeFormatter.ofPattern("yyyyMMdd")));
+        }
     }
 
+    /**
+     * Maps assets_ceased_released from Charges Delta To assets_ceased_released enum in
+     * ChargeApi model.
+     * 3  : property-ceased-to-belong
+     * 4  : part-property-release-and-ceased-to-belong
+     * 5  : part-property-released
+     * 6  : part-property-ceased-to-belong
+     * 8  : whole-property-released
+     * 9  : multiple-filings
+     * 10 : whole-property-released-and-ceased-to-belong
+     */
+    @AfterMapping
+    default void mapAssetsCeasedReleasedEnum(@MappingTarget ChargeApi chargeApi,
+                             Charge charge) {
+        int assetsCeasedReleased = Integer.parseInt(charge.getAssetsCeasedReleased());
+        switch (assetsCeasedReleased) {
+            case 3:
+                chargeApi.setAssetsCeasedReleased(
+                        ChargeApi.AssetsCeasedReleasedEnum.PROPERTY_CEASED_TO_BELONG);
+                break;
+            case 4:
+                chargeApi.setAssetsCeasedReleased(
+                        ChargeApi.AssetsCeasedReleasedEnum
+                                .PART_PROPERTY_RELEASE_AND_CEASED_TO_BELONG);
+                break;
+            case 5:
+                chargeApi.setAssetsCeasedReleased(
+                        ChargeApi.AssetsCeasedReleasedEnum.PART_PROPERTY_RELEASED);
+                break;
+            case 6:
+                chargeApi.setAssetsCeasedReleased(
+                        ChargeApi.AssetsCeasedReleasedEnum.PART_PROPERTY_CEASED_TO_BELONG);
+                break;
+            case 8:
+                chargeApi.setAssetsCeasedReleased(
+                        ChargeApi.AssetsCeasedReleasedEnum.WHOLE_PROPERTY_RELEASED);
+                break;
+            case 9:
+                chargeApi.setAssetsCeasedReleased(
+                        ChargeApi.AssetsCeasedReleasedEnum.MULTIPLE_FILINGS);
+                break;
+            case 10:
+                chargeApi.setAssetsCeasedReleased(
+                        ChargeApi.AssetsCeasedReleasedEnum
+                                .WHOLE_PROPERTY_RELEASED_AND_CEASED_TO_BELONG);
+                break;
+            default:
+                //do nothing
+                break;
+        }
+    }
     /**
      * Generic method that maps property in Charge to enum in a model.
      */

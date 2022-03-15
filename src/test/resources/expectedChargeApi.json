@@ -20,9 +20,9 @@
   "created_on": "20140804",
   "transactions": [
     {
-      "filing_type": "create-charge-with-deed-with-charles-court-order",
+      "filing_type": "403a",
       "links": {
-        "filing": "/company/NI622400/filing-history/MzExMzg5MjgyM2FkaXF6a2N4"
+        "filing": "3387778"
       },
       "delivered_on": "20141216"
     }

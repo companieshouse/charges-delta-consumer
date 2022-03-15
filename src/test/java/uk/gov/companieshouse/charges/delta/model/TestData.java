@@ -16,6 +16,7 @@ import uk.gov.companieshouse.delta.ChsDelta;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -108,6 +109,7 @@ public class TestData {
     {
         objectMapper = objectMapper == null ? new ObjectMapper() : objectMapper;
         objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyyMMdd"));
         return objectMapper;
     }
 
