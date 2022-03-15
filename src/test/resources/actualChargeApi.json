@@ -1,44 +1,40 @@
 {
   "etag": null,
-  "id": "3387778",
-  "charge_code": null,
+  "id": "3000606655",
+  "charge_code": "NI6224000001",
   "classification": {
     "type": "charge-description",
-    "description": "MARINE MORTGAGE                         "
+    "description": "A REGISTERED CHARGE"
   },
-  "charge_number": 577,
-  "status": "fully-satisfied",
+  "charge_number": 1,
+  "status": "outstanding",
   "assets_ceased_released": null,
   "acquired_on": null,
   "delivered_on": [
-    2007,
-    6,
-    9
+    2014,
+    12,
+    16
   ],
   "resolved_on": null,
   "covering_instrument_date": null,
   "created_on": [
-    2007,
-    6,
-    5
-  ],
-  "satisfied_on": [
-    2007,
+    2014,
     8,
-    9
+    4
   ],
+  "satisfied_on": null,
   "particulars": {
-    "type": "short-particulars",
-    "description": "LEGEND 33 HULL ID: LUH33057L405         ",
-    "contains_floating_charge": null,
-    "contains_fixed_charge": null,
-    "floating_charge_covers_all": null,
-    "contains_negative_pledge": null,
-    "chargor_acting_as_bare_trustee": null
+    "type": "brief-description",
+    "description": "LAND KNOWN AS UNIT 3 MARSHES TRADE CENTRE,GREENBANK INDUSTRIAL ESTATE, NEWRY BEING ALL OF THE LANDS COMPRISED IN FOLIO DN198519L COUNTY DOWN. \\n",
+    "contains_floating_charge": true,
+    "contains_fixed_charge": true,
+    "floating_charge_covers_all": true,
+    "contains_negative_pledge": true,
+    "chargor_acting_as_bare_trustee": false
   },
   "secured_details": {
     "type": "obligations-secured",
-    "description": "MARINE MORTGAGE                         "
+    "description": "A REGISTERED CHARGE"
   },
   "scottish_alterations": {
     "type": null,
@@ -47,10 +43,10 @@
     "has_alterations_to_prohibitions": null,
     "has_restricting_provisions": null
   },
-  "more_than_four_persons_entitled": null,
+  "more_than_four_persons_entitled": false,
   "persons_entitled": [
     {
-      "name": "LOMBARD NORTH CENTRAL PLC"
+      "name": "THE GOVERNOR AND COMPANY OF THE BANK OF IRELAND"
     }
   ],
   "transactions": [

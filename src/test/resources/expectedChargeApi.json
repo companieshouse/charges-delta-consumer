@@ -1,0 +1,37 @@
+{
+  "persons_entitled": [
+    {
+      "name": "The Governor and Company of the Bank of Ireland"
+    }
+  ],
+  "charge_number": 1,
+  "particulars": {
+    "floating_charge_covers_all": true,
+    "type": "brief-description",
+    "contains_floating_charge": true,
+    "description": "Land known as unit 3 marshes trade centre,greenbank industrial estate, newry being all of the lands comprised in folio DN198519L county down.",
+    "contains_fixed_charge": true,
+    "contains_negative_pledge": true
+  },
+  "charge_code": "NI6224000001",
+  "links": {
+    "self": "/company/NI622400/charges/CkV8-0DFZk5RkTcCaV6pTGIvFAo"
+  },
+  "created_on": "20140804",
+  "transactions": [
+    {
+      "filing_type": "create-charge-with-deed-with-charles-court-order",
+      "links": {
+        "filing": "/company/NI622400/filing-history/MzExMzg5MjgyM2FkaXF6a2N4"
+      },
+      "delivered_on": "20141216"
+    }
+  ],
+  "status": "outstanding",
+  "classification": {
+    "description": "A registered charge",
+    "type": "charge-description"
+  },
+  "etag": "cee2625e329e4961e84e6df35f171f3e644a0f90",
+  "delivered_on": "20141216"
+}

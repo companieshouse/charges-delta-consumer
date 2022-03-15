@@ -13,6 +13,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import scala.Char;
+import uk.gov.companieshouse.api.charges.ChargesApi;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
@@ -44,6 +46,7 @@ public class ChargesApiTransformerTest {
         transformer = new ChargesApiTransformer(chargeApiMapper);
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
+        testData = new TestData();
     }
 
         /* @Test
@@ -56,9 +59,8 @@ public class ChargesApiTransformerTest {
     @Test
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
     void When_ValidChargesMessage_Expect_ValidTransformedInternal() throws IOException {
-        testData = new TestData();
 
-        ChargesDelta expectedChargesDelta = testData.createChargesDelta();
+        ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-example-2.json");
 
         Charge charge = expectedChargesDelta.getCharges().get(0);
 
@@ -66,9 +68,10 @@ public class ChargesApiTransformerTest {
 
         InternalChargeApi internalChargeApi = transformer.transform(charge);
         String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi.getExternalData());
+        String expectedChargesApiJson = testData.loadTestdataFile("charges-api-example-2.json");
         System.out.println("chargeJson = "+ chargeJson);
         System.out.println("chargeApiJson = "+ chargeApiJson);
-        //assertEquals(objectMapper.readTree(chargeJson), objectMapper.readTree(chargeApiJson));
+        assertEquals(objectMapper.readTree(expectedChargesApiJson), objectMapper.readTree(chargeApiJson));
 
     }
 

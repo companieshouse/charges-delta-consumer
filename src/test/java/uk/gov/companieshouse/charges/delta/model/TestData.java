@@ -1,9 +1,12 @@
 package uk.gov.companieshouse.charges.delta.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.FileCopyUtils;
+import uk.gov.companieshouse.api.charges.ChargesApi;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.delta.AdditionalNotice;
 import uk.gov.companieshouse.api.delta.Charge;
@@ -19,6 +22,7 @@ import java.util.Objects;
 
 public class TestData {
 
+    private ObjectMapper objectMapper;
     public ChargesDelta createChargesDelta() {
 
         ChargesDelta chargesDelta = new ChargesDelta();
@@ -84,5 +88,32 @@ public class TestData {
     {
         return new InternalChargeApi();
 
+    }
+
+    public ChargesDelta createChargesDelta(String jsonFileName) throws IOException {
+
+        String chargesDelta = loadTestdataFile(jsonFileName);
+        return getObjectMapper().readValue(chargesDelta, ChargesDelta.class);
+
+    }
+
+    public ChargesApi createChargesApi(String jsonFileName) throws IOException {
+
+        String chargesApi = loadTestdataFile(jsonFileName);
+        return getObjectMapper().readValue(chargesApi, ChargesApi.class);
+
+    }
+
+    private ObjectMapper getObjectMapper()
+    {
+        objectMapper = objectMapper == null ? new ObjectMapper() : objectMapper;
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
+    }
+
+    public String loadTestdataFile(String jsonFileName) throws IOException {
+        InputStreamReader exampleChargesJsonPayload = new InputStreamReader(
+                Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(jsonFileName)));
+        return FileCopyUtils.copyToString(exampleChargesJsonPayload);
     }
 }
