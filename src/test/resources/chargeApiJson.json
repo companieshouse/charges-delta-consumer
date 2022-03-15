@@ -1,0 +1,74 @@
+{
+  "etag": null,
+  "id": "3387778",
+  "charge_code": null,
+  "classification": {
+    "type": "charge-description",
+    "description": "MARINE MORTGAGE                         "
+  },
+  "charge_number": 577,
+  "status": "fully-satisfied",
+  "assets_ceased_released": null,
+  "acquired_on": null,
+  "delivered_on": [
+    2007,
+    6,
+    9
+  ],
+  "resolved_on": null,
+  "covering_instrument_date": null,
+  "created_on": [
+    2007,
+    6,
+    5
+  ],
+  "satisfied_on": [
+    2007,
+    8,
+    9
+  ],
+  "particulars": {
+    "type": "short-particulars",
+    "description": "LEGEND 33 HULL ID: LUH33057L405         ",
+    "contains_floating_charge": null,
+    "contains_fixed_charge": null,
+    "floating_charge_covers_all": null,
+    "contains_negative_pledge": null,
+    "chargor_acting_as_bare_trustee": null
+  },
+  "secured_details": {
+    "type": "obligations-secured",
+    "description": "MARINE MORTGAGE                         "
+  },
+  "scottish_alterations": {
+    "type": null,
+    "description": null,
+    "has_alterations_to_order": null,
+    "has_alterations_to_prohibitions": null,
+    "has_restricting_provisions": null
+  },
+  "more_than_four_persons_entitled": null,
+  "persons_entitled": [
+    {
+      "name": "LOMBARD NORTH CENTRAL PLC"
+    }
+  ],
+  "transactions": [
+    {
+      "filing_type": "403a",
+      "transaction_id": 3387778,
+      "delivered_on": [
+        2007,
+        8,
+        9
+      ],
+      "insolvency_case_number": null,
+      "links": {
+        "filing": "3387778",
+        "insolvency_case": null
+      }
+    }
+  ],
+  "insolvency_cases": null,
+  "links": null
+}

@@ -1,17 +1,22 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+
 import uk.gov.companieshouse.api.charges.ChargeApi;
 import uk.gov.companieshouse.api.charges.ClassificationApi;
 import uk.gov.companieshouse.api.charges.ParticularsApi;
 import uk.gov.companieshouse.api.charges.SecuredDetailsApi;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ShortParticularFlags;
+
 
 @Mapper(componentModel = "spring", uses = {
         PersonsEntitledApiMapper.class,
@@ -39,6 +44,10 @@ public interface ChargeApiMapper {
     @Mapping(target = "transactions", source = "additionalNotices")
     @Mapping(target = "links", ignore = true)
     @Mapping(target = "insolvencyCases", source = "insolvencyCases")
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "deliveredOn", ignore = true)
+    @Mapping(target = "createdOn", ignore = true)
+    @Mapping(target = "satisfiedOn", ignore = true)
     ChargeApi chargeToChargeApi(Charge sourceCharge);
 
     /**
@@ -63,10 +72,11 @@ public interface ChargeApiMapper {
      */
     @AfterMapping
     default void mapToParticularsApi(@MappingTarget ChargeApi chargeApi,
-                                        Charge charge) {
+                                     Charge charge) {
         ParticularsApi particularsApi = chargeApi.getParticulars() == null
                 ? new ParticularsApi() : chargeApi.getParticulars();
-        ShortParticularFlags shortParticularFlags = charge.getShortParticularFlags().get(0);
+        ShortParticularFlags shortParticularFlags = charge.getShortParticularFlags() == null
+                ? null : charge.getShortParticularFlags().get(0);
         if (shortParticularFlags != null) {
             mapShortParticularFlagsToParticularsApi(particularsApi, shortParticularFlags);
         }
@@ -87,7 +97,7 @@ public interface ChargeApiMapper {
      */
     @AfterMapping
     default void mapToSecuredDetailsApiApi(@MappingTarget ChargeApi chargeApi,
-                                        Charge charge) {
+                                           Charge charge) {
         SecuredDetailsApi securedDetailsApi = chargeApi.getSecuredDetails() == null
                 ? new SecuredDetailsApi() : chargeApi.getSecuredDetails();
 
@@ -96,6 +106,36 @@ public interface ChargeApiMapper {
         stringToSecuredDetailsApiEnum(charge.getNatureOfCharge(), securedDetailsApi,
                 SecuredDetailsApi.TypeEnum.AMOUNT_SECURED);
         chargeApi.setSecuredDetails(securedDetailsApi);
+    }
+
+    /**
+     * Maps status from Charges Delta To Status is ChargeApi model.
+     * 0  : outstanding
+     * 1  : fully-satisfied
+     * 2  : part-satisfied
+     * 7  : satisfied
+     */
+    @AfterMapping
+    default void mapStatuses(@MappingTarget ChargeApi chargeApi,
+                             Charge charge) {
+        int status = Integer.parseInt(charge.getStatus());
+        switch (status) {
+            case 0:
+                chargeApi.setStatus(ChargeApi.StatusEnum.OUTSTANDING);
+                break;
+            case 1:
+                chargeApi.setStatus(ChargeApi.StatusEnum.FULLY_SATISFIED);
+                break;
+            case 2:
+                chargeApi.setStatus(ChargeApi.StatusEnum.PART_SATISFIED);
+                break;
+            case 7:
+                chargeApi.setStatus(ChargeApi.StatusEnum.SATISFIED);
+                break;
+            default:
+                //do nothing
+                break;
+        }
     }
 
     /**
@@ -120,7 +160,7 @@ public interface ChargeApiMapper {
      * Maps property in Charge to enum in ParticularApi model.
      */
     private void stringToParticularsApiEnum(String property, ParticularsApi particularsApi,
-                              ParticularsApi.TypeEnum theEnum) {
+                                            ParticularsApi.TypeEnum theEnum) {
         if (!StringUtils.isEmpty(property)) {
 
             particularsApi.setType(theEnum);
@@ -152,6 +192,24 @@ public interface ChargeApiMapper {
         }
     }
 
+    /**
+     * Format dates to yyyyMMdd format.
+     */
+    @AfterMapping
+    default void setDates(@MappingTarget ChargeApi chargeApi, Charge charge) {
+        if (charge.getDeliveredOn() != null) {
+            chargeApi.setDeliveredOn(LocalDate.parse(charge.getDeliveredOn(),
+                    DateTimeFormatter.ofPattern("yyyyMMdd")));
+        }
+        if (charge.getCreatedOn() != null) {
+            chargeApi.setCreatedOn(LocalDate.parse(charge.getCreatedOn(),
+                    DateTimeFormatter.ofPattern("yyyyMMdd")));
+        }
+        if (charge.getSatisfiedOn() != null) {
+            chargeApi.setSatisfiedOn(LocalDate.parse(charge.getSatisfiedOn(),
+                    DateTimeFormatter.ofPattern("yyyyMMdd")));
+        }
+    }
 
     /**
      * Generic method that maps property in Charge to enum in a model.
@@ -159,7 +217,17 @@ public interface ChargeApiMapper {
     /*private <T> void stringToEnum(String property, T obj) throws NoSuchMethodException {
         if (!StringUtils.isEmpty(property)) {
 
-           obj.se
+        }
+    }*/
+
+    /**
+     * Maps property in Charge to enum in SecuredDetailsApi model.
+     */
+    /*private void stringToEnum(String property, Object obj, Class clazz,
+                                               Enum theEnum) throws NoSuchMethodException {
+        if (!StringUtils.isEmpty(property)) {
+            obj.getClass().getMethod("setType", theEnum.getClass());
+            obj.getClass().getMethod("setDescription", String.class);
         }
     }*/
 }
