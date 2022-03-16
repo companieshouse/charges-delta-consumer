@@ -26,7 +26,8 @@ import uk.gov.companieshouse.api.delta.ShortParticularFlags;
 )
 public interface ChargeApiMapper {
 
-    @Mapping(target = "etag", ignore = true) // doesn't exist on source
+    // doesn't exist on source. This needs to be populated by data api
+    @Mapping(target = "etag", ignore = true)
     @Mapping(target = "chargeCode", source = "code")
     // TODO check with data
     @Mapping(target = "classification", ignore = true)
@@ -200,26 +201,30 @@ public interface ChargeApiMapper {
      */
     @AfterMapping
     default void setDates(@MappingTarget ChargeApi chargeApi, Charge charge) {
-        if (charge.getDeliveredOn() != null) {
-            chargeApi.setDeliveredOn(LocalDate.parse(charge.getDeliveredOn(),
-                    DateTimeFormatter.ofPattern("yyyyMMdd")));
+        chargeApi.setDeliveredOn(parseDate(charge.getDeliveredOn(), "yyyyMMdd"));
+
+        chargeApi.setCreatedOn(parseDate(charge.getCreatedOn(), "yyyyMMdd"));
+
+        chargeApi.setSatisfiedOn(parseDate(charge.getSatisfiedOn(), "yyyyMMdd"));
+
+        chargeApi.setCreatedOn(parseDate(charge.getCreatedOn(), "yyyyMMdd"));
+
+        chargeApi.setAcquiredOn(parseDate(charge.getAcquiredOn(), "yyyyMMdd"));
+
+        chargeApi.setCoveringInstrumentDate(parseDate(charge.getCoveringInstrumentDate(),
+                "yyyyMMdd"));
+
+    }
+
+    /**
+     * Format string dates of format yyyyMMdd to LocalDate.
+     */
+    private LocalDate parseDate(String sourceDate, String format) {
+        if (sourceDate != null) {
+            return LocalDate.parse(sourceDate,
+                    DateTimeFormatter.ofPattern(format));
         }
-        if (charge.getCreatedOn() != null) {
-            chargeApi.setCreatedOn(LocalDate.parse(charge.getCreatedOn(),
-                    DateTimeFormatter.ofPattern("yyyyMMdd")));
-        }
-        if (charge.getSatisfiedOn() != null) {
-            chargeApi.setSatisfiedOn(LocalDate.parse(charge.getSatisfiedOn(),
-                    DateTimeFormatter.ofPattern("yyyyMMdd")));
-        }
-        if (charge.getAcquiredOn() != null) {
-            chargeApi.setAcquiredOn(LocalDate.parse(charge.getAcquiredOn(),
-                    DateTimeFormatter.ofPattern("yyyyMMdd")));
-        }
-        if (charge.getCoveringInstrumentDate() != null) {
-            chargeApi.setCoveringInstrumentDate(LocalDate.parse(charge.getCoveringInstrumentDate(),
-                    DateTimeFormatter.ofPattern("yyyyMMdd")));
-        }
+        return null;
     }
 
     /**

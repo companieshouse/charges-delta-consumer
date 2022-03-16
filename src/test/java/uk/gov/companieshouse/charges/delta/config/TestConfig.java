@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.charges.delta.config;
 
 import org.mapstruct.factory.Mappers;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
@@ -8,8 +9,9 @@ import uk.gov.companieshouse.charges.delta.mapper.ClassificationApiMapper;
 import uk.gov.companieshouse.charges.delta.mapper.InsolvencyCasesApiMapper;
 import uk.gov.companieshouse.charges.delta.mapper.PersonsEntitledApiMapper;
 import uk.gov.companieshouse.charges.delta.mapper.TransactionsApiMapper;
+import uk.gov.companieshouse.charges.delta.processor.Encoder;
 
-@Configuration
+@TestConfiguration
 public class TestConfig {
 
         @Bean
@@ -36,6 +38,11 @@ public class TestConfig {
         public TransactionsApiMapper transactionsApiMapper() {
             return Mappers.getMapper(TransactionsApiMapper.class);
         }
+
+        @Bean
+        public Encoder encoder() {
+        return new Encoder("salt");
+    }
 
 
 }

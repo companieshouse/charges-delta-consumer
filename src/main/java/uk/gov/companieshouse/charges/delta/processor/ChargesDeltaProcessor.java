@@ -93,7 +93,7 @@ public class ChargesDeltaProcessor {
         final String companyNumber = charge.getCompanyNumber();
 
         //pass in the chargeId and encode it with base64 after doing a SHA1 hash
-        final String chargeId = encoder.encode(charge.getId());
+        final String chargeId = encoder.encodeWithSha1(charge.getId());
         logger.infoContext(
                 logContext,
                 String.format("Process charge for company number [%s] and charge id [%s]",

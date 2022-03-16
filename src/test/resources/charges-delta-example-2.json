@@ -19,7 +19,7 @@
       "charge_number": "1",
       "migrated_from": "CHIPS",
       "type": "A REGISTERED CHARGE",
-      "brief_description": "LAND KNOWN AS UNIT 3 MARSHES TRADE CENTRE,GREENBANK INDUSTRIAL ESTATE, NEWRY BEING ALL OF THE LANDS COMPRISED IN FOLIO DN198519L COUNTY DOWN. \\n",
+      "brief_description": "LAND KNOWN AS UNIT 3 MARSHES TRADE CENTRE,GREENBANK INDUSTRIAL ESTATE, NEWRY BEING ALL OF THE LANDS COMPRISED IN FOLIO DN198519L COUNTY DOWN.",
       "short_particular_flags": [
         {
           "fixed_charge": "yes",
@@ -38,7 +38,7 @@
           "trans_desc": "DECLARATION OF SATISFACTION OF MORTGAGE/CHARGE",
           "submission_type": "9",
           "case": "1",
-          "delivered_on": "20070809"
+          "delivered_on": "20161216"
         }
       ],
       "insolvency_cases": [

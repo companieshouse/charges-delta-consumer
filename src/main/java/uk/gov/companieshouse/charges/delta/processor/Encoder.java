@@ -12,7 +12,7 @@ public class Encoder {
 
     private static final String SHA_1 = "SHA-1";
 
-    private static String API_SALT;
+    public static String API_SALT;
 
     @Autowired
     public Encoder(@Value("${api.salt}") String salt) {
@@ -44,10 +44,20 @@ public class Encoder {
      * @param plain input String value
      * @return returns base64 encoded String
      */
-    public String encode(String plain) {
+    public String encodeWithSha1(String plain) {
         return base64Encode(getSha1Digest(plain))
                 .replace("+", "-")
                 .replace("/", "_");
+    }
+
+    /**
+     * encodes with base64 encoding and ‘+' replaced by ‘-’ and ‘/’ replaced by '_’.
+     *
+     * @param plain input String value
+     * @return returns base64 encoded String
+     */
+    public String encodeWithoutSha1(String plain) {
+        return base64Encode((plain + API_SALT).getBytes(StandardCharsets.UTF_8));
     }
 
 
