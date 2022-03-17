@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
+import org.mockito.Mock;
 import org.skyscreamer.jsonassert.Customization;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -32,6 +33,7 @@ import uk.gov.companieshouse.charges.delta.mapper.PersonsEntitledApiMapper;
 import uk.gov.companieshouse.charges.delta.mapper.TransactionsApiMapper;
 import uk.gov.companieshouse.charges.delta.model.TestData;
 import uk.gov.companieshouse.charges.delta.processor.Encoder;
+import uk.gov.companieshouse.logging.Logger;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -47,25 +49,21 @@ public class ChargesApiTransformerTest {
     @Autowired
     private Encoder encoder;
 
+    @Mock
+    private Logger logger;
+
     private ChargesApiTransformer transformer;
     private TestData testData;
     ObjectMapper objectMapper;
 
     @BeforeEach
     public void setup() {
-        transformer = new ChargesApiTransformer(chargeApiMapper, encoder);
+        transformer = new ChargesApiTransformer(chargeApiMapper, encoder, logger);
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.setDateFormat(new SimpleDateFormat("yyyyMMdd"));
         testData = new TestData();
     }
-
-        /* @Test
-         public void transformSuccessfully() {
-             //TODO Transform ChargesDelta to InternalChargeApi model
-             final Charge input = new Charge();
-             assertThat(transformer.transform(input)).isEqualTo(new InternalChargeApi());
-         }*/
 
     @Test
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
@@ -74,8 +72,6 @@ public class ChargesApiTransformerTest {
         ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-example-2.json");
 
         Charge charge = expectedChargesDelta.getCharges().get(0);
-
-        String chargeJson = objectMapper.writeValueAsString(charge);
 
         InternalChargeApi internalChargeApi = transformer.transform(charge);
         String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi.getExternalData());

@@ -8,16 +8,24 @@ import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
 import uk.gov.companieshouse.charges.delta.processor.Encoder;
+import uk.gov.companieshouse.logging.Logger;
 
 @Component
 public class ChargesApiTransformer {
     private final ChargeApiMapper chargeApiMapper;
     private Encoder encoder;
+    private final Logger logger;
 
+    /**
+     * The constructor.
+     */
     @Autowired
-    public ChargesApiTransformer(ChargeApiMapper chargeApiMapper, Encoder encoder) {
+    public ChargesApiTransformer(ChargeApiMapper chargeApiMapper,
+                                 Encoder encoder,
+                                 Logger logger) {
         this.chargeApiMapper = chargeApiMapper;
         this.encoder = encoder;
+        this.logger = logger;
     }
 
     /**
@@ -27,12 +35,15 @@ public class ChargesApiTransformer {
      * @return source object mapped to InternalChargeApi
      */
     public InternalChargeApi transform(Charge charge) {
-
+        logger.trace(String.format("DSND-498: Charge message to be transformed "
+                + ": %s", charge));
         ChargeApi chargeApi = chargeApiMapper.chargeToChargeApi(charge);
         String companyNumber = charge.getCompanyNumber();
         updateChargeApi(charge, chargeApi, companyNumber);
         InternalChargeApi internalChargeApi = new InternalChargeApi();
         internalChargeApi.setExternalData(chargeApi);
+        logger.trace(String.format("DSND-498: Charge message transformed to InternalChargeApi "
+                + ": %s", internalChargeApi));
         return internalChargeApi;
     }
 
