@@ -30,6 +30,13 @@ public class ChargesApiTransformer {
 
         ChargeApi chargeApi = chargeApiMapper.chargeToChargeApi(charge);
         String companyNumber = charge.getCompanyNumber();
+        updateChargeApi(charge, chargeApi, companyNumber);
+        InternalChargeApi internalChargeApi = new InternalChargeApi();
+        internalChargeApi.setExternalData(chargeApi);
+        return internalChargeApi;
+    }
+
+    private void updateChargeApi(Charge charge, ChargeApi chargeApi, String companyNumber) {
         chargeApi.getTransactions().stream()
                         .forEach(transactionsApi -> transactionsApi.getLinks()
                                 .setFiling("/company/" + companyNumber + "/filing-history/"
@@ -39,8 +46,6 @@ public class ChargesApiTransformer {
         chargeLink.setSelf("/company/" + companyNumber + "/charges/"
                 + encoder.encodeWithSha1(charge.getId()));
         chargeApi.setLinks(chargeLink);
-        InternalChargeApi internalChargeApi = new InternalChargeApi();
-        internalChargeApi.setExternalData(chargeApi);
-        return internalChargeApi;
     }
+
 }

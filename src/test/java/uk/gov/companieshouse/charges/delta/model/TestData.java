@@ -8,6 +8,7 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.FileCopyUtils;
 import uk.gov.companieshouse.api.charges.ChargesApi;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;
+import uk.gov.companieshouse.api.charges.InternalData;
 import uk.gov.companieshouse.api.delta.AdditionalNotice;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
@@ -82,12 +83,18 @@ public class TestData {
                 .withPayload(mockChsDelta)
                 .setHeader(KafkaHeaders.RECEIVED_TOPIC, "test")
                 .setHeader("CHARGES_DELTA_RETRY_COUNT", 1)
+                .setHeader(KafkaHeaders.RECEIVED_PARTITION_ID, "partition_1")
+                .setHeader(KafkaHeaders.OFFSET, "offset_1")
                 .build();
     }
 
     public InternalChargeApi mockInternalChargeApi()
     {
-        return new InternalChargeApi();
+        InternalChargeApi internalChargeApi = new InternalChargeApi();
+        InternalData internalData = new InternalData();
+        internalData.setUpdatedBy("test-partition_1-offset_1");
+        internalChargeApi.setInternalData(internalData);
+        return internalChargeApi;
 
     }
 

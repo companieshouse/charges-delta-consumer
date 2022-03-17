@@ -14,6 +14,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;
+import uk.gov.companieshouse.api.charges.InternalData;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
 import uk.gov.companieshouse.api.model.ApiResponse;
@@ -62,6 +63,12 @@ public class ChargesDeltaProcessor {
             final Map<String, Object> logMap = new HashMap<>();
             final String receivedTopic =
                     Objects.requireNonNull(headers.get(KafkaHeaders.RECEIVED_TOPIC)).toString();
+            final String partition =
+                    Objects.requireNonNull(
+                            headers.get(KafkaHeaders.RECEIVED_PARTITION_ID)
+                    ).toString();
+            final String offset =
+                    Objects.requireNonNull(headers.get(KafkaHeaders.OFFSET)).toString();
 
             ObjectMapper mapper = new ObjectMapper();
             ChargesDelta chargesDelta = mapper.readValue(payload.getData(), ChargesDelta.class);
@@ -71,6 +78,7 @@ public class ChargesDeltaProcessor {
                 // assuming we always get only one charge item inside charges delta
                 Charge charge = chargesDelta.getCharges().get(0);
                 InternalChargeApi internalChargeApi = transformer.transform(charge);
+                updateInternalChargeApi(receivedTopic, partition, offset, internalChargeApi);
 
                 invokeChargesDataApi(logContext, charge, internalChargeApi, logMap);
             } else {
@@ -82,6 +90,15 @@ public class ChargesDeltaProcessor {
             handleErrorMessage(chsDelta);
             // send to error topic
         }
+    }
+
+    private void updateInternalChargeApi(String receivedTopic, String partition, String offset,
+                                         InternalChargeApi internalChargeApi) {
+        final String updatedBy = String.format("%s-%s-%s", receivedTopic, partition, offset);
+        InternalData internalData = internalChargeApi.getInternalData() == null
+                ? new InternalData() : internalChargeApi.getInternalData();
+        internalData.setUpdatedBy(updatedBy);
+        internalChargeApi.setInternalData(internalData);
     }
 
     /**
