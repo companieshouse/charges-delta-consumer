@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -21,7 +22,6 @@ import uk.gov.companieshouse.api.delta.ShortParticularFlags;
 @Mapper(componentModel = "spring", uses = {
         PersonsEntitledApiMapper.class,
         InsolvencyCasesApiMapper.class,
-        ParticularsApiMapper.class,
         TransactionsApiMapper.class}
 )
 public interface ChargeApiMapper {
@@ -52,7 +52,8 @@ public interface ChargeApiMapper {
     @Mapping(target = "acquiredOn", ignore = true)
     @Mapping(target = "assetsCeasedReleased", ignore = true)
     @Mapping(target = "coveringInstrumentDate", ignore = true)
-    ChargeApi chargeToChargeApi(Charge sourceCharge);
+    ChargeApi chargeToChargeApi(Charge sourceCharge) throws NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException;
 
     /**
      * Map Source String property to Target enum.
@@ -60,7 +61,8 @@ public interface ChargeApiMapper {
 
     @AfterMapping
     default void mapToClassificationApi(@MappingTarget ChargeApi chargeApi,
-                                        Charge charge) {
+                                        Charge charge) throws NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
         ClassificationApi classificationApi = chargeApi.getClassification() == null
                 ? new ClassificationApi() : chargeApi.getClassification();
 
@@ -76,7 +78,8 @@ public interface ChargeApiMapper {
      */
     @AfterMapping
     default void mapToParticularsApi(@MappingTarget ChargeApi chargeApi,
-                                     Charge charge) {
+                                     Charge charge) throws InvocationTargetException,
+            NoSuchMethodException, IllegalAccessException {
         ParticularsApi particularsApi = chargeApi.getParticulars() == null
                 ? new ParticularsApi() : chargeApi.getParticulars();
         ShortParticularFlags shortParticularFlags = charge.getShortParticularFlags() == null
@@ -101,7 +104,8 @@ public interface ChargeApiMapper {
      */
     @AfterMapping
     default void mapToSecuredDetailsApiApi(@MappingTarget ChargeApi chargeApi,
-                                           Charge charge) {
+                                           Charge charge) throws InvocationTargetException,
+            NoSuchMethodException, IllegalAccessException {
         SecuredDetailsApi securedDetailsApi = chargeApi.getSecuredDetails() == null
                 ? new SecuredDetailsApi() : chargeApi.getSecuredDetails();
 
@@ -164,36 +168,29 @@ public interface ChargeApiMapper {
      * Maps property in Charge to enum in ParticularApi model.
      */
     private void stringToParticularsApiEnum(String property, ParticularsApi particularsApi,
-                                            ParticularsApi.TypeEnum theEnum) {
-        if (!StringUtils.isEmpty(property)) {
-
-            particularsApi.setType(theEnum);
-            particularsApi.setDescription(property);
-        }
+                                            ParticularsApi.TypeEnum theEnum)
+            throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        stringToEnum(property, particularsApi, ParticularsApi.class, theEnum);
     }
 
     /**
      * Maps property in Charge to enum in ClassificationApi model.
      */
-    private void stringToClassificationApiEnum(String property, ClassificationApi classificationApi,
-                                               ClassificationApi.TypeEnum theEnum) {
-        if (!StringUtils.isEmpty(property)) {
-
-            classificationApi.setType(theEnum);
-            classificationApi.setDescription(property);
-        }
+    private void stringToClassificationApiEnum(String property,
+                                               ClassificationApi classificationApi,
+                                               ClassificationApi.TypeEnum theEnum)
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        stringToEnum(property, classificationApi, ClassificationApi.class, theEnum);
     }
 
     /**
      * Maps property in Charge to enum in SecuredDetailsApi model.
      */
-    private void stringToSecuredDetailsApiEnum(String property, SecuredDetailsApi securedDetailsApi,
-                                               SecuredDetailsApi.TypeEnum theEnum) {
-        if (!StringUtils.isEmpty(property)) {
-
-            securedDetailsApi.setType(theEnum);
-            securedDetailsApi.setDescription(property);
-        }
+    private void stringToSecuredDetailsApiEnum(String property,
+                                               SecuredDetailsApi securedDetailsApi,
+                                               SecuredDetailsApi.TypeEnum theEnum)
+            throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        stringToEnum(property, securedDetailsApi, SecuredDetailsApi.class, theEnum);
     }
 
     /**
@@ -240,7 +237,7 @@ public interface ChargeApiMapper {
      */
     @AfterMapping
     default void mapAssetsCeasedReleasedEnum(@MappingTarget ChargeApi chargeApi,
-                             Charge charge) {
+                                             Charge charge) {
         int assetsCeasedReleased = Integer.parseInt(charge.getAssetsCeasedReleased());
         switch (assetsCeasedReleased) {
             case 3:
@@ -278,23 +275,19 @@ public interface ChargeApiMapper {
                 break;
         }
     }
-    /**
-     * Generic method that maps property in Charge to enum in a model.
-     */
-    /*private <T> void stringToEnum(String property, T obj) throws NoSuchMethodException {
-        if (!StringUtils.isEmpty(property)) {
 
-        }
-    }*/
 
     /**
-     * Maps property in Charge to enum in SecuredDetailsApi model.
+     /**
+     * Generic method that Maps property from an object to description in the target object and
+     * sets the enum in the target object model.
      */
-    /*private void stringToEnum(String property, Object obj, Class clazz,
-                                               Enum theEnum) throws NoSuchMethodException {
+    private <T> void stringToEnum(String property, Object obj, Class<T> clazz,
+                                  Enum<?> theEnum) throws NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
         if (!StringUtils.isEmpty(property)) {
-            obj.getClass().getMethod("setType", theEnum.getClass());
-            obj.getClass().getMethod("setDescription", String.class);
+            obj.getClass().getMethod("setType", theEnum.getClass()).invoke(obj, theEnum);
+            obj.getClass().getMethod("setDescription", String.class).invoke(obj, property);
         }
-    }*/
+    }
 }

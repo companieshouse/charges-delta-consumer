@@ -1,5 +1,7 @@
 package uk.gov.companieshouse.charges.delta.transformer;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.charges.ChargeApi;
@@ -9,6 +11,7 @@ import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
 import uk.gov.companieshouse.charges.delta.processor.Encoder;
 import uk.gov.companieshouse.logging.Logger;
+
 
 @Component
 public class ChargesApiTransformer {
@@ -34,7 +37,8 @@ public class ChargesApiTransformer {
      * @param charge source object
      * @return source object mapped to InternalChargeApi
      */
-    public InternalChargeApi transform(Charge charge) {
+    public InternalChargeApi transform(Charge charge) throws NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
         logger.trace(String.format("DSND-498: Charge message to be transformed "
                 + ": %s", charge));
         ChargeApi chargeApi = chargeApiMapper.chargeToChargeApi(charge);
@@ -49,10 +53,10 @@ public class ChargesApiTransformer {
 
     private void updateChargeApi(Charge charge, ChargeApi chargeApi, String companyNumber) {
         chargeApi.getTransactions().stream()
-                        .forEach(transactionsApi -> transactionsApi.getLinks()
-                                .setFiling("/company/" + companyNumber + "/filing-history/"
-                                        + encoder.encodeWithoutSha1(
-                                        transactionsApi.getLinks().getFiling())));
+                .forEach(transactionsApi -> transactionsApi.getLinks()
+                        .setFiling("/company/" + companyNumber + "/filing-history/"
+                                + encoder.encodeWithoutSha1(
+                                transactionsApi.getLinks().getFiling())));
         ChargeLink chargeLink = new ChargeLink();
         chargeLink.setSelf("/company/" + companyNumber + "/charges/"
                 + encoder.encodeWithSha1(charge.getId()));

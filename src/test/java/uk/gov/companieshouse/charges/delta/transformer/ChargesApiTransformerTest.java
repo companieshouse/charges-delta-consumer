@@ -36,6 +36,7 @@ import uk.gov.companieshouse.charges.delta.processor.Encoder;
 import uk.gov.companieshouse.logging.Logger;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,7 +68,9 @@ public class ChargesApiTransformerTest {
 
     @Test
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidChargesMessage_Expect_ValidTransformedInternal() throws IOException, JSONException {
+    void When_ValidChargesMessage_Expect_ValidTransformedInternal() throws IOException,
+            JSONException, NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
 
         ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-example-2.json");
 

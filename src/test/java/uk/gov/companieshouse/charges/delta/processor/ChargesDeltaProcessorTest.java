@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.charges.delta.processor;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,7 +58,8 @@ public class ChargesDeltaProcessorTest {
 
     @Test
     @DisplayName("Transforms a kafka message containing a ChsDelta payload into an ChargesDelta")
-    void When_ValidChsDeltaMessage_Expect_ValidChargesDeltaMapping() throws IOException {
+    void When_ValidChsDeltaMessage_Expect_ValidChargesDeltaMapping() throws IOException,
+            NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Message<ChsDelta> mockChsDeltaMessage = testData.createChsDeltaMessage("charges-delta-example.json");
         ChargesDelta expectedChargesDelta = testData.createChargesDelta();
         Charge charge = expectedChargesDelta.getCharges().get(0);
@@ -76,7 +78,8 @@ public class ChargesDeltaProcessorTest {
 
     @Test
     @DisplayName("Transforms ChsDelta payload into an ChargesDelta and then calls Charges Data Api")
-    void When_ValidChsDeltaMessage_Invoke_Data_Api_And_Get_Response() throws IOException {
+    void When_ValidChsDeltaMessage_Invoke_Data_Api_And_Get_Response() throws IOException,
+            NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Message<ChsDelta> mockChsDeltaMessage = testData.createChsDeltaMessage("charges-delta-example.json");
         ChargesDelta expectedChargesDelta = testData.createChargesDelta();
         Charge charge = expectedChargesDelta.getCharges().get(0);
