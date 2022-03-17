@@ -13,33 +13,42 @@
 	<name>charges-delta-consumer</name>
 	<description>Charges Delta Consumer</description>
 
-	<properties>
+		<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
 
 		<main.class>uk.gov.companieshouse.charges.delta.ChargesDeltaConsumerApplication</main.class>
 
-		<assertj-core.version>3.22.0</assertj-core.version>
-		<test-containers.version>1.16.2</test-containers.version>
 		<map-struct.version>1.4.2.Final</map-struct.version>
-		<maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
 		<maven-build-helper-plugin.version>3.2.0</maven-build-helper-plugin.version>
-		<maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
 		<docker-maven-plugin.version>1.0.0</docker-maven-plugin.version>
 		<ch-kafka.version>1.4.2</ch-kafka.version>
 		<structured-logging.version>1.9.12</structured-logging.version>
-		<kafka-models.version>1.0.25</kafka-models.version>
-		<private-api-sdk-java.version>2.0.124</private-api-sdk-java.version>
+		<kafka-models.version>1.0.27</kafka-models.version>
+		<private-api-sdk-java.version>2.0.125</private-api-sdk-java.version>
 		<api-sdk-manager-java-library.version>1.0.4</api-sdk-manager-java-library.version>
 		<jib-maven-plugin.version>3.1.1</jib-maven-plugin.version>
-		<io-cucumber.version>7.2.3</io-cucumber.version>
 		<springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+
+		<!-- Tests -->
+		<maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+		<maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
+		<io-cucumber.version>7.2.3</io-cucumber.version>
 		<skip.integration.tests>false</skip.integration.tests>
 		<skip.unit.tests>false</skip.unit.tests>
+		<assertj-core.version>3.22.0</assertj-core.version>
+		<test-containers.version>1.16.2</test-containers.version>
 
 		<!--sonar configuration-->
-		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml,
+		<sonar-maven-plugin.version>3.7.0.1746</sonar-maven-plugin.version>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.projectKey>uk.gov.companieshouse:charges-delta-consumer</sonar.projectKey>
+		<sonar.sources>src/main</sonar.sources>
+		<sonar.tests>src/test</sonar.tests>
+		<sonar.verbose>true</sonar.verbose>
+		<sonar.coverage.jacoco.xmlReportPaths>
+			${project.basedir}/target/site/jacoco/jacoco.xml,
 			${project.basedir}/target/site/jacoco-it/jacoco.xml
 		</sonar.coverage.jacoco.xmlReportPaths>
 		<sonar.jacoco.reports>${project.basedir}/target/site</sonar.jacoco.reports>
@@ -200,7 +209,8 @@
 				</executions>
 			</plugin>
 
-			<plugin>
+
+						<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${jacoco-maven-plugin.version}</version>
@@ -246,7 +256,9 @@
 							<goal>report</goal>
 						</goals>
 						<configuration>
+							<!-- Sets the path to the file which contains the execution data. -->
 							<dataFile>${sonar.jacoco.reports}/jacoco-it.exec</dataFile>
+							<!-- Sets the output directory for the code coverage report. -->
 							<outputDirectory>${sonar.jacoco.reports}/jacoco-it</outputDirectory>
 						</configuration>
 					</execution>
@@ -279,6 +291,7 @@
 				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
 					<argLine>-Dfile.encoding=UTF-8</argLine>
+					<argLine>${surefireArgLine}</argLine>
 					<excludes>
 						<exclude>**/*ITest.java</exclude>
 					</excludes>
@@ -300,6 +313,7 @@
 				</executions>
 				<configuration>
 					<argLine>-Dfile.encoding=UTF-8</argLine>
+					<argLine>${failsafeArgLine}</argLine>
 					<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 					<skipITs>${skip.integration.tests}</skipITs>
 					<includes>
