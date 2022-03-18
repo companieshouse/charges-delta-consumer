@@ -52,8 +52,10 @@
       "floating_charge": "Y",
       "created_on": "20140804",
       "restricting_provisions": "Y",
+      "alterations_to_order": "Y",
       "covering_instrument_date": "19930809",
-      "acquired_on": "19820610"
+      "acquired_on": "19820610",
+      "satisfied_on": "19991201"
     }
   ]
 }

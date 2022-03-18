@@ -42,7 +42,7 @@ public class Encoder {
      * encodes with base64 encoding and ‘+' replaced by ‘-’ and ‘/’ replaced by '_’.
      *
      * @param plain input String value
-     * @return returns base64 encoded String
+     * @return returns base64 encoded String with salt
      */
     public String encodeWithSha1(String plain) {
         return base64Encode(getSha1Digest(plain))
@@ -51,13 +51,15 @@ public class Encoder {
     }
 
     /**
-     * encodes with base64 encoding and ‘+' replaced by ‘-’ and ‘/’ replaced by '_’.
+     * encodes without sha1 and with base64 encoding.
      *
      * @param plain input String value
-     * @return returns base64 encoded String
+     * @return returns base64 encoded String with salt
      */
     public String encodeWithoutSha1(String plain) {
-        return base64Encode((plain + API_SALT).getBytes(StandardCharsets.UTF_8));
+
+        return base64Encode(plain != null
+                ? (plain + API_SALT).getBytes(StandardCharsets.UTF_8) : null);
     }
 
 

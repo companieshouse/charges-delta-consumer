@@ -14,7 +14,25 @@
       "contains_fixed_charge" : true,
       "contains_negative_pledge" : true
     },
+  "secured_details": {
+    "type": "obligations-secured",
+    "description": "A REGISTERED CHARGE"
+  },
+  "scottish_alterations": {
+    "type": null,
+    "description": null,
+    "has_alterations_to_order": true,
+    "has_alterations_to_prohibitions": false,
+    "has_restricting_provisions": true
+  },
     "charge_code" : "NI6224000001",
+  "insolvency_cases": [
+    {
+      "case_number": 2,
+      "transaction_id": 22222,
+      "links": null
+    }
+  ],
     "links" : {
       "self" : "/company/NI622400/charges/NjAyYmMzOTYwOGRkNzMzMzA2Y2EzNGUwZWJkNmQ1NTY3MzVmOTZjMQ=="
     },
@@ -40,6 +58,7 @@
   "acquired_on": "1982-06-10",
   "delivered_on": "2014-12-16",
   "resolved_on": null,
-  "covering_instrument_date": "1993-08-09"
-
+  "covering_instrument_date": "1993-08-09",
+  "more_than_four_persons_entitled": false,
+  "satisfied_on": "1999-12-01"
 }

@@ -61,14 +61,6 @@ public class ChargesDeltaProcessor {
             final ChsDelta payload = chsDelta.getPayload();
             final String logContext = payload.getContextId();
             final Map<String, Object> logMap = new HashMap<>();
-            final String receivedTopic =
-                    Objects.requireNonNull(headers.get(KafkaHeaders.RECEIVED_TOPIC)).toString();
-            final String partition =
-                    Objects.requireNonNull(
-                            headers.get(KafkaHeaders.RECEIVED_PARTITION_ID)
-                    ).toString();
-            final String offset =
-                    Objects.requireNonNull(headers.get(KafkaHeaders.OFFSET)).toString();
 
             ObjectMapper mapper = new ObjectMapper();
             ChargesDelta chargesDelta = mapper.readValue(payload.getData(), ChargesDelta.class);
@@ -78,7 +70,10 @@ public class ChargesDeltaProcessor {
                 // assuming we always get only one charge item inside charges delta
                 Charge charge = chargesDelta.getCharges().get(0);
                 InternalChargeApi internalChargeApi = transformer.transform(charge);
-                updateInternalChargeApi(receivedTopic, partition, offset, internalChargeApi);
+                updateInternalChargeApi(
+                        getKafkaHeader(headers, KafkaHeaders.RECEIVED_TOPIC),
+                        getKafkaHeader(headers, KafkaHeaders.RECEIVED_PARTITION_ID),
+                        getKafkaHeader(headers, KafkaHeaders.OFFSET), internalChargeApi);
 
                 invokeChargesDataApi(logContext, charge, internalChargeApi, logMap);
             } else {
@@ -132,6 +127,7 @@ public class ChargesDeltaProcessor {
             final String msg,
             final Map<String, Object> logMap)
             throws NonRetryableErrorException, RetryableErrorException {
+
         logMap.put("status", httpStatus.toString());
         if (HttpStatus.BAD_REQUEST == httpStatus) {
             // 400 BAD REQUEST status cannot be retried
@@ -154,4 +150,7 @@ public class ChargesDeltaProcessor {
 
     }
 
+    private String getKafkaHeader(MessageHeaders headers, String headerKey) {
+        return Objects.requireNonNull(headers.get(headerKey)).toString();
+    }
 }

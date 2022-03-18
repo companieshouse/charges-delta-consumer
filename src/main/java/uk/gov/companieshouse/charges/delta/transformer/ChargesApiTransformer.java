@@ -32,7 +32,7 @@ public class ChargesApiTransformer {
     }
 
     /**
-     * Transforms an Charge object from an ChargesDelta object
+     * Transforms a Charge object within ChargesDelta object
      * into an InternalChargeApi using mapstruct.
      * @param charge source object
      * @return source object mapped to InternalChargeApi
@@ -42,8 +42,7 @@ public class ChargesApiTransformer {
         logger.trace(String.format("DSND-498: Charge message to be transformed "
                 + ": %s", charge));
         ChargeApi chargeApi = chargeApiMapper.chargeToChargeApi(charge);
-        String companyNumber = charge.getCompanyNumber();
-        updateChargeApi(charge, chargeApi, companyNumber);
+        updateChargeApiWithLinks(charge, chargeApi, charge.getCompanyNumber());
         InternalChargeApi internalChargeApi = new InternalChargeApi();
         internalChargeApi.setExternalData(chargeApi);
         logger.trace(String.format("DSND-498: Charge message transformed to InternalChargeApi "
@@ -51,12 +50,14 @@ public class ChargesApiTransformer {
         return internalChargeApi;
     }
 
-    private void updateChargeApi(Charge charge, ChargeApi chargeApi, String companyNumber) {
+    private void updateChargeApiWithLinks(Charge charge, ChargeApi chargeApi,
+                                          String companyNumber) {
         chargeApi.getTransactions().stream()
                 .forEach(transactionsApi -> transactionsApi.getLinks()
                         .setFiling("/company/" + companyNumber + "/filing-history/"
                                 + encoder.encodeWithoutSha1(
-                                transactionsApi.getLinks().getFiling())));
+                                transactionsApi.getLinks() != null
+                                        ? transactionsApi.getLinks().getFiling() : null)));
         ChargeLink chargeLink = new ChargeLink();
         chargeLink.setSelf("/company/" + companyNumber + "/charges/"
                 + encoder.encodeWithSha1(charge.getId()));

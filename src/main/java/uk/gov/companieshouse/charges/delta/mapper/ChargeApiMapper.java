@@ -26,20 +26,26 @@ import uk.gov.companieshouse.api.delta.ShortParticularFlags;
 )
 public interface ChargeApiMapper {
 
-    // doesn't exist on source. This needs to be populated by data api
+    static String YYYY_MM_DD = "yyyyMMdd";
+    static String SET_TYPE = "setType";
+    static String SET_DESCRIPTION = "setDescription";
+
+    // etag doesn't exist on source. This needs to be populated by data api
     @Mapping(target = "etag", ignore = true)
     @Mapping(target = "chargeCode", source = "code")
-    // TODO check with data
     @Mapping(target = "classification", ignore = true)
     @Mapping(target = "resolvedOn", ignore = true)
     @Mapping(target = "particulars", ignore = true)
     @Mapping(target = "securedDetails", ignore = true)
     @Mapping(target = "scottishAlterations.hasRestrictingProvisions",
-            source = "restrictingProvisions")
+            expression = "java(org.apache.commons.lang3.BooleanUtils"
+                    + ".toBoolean(charge.getRestrictingProvisions()))")
     @Mapping(target = "scottishAlterations.hasAlterationsToOrder",
-            source = "alterationsToOrder")
+            expression = "java(org.apache.commons.lang3.BooleanUtils"
+                    + ".toBoolean(charge.getAlterationsToOrder()))")
     @Mapping(target = "scottishAlterations.hasAlterationsToProhibitions",
-            source = "alterationsToProhibitions")
+            expression = "java(org.apache.commons.lang3.BooleanUtils"
+                    + ".toBoolean(charge.getAlterationsToProhibitions()))")
     @Mapping(target = "moreThanFourPersonsEntitled",
             source = "moreThan4Persons")
     @Mapping(target = "transactions", source = "additionalNotices")
@@ -56,7 +62,7 @@ public interface ChargeApiMapper {
             InvocationTargetException, IllegalAccessException;
 
     /**
-     * Map Source String property to Target enum.
+     * Map Source Charge to ClassificationApi.
      */
 
     @AfterMapping
@@ -74,7 +80,7 @@ public interface ChargeApiMapper {
     }
 
     /**
-     * Maps Charge to ParticularsApi model.
+     * Maps source Charge to ParticularsApi model.
      */
     @AfterMapping
     default void mapToParticularsApi(@MappingTarget ChargeApi chargeApi,
@@ -100,7 +106,7 @@ public interface ChargeApiMapper {
     }
 
     /**
-     * Maps ShortParticularFlags To ParticularsApi model.
+     * Maps source Charge To SecuredDetailsApi model.
      */
     @AfterMapping
     default void mapToSecuredDetailsApiApi(@MappingTarget ChargeApi chargeApi,
@@ -117,7 +123,7 @@ public interface ChargeApiMapper {
     }
 
     /**
-     * Maps status from Charges Delta To Status is ChargeApi model.
+     * Maps status from Charges Delta To Status in ChargeApi model.
      * 0  : outstanding
      * 1  : fully-satisfied
      * 2  : part-satisfied
@@ -170,7 +176,7 @@ public interface ChargeApiMapper {
     private void stringToParticularsApiEnum(String property, ParticularsApi particularsApi,
                                             ParticularsApi.TypeEnum theEnum)
             throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        stringToEnum(property, particularsApi, ParticularsApi.class, theEnum);
+        stringToEnum(property, particularsApi, theEnum);
     }
 
     /**
@@ -180,7 +186,7 @@ public interface ChargeApiMapper {
                                                ClassificationApi classificationApi,
                                                ClassificationApi.TypeEnum theEnum)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        stringToEnum(property, classificationApi, ClassificationApi.class, theEnum);
+        stringToEnum(property, classificationApi, theEnum);
     }
 
     /**
@@ -190,26 +196,27 @@ public interface ChargeApiMapper {
                                                SecuredDetailsApi securedDetailsApi,
                                                SecuredDetailsApi.TypeEnum theEnum)
             throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        stringToEnum(property, securedDetailsApi, SecuredDetailsApi.class, theEnum);
+        stringToEnum(property, securedDetailsApi, theEnum);
     }
 
     /**
      * Format dates to yyyyMMdd format.
      */
+
     @AfterMapping
     default void setDates(@MappingTarget ChargeApi chargeApi, Charge charge) {
-        chargeApi.setDeliveredOn(parseDate(charge.getDeliveredOn(), "yyyyMMdd"));
+        chargeApi.setDeliveredOn(parseDate(charge.getDeliveredOn(), YYYY_MM_DD));
 
-        chargeApi.setCreatedOn(parseDate(charge.getCreatedOn(), "yyyyMMdd"));
+        chargeApi.setCreatedOn(parseDate(charge.getCreatedOn(), YYYY_MM_DD));
 
-        chargeApi.setSatisfiedOn(parseDate(charge.getSatisfiedOn(), "yyyyMMdd"));
+        chargeApi.setSatisfiedOn(parseDate(charge.getSatisfiedOn(), YYYY_MM_DD));
 
-        chargeApi.setCreatedOn(parseDate(charge.getCreatedOn(), "yyyyMMdd"));
+        chargeApi.setCreatedOn(parseDate(charge.getCreatedOn(), YYYY_MM_DD));
 
-        chargeApi.setAcquiredOn(parseDate(charge.getAcquiredOn(), "yyyyMMdd"));
+        chargeApi.setAcquiredOn(parseDate(charge.getAcquiredOn(), YYYY_MM_DD));
 
         chargeApi.setCoveringInstrumentDate(parseDate(charge.getCoveringInstrumentDate(),
-                "yyyyMMdd"));
+                YYYY_MM_DD));
 
     }
 
@@ -282,12 +289,12 @@ public interface ChargeApiMapper {
      * Generic method that Maps property from an object to description in the target object and
      * sets the enum in the target object model.
      */
-    private <T> void stringToEnum(String property, Object obj, Class<T> clazz,
+    private <T> void stringToEnum(String property, Object obj,
                                   Enum<?> theEnum) throws NoSuchMethodException,
             InvocationTargetException, IllegalAccessException {
         if (!StringUtils.isEmpty(property)) {
-            obj.getClass().getMethod("setType", theEnum.getClass()).invoke(obj, theEnum);
-            obj.getClass().getMethod("setDescription", String.class).invoke(obj, property);
+            obj.getClass().getMethod(SET_TYPE, theEnum.getClass()).invoke(obj, theEnum);
+            obj.getClass().getMethod(SET_DESCRIPTION, String.class).invoke(obj, property);
         }
     }
 }
