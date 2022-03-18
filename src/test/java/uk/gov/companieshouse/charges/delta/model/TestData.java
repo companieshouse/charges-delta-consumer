@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.FileCopyUtils;
 import uk.gov.companieshouse.api.charges.ChargesApi;
@@ -19,7 +20,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class TestData {
@@ -124,5 +127,16 @@ public class TestData {
         InputStreamReader exampleChargesJsonPayload = new InputStreamReader(
                 Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(jsonFileName)));
         return FileCopyUtils.copyToString(exampleChargesJsonPayload);
+    }
+
+    public MessageHeaders createKafkaHeaders() throws IOException {
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(KafkaHeaders.RECEIVED_TOPIC, "test");
+        map.put(KafkaHeaders.RECEIVED_PARTITION_ID, "partition_1");
+        map.put(KafkaHeaders.OFFSET, "offset_1");
+        map.put("CHARGES_DELTA_RETRY_COUNT", 1);
+        MessageHeaders messageHeaders = new MessageHeaders(map);
+        return messageHeaders;
     }
 }

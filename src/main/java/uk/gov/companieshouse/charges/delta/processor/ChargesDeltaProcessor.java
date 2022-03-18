@@ -4,17 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;
-import uk.gov.companieshouse.api.charges.InternalData;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
 import uk.gov.companieshouse.api.model.ApiResponse;
@@ -69,11 +66,7 @@ public class ChargesDeltaProcessor {
             if (chargesDelta.getCharges().size() > 0) {
                 // assuming we always get only one charge item inside charges delta
                 Charge charge = chargesDelta.getCharges().get(0);
-                InternalChargeApi internalChargeApi = transformer.transform(charge);
-                updateInternalChargeApi(
-                        getKafkaHeader(headers, KafkaHeaders.RECEIVED_TOPIC),
-                        getKafkaHeader(headers, KafkaHeaders.RECEIVED_PARTITION_ID),
-                        getKafkaHeader(headers, KafkaHeaders.OFFSET), internalChargeApi);
+                InternalChargeApi internalChargeApi = transformer.transform(charge, headers);
 
                 invokeChargesDataApi(logContext, charge, internalChargeApi, logMap);
             } else {
@@ -87,14 +80,6 @@ public class ChargesDeltaProcessor {
         }
     }
 
-    private void updateInternalChargeApi(String receivedTopic, String partition, String offset,
-                                         InternalChargeApi internalChargeApi) {
-        final String updatedBy = String.format("%s-%s-%s", receivedTopic, partition, offset);
-        InternalData internalData = internalChargeApi.getInternalData() == null
-                ? new InternalData() : internalChargeApi.getInternalData();
-        internalData.setUpdatedBy(updatedBy);
-        internalChargeApi.setInternalData(internalData);
-    }
 
     /**
      * Invoke Charges Data API.
@@ -150,7 +135,4 @@ public class ChargesDeltaProcessor {
 
     }
 
-    private String getKafkaHeader(MessageHeaders headers, String headerKey) {
-        return Objects.requireNonNull(headers.get(headerKey)).toString();
-    }
 }
