@@ -26,9 +26,9 @@ import uk.gov.companieshouse.api.delta.ShortParticularFlags;
 )
 public interface ChargeApiMapper {
 
-    static String YYYY_MM_DD = "yyyyMMdd";
-    static String SET_TYPE = "setType";
-    static String SET_DESCRIPTION = "setDescription";
+    String YYYY_MM_DD = "yyyyMMdd";
+    String SET_TYPE = "setType";
+    String SET_DESCRIPTION = "setDescription";
 
     // etag doesn't exist on source. This needs to be populated by data api
     @Mapping(target = "etag", ignore = true)
@@ -210,8 +210,6 @@ public interface ChargeApiMapper {
         chargeApi.setCreatedOn(parseDate(charge.getCreatedOn(), YYYY_MM_DD));
 
         chargeApi.setSatisfiedOn(parseDate(charge.getSatisfiedOn(), YYYY_MM_DD));
-
-        chargeApi.setCreatedOn(parseDate(charge.getCreatedOn(), YYYY_MM_DD));
 
         chargeApi.setAcquiredOn(parseDate(charge.getAcquiredOn(), YYYY_MM_DD));
 

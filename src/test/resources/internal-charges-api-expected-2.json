@@ -40,11 +40,23 @@
     "transactions": [
       {
         "filing_type": "403a",
-        "links": {
-          "filing": "/company/NI622400/filing-history/MzM4Nzc3OHNhbHQ="
-        },
+        "transaction_id": null,
         "delivered_on": "2016-12-16",
-        "insolvency_case_number": 1
+        "insolvency_case_number": 1,
+        "links": {
+          "filing": "/company/NI622400/filing-history/MzM4Nzc3OHNhbHQ=",
+          "insolvency_case": null
+        }
+      },
+      {
+        "filing_type": "MR01",
+        "transaction_id": null,
+        "delivered_on": null,
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/NI622400/filing-history/MzExMzg5MjgyM3NhbHQ=",
+          "insolvency_case": null
+        }
       }
     ],
     "status": "outstanding",

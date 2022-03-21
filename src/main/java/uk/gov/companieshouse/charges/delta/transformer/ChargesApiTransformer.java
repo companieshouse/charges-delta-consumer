@@ -11,6 +11,8 @@ import uk.gov.companieshouse.api.charges.ChargeApi;
 import uk.gov.companieshouse.api.charges.ChargeLink;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.charges.InternalData;
+import uk.gov.companieshouse.api.charges.TransactionsApi;
+import uk.gov.companieshouse.api.charges.TransactionsLinks;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
 import uk.gov.companieshouse.charges.delta.processor.Encoder;
@@ -19,6 +21,9 @@ import uk.gov.companieshouse.logging.Logger;
 
 @Component
 public class ChargesApiTransformer {
+    public static final String COMPANY = "/company/";
+    public static final String FILING_HISTORY = "/filing-history/";
+    public static final String CHARGES = "/charges/";
     private final ChargeApiMapper chargeApiMapper;
     private Encoder encoder;
     private final Logger logger;
@@ -63,12 +68,13 @@ public class ChargesApiTransformer {
                                           String companyNumber) {
         chargeApi.getTransactions().stream()
                 .forEach(transactionsApi -> transactionsApi.getLinks()
-                        .setFiling("/company/" + companyNumber + "/filing-history/"
+                        .setFiling(COMPANY + companyNumber + FILING_HISTORY
                                 + encoder.encodeWithoutSha1(
                                 transactionsApi.getLinks() != null
                                         ? transactionsApi.getLinks().getFiling() : null)));
+        mapTransIdAndNoticeType(charge, chargeApi, companyNumber);
         ChargeLink chargeLink = new ChargeLink();
-        chargeLink.setSelf("/company/" + companyNumber + "/charges/"
+        chargeLink.setSelf(COMPANY + companyNumber + CHARGES
                 + encoder.encodeWithSha1(charge.getId()));
         chargeApi.setLinks(chargeLink);
     }
@@ -83,5 +89,24 @@ public class ChargesApiTransformer {
 
     private String getKafkaHeader(MessageHeaders headers, String headerKey) {
         return Objects.requireNonNull(headers.get(headerKey)).toString();
+    }
+
+    /**
+     * Maps transid, notice_type of Charge to filing within TransactionsLinks and
+     * filing type within TransactionApi.
+     */
+    private void mapTransIdAndNoticeType(Charge charge, ChargeApi chargeApi,
+                                          String companyNumber) {
+        TransactionsApi transactionsApi = new TransactionsApi();
+        TransactionsLinks transactionsLinks = new TransactionsLinks();
+        transactionsLinks.setFiling(encode(companyNumber, charge.getTransId()));
+        transactionsApi.setLinks(transactionsLinks);
+        transactionsApi.setFilingType(charge.getNoticeType());
+        chargeApi.addTransactionsItem(transactionsApi);
+    }
+
+    private String encode(String companyNumber, String id) {
+        return String.format(COMPANY + "%s" + FILING_HISTORY + "%s",
+                companyNumber, encoder.encodeWithoutSha1(id));
     }
 }
