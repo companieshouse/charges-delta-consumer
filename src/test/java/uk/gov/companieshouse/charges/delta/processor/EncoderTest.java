@@ -31,7 +31,7 @@ class EncoderTest {
         String expectedValue = "MDkwZWZkY2JiZjc1MjFlNDcwOTExZGMyMzQ5MzEyMzkzMzVjNTg4MA=="
                 .replace("+", "-")
                 .replace("/", "_");
-        String encodeValue = encoder.encode("3000117455");
+        String encodeValue = encoder.encodeWithSha1("3000117455");
         assertThat(encodeValue).isEqualTo(expectedValue);
     }
 }

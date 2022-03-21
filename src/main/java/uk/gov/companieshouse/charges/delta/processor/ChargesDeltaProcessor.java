@@ -4,11 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
@@ -60,8 +58,6 @@ public class ChargesDeltaProcessor {
             final ChsDelta payload = chsDelta.getPayload();
             final String logContext = payload.getContextId();
             final Map<String, Object> logMap = new HashMap<>();
-            final String receivedTopic =
-                    Objects.requireNonNull(headers.get(KafkaHeaders.RECEIVED_TOPIC)).toString();
 
             ObjectMapper mapper = new ObjectMapper();
             ChargesDelta chargesDelta = mapper.readValue(payload.getData(), ChargesDelta.class);
@@ -70,7 +66,7 @@ public class ChargesDeltaProcessor {
             if (chargesDelta.getCharges().size() > 0) {
                 // assuming we always get only one charge item inside charges delta
                 Charge charge = chargesDelta.getCharges().get(0);
-                InternalChargeApi internalChargeApi = transformer.transform(charge);
+                InternalChargeApi internalChargeApi = transformer.transform(charge, headers);
 
                 invokeChargesDataApi(logContext, charge, internalChargeApi, logMap);
             } else {
@@ -84,6 +80,7 @@ public class ChargesDeltaProcessor {
         }
     }
 
+
     /**
      * Invoke Charges Data API.
      */
@@ -93,7 +90,7 @@ public class ChargesDeltaProcessor {
         final String companyNumber = charge.getCompanyNumber();
 
         //pass in the chargeId and encode it with base64 after doing a SHA1 hash
-        final String chargeId = encoder.encode(charge.getId());
+        final String chargeId = encoder.encodeWithSha1(charge.getId());
         logger.infoContext(
                 logContext,
                 String.format("Process charge for company number [%s] and charge id [%s]",
@@ -115,6 +112,7 @@ public class ChargesDeltaProcessor {
             final String msg,
             final Map<String, Object> logMap)
             throws NonRetryableErrorException, RetryableErrorException {
+
         logMap.put("status", httpStatus.toString());
         if (HttpStatus.BAD_REQUEST == httpStatus) {
             // 400 BAD REQUEST status cannot be retried

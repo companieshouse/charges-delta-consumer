@@ -1,0 +1,61 @@
+{
+  "charges": [
+    {
+      "company_number": "NI622400",
+      "delta_at": "20211029142043360560",
+      "id": "3000606655",
+      "more_than_4_persons": "N",
+      "persons_entitled": [
+        {
+          "person": "THE GOVERNOR AND COMPANY OF THE BANK OF IRELAND"
+        }
+      ],
+      "notice_type": "MR01",
+      "trans_id": "3113892823",
+      "trans_desc": "REGISTRATION OF A CHARGE/CO CHARLES/EXTEND / CHARGE CODE  NI6224000001",
+      "submission_type": "5",
+      "delivered_on": "20141216",
+      "code": "NI6224000001",
+      "charge_number": "1",
+      "migrated_from": "CHIPS",
+      "type": "A REGISTERED CHARGE",
+      "brief_description": "LAND KNOWN AS UNIT 3 MARSHES TRADE CENTRE,GREENBANK INDUSTRIAL ESTATE, NEWRY BEING ALL OF THE LANDS COMPRISED IN FOLIO DN198519L COUNTY DOWN.",
+      "short_particular_flags": [
+        {
+          "fixed_charge": "yes",
+          "contains_floating_charge": "yes",
+          "floating_charge_all": "yes",
+          "negative_pledge": "yes",
+          "bare_trustee": "no"
+        }
+      ],
+      "status": "0",
+      "delivered_on": "20141216",
+      "additional_notices": [
+        {
+          "notice_type": "403a",
+          "trans_id": "3387778",
+          "trans_desc": "DECLARATION OF SATISFACTION OF MORTGAGE/CHARGE",
+          "submission_type": "9",
+          "case": "1",
+          "delivered_on": "20161216"
+        }
+      ],
+      "insolvency_cases": [
+        {
+          "case": "2",
+          "transaction_id": "22222"
+        }
+      ],
+      "amount_secured": "£220,000.00                              AND ALL OTHER MONIES DUE OR TO BECOME DUE",
+      "assets_ceased_released": "3",
+      "floating_charge": "Y",
+      "created_on": "20140804",
+      "restricting_provisions": "Y",
+      "alterations_to_order": "Y",
+      "covering_instrument_date": "19930809",
+      "acquired_on": "19820610",
+      "satisfied_on": "19991201"
+    }
+  ]
+}

@@ -1,10 +1,15 @@
 package uk.gov.companieshouse.charges.delta.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.FileCopyUtils;
+import uk.gov.companieshouse.api.charges.ChargesApi;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;
+import uk.gov.companieshouse.api.charges.InternalData;
 import uk.gov.companieshouse.api.delta.AdditionalNotice;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
@@ -13,12 +18,16 @@ import uk.gov.companieshouse.delta.ChsDelta;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class TestData {
 
+    private ObjectMapper objectMapper;
     public ChargesDelta createChargesDelta() {
 
         ChargesDelta chargesDelta = new ChargesDelta();
@@ -77,12 +86,57 @@ public class TestData {
                 .withPayload(mockChsDelta)
                 .setHeader(KafkaHeaders.RECEIVED_TOPIC, "test")
                 .setHeader("CHARGES_DELTA_RETRY_COUNT", 1)
+                .setHeader(KafkaHeaders.RECEIVED_PARTITION_ID, "partition_1")
+                .setHeader(KafkaHeaders.OFFSET, "offset_1")
                 .build();
     }
 
     public InternalChargeApi mockInternalChargeApi()
     {
-        return new InternalChargeApi();
+        InternalChargeApi internalChargeApi = new InternalChargeApi();
+        InternalData internalData = new InternalData();
+        internalData.setUpdatedBy("test-partition_1-offset_1");
+        internalChargeApi.setInternalData(internalData);
+        return internalChargeApi;
 
+    }
+
+    public ChargesDelta createChargesDelta(String jsonFileName) throws IOException {
+
+        String chargesDelta = loadTestdataFile(jsonFileName);
+        return getObjectMapper().readValue(chargesDelta, ChargesDelta.class);
+
+    }
+
+    public ChargesApi createChargesApi(String jsonFileName) throws IOException {
+
+        String chargesApi = loadTestdataFile(jsonFileName);
+        return getObjectMapper().readValue(chargesApi, ChargesApi.class);
+
+    }
+
+    private ObjectMapper getObjectMapper()
+    {
+        objectMapper = objectMapper == null ? new ObjectMapper() : objectMapper;
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyyMMdd"));
+        return objectMapper;
+    }
+
+    public String loadTestdataFile(String jsonFileName) throws IOException {
+        InputStreamReader exampleChargesJsonPayload = new InputStreamReader(
+                Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(jsonFileName)));
+        return FileCopyUtils.copyToString(exampleChargesJsonPayload);
+    }
+
+    public MessageHeaders createKafkaHeaders() throws IOException {
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(KafkaHeaders.RECEIVED_TOPIC, "test");
+        map.put(KafkaHeaders.RECEIVED_PARTITION_ID, "partition_1");
+        map.put(KafkaHeaders.OFFSET, "offset_1");
+        map.put("CHARGES_DELTA_RETRY_COUNT", 1);
+        MessageHeaders messageHeaders = new MessageHeaders(map);
+        return messageHeaders;
     }
 }
