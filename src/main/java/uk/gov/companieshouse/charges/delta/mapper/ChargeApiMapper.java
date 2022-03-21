@@ -3,14 +3,18 @@ package uk.gov.companieshouse.charges.delta.mapper;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.MapperConfig;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import org.mapstruct.ReportingPolicy;
 import uk.gov.companieshouse.api.charges.ChargeApi;
 import uk.gov.companieshouse.api.charges.ClassificationApi;
 import uk.gov.companieshouse.api.charges.ParticularsApi;
@@ -19,17 +23,17 @@ import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ShortParticularFlags;
 
 
-@Mapper(componentModel = "spring", uses = {
+@Mapper(componentModel = "spring",
+        uses = {
         PersonsEntitledApiMapper.class,
         InsolvencyCasesApiMapper.class,
-        TransactionsApiMapper.class}
-)
+        TransactionsApiMapper.class})
 public interface ChargeApiMapper {
 
     String YYYY_MM_DD = "yyyyMMdd";
     String SET_TYPE = "setType";
     String SET_DESCRIPTION = "setDescription";
-
+    //TODO Better way of ignoring fields to be looked at
     // etag doesn't exist on source. This needs to be populated by data api
     @Mapping(target = "etag", ignore = true)
     @Mapping(target = "chargeCode", source = "code")
@@ -132,24 +136,8 @@ public interface ChargeApiMapper {
     @AfterMapping
     default void mapStatuses(@MappingTarget ChargeApi chargeApi,
                              Charge charge) {
-        int status = Integer.parseInt(charge.getStatus());
-        switch (status) {
-            case 0:
-                chargeApi.setStatus(ChargeApi.StatusEnum.OUTSTANDING);
-                break;
-            case 1:
-                chargeApi.setStatus(ChargeApi.StatusEnum.FULLY_SATISFIED);
-                break;
-            case 2:
-                chargeApi.setStatus(ChargeApi.StatusEnum.PART_SATISFIED);
-                break;
-            case 7:
-                chargeApi.setStatus(ChargeApi.StatusEnum.SATISFIED);
-                break;
-            default:
-                //do nothing
-                break;
-        }
+
+        chargeApi.setStatus(populateStatusEnumMap().get(Integer.parseInt(charge.getStatus())));
     }
 
     /**
@@ -243,44 +231,39 @@ public interface ChargeApiMapper {
     @AfterMapping
     default void mapAssetsCeasedReleasedEnum(@MappingTarget ChargeApi chargeApi,
                                              Charge charge) {
-        int assetsCeasedReleased = Integer.parseInt(charge.getAssetsCeasedReleased());
-        switch (assetsCeasedReleased) {
-            case 3:
-                chargeApi.setAssetsCeasedReleased(
-                        ChargeApi.AssetsCeasedReleasedEnum.PROPERTY_CEASED_TO_BELONG);
-                break;
-            case 4:
-                chargeApi.setAssetsCeasedReleased(
-                        ChargeApi.AssetsCeasedReleasedEnum
-                                .PART_PROPERTY_RELEASE_AND_CEASED_TO_BELONG);
-                break;
-            case 5:
-                chargeApi.setAssetsCeasedReleased(
-                        ChargeApi.AssetsCeasedReleasedEnum.PART_PROPERTY_RELEASED);
-                break;
-            case 6:
-                chargeApi.setAssetsCeasedReleased(
-                        ChargeApi.AssetsCeasedReleasedEnum.PART_PROPERTY_CEASED_TO_BELONG);
-                break;
-            case 8:
-                chargeApi.setAssetsCeasedReleased(
-                        ChargeApi.AssetsCeasedReleasedEnum.WHOLE_PROPERTY_RELEASED);
-                break;
-            case 9:
-                chargeApi.setAssetsCeasedReleased(
-                        ChargeApi.AssetsCeasedReleasedEnum.MULTIPLE_FILINGS);
-                break;
-            case 10:
-                chargeApi.setAssetsCeasedReleased(
-                        ChargeApi.AssetsCeasedReleasedEnum
-                                .WHOLE_PROPERTY_RELEASED_AND_CEASED_TO_BELONG);
-                break;
-            default:
-                //do nothing
-                break;
-        }
+        chargeApi.setAssetsCeasedReleased(populateAssetsCeasedReleasedEnumMap()
+                .get(Integer.parseInt(charge.getAssetsCeasedReleased())));
     }
 
+
+    /**
+     * create map with enum values.
+     */
+    private Map<Integer, ChargeApi.AssetsCeasedReleasedEnum> populateAssetsCeasedReleasedEnumMap() {
+        Map<Integer, ChargeApi.AssetsCeasedReleasedEnum> map = new HashMap<>();
+        map.put(3, ChargeApi.AssetsCeasedReleasedEnum.PROPERTY_CEASED_TO_BELONG);
+        map.put(4, ChargeApi.AssetsCeasedReleasedEnum.PART_PROPERTY_RELEASE_AND_CEASED_TO_BELONG);
+        map.put(5, ChargeApi.AssetsCeasedReleasedEnum.PART_PROPERTY_RELEASED);
+        map.put(6, ChargeApi.AssetsCeasedReleasedEnum.PART_PROPERTY_CEASED_TO_BELONG);
+        map.put(8, ChargeApi.AssetsCeasedReleasedEnum.WHOLE_PROPERTY_RELEASED);
+        map.put(9, ChargeApi.AssetsCeasedReleasedEnum.MULTIPLE_FILINGS);
+        map.put(10, ChargeApi.AssetsCeasedReleasedEnum
+                .WHOLE_PROPERTY_RELEASED_AND_CEASED_TO_BELONG);
+        return map;
+    }
+
+    /**
+     * create map with enum values.
+     */
+    private Map<Integer, ChargeApi.StatusEnum> populateStatusEnumMap() {
+        Map<Integer, ChargeApi.StatusEnum> map = new HashMap<>();
+        map.put(0, ChargeApi.StatusEnum.OUTSTANDING);
+        map.put(1, ChargeApi.StatusEnum.FULLY_SATISFIED);
+        map.put(2, ChargeApi.StatusEnum.PART_SATISFIED);
+        map.put(7, ChargeApi.StatusEnum.SATISFIED);
+
+        return map;
+    }
 
     /**
      /**
