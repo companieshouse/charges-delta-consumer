@@ -11,19 +11,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(
         properties = {
-                "api.salt=jkdhjdio"
+                "api.charge-id-salt=jkdhjdio",
+                "api.trans-id-salt=abcdefgh"
         }
 )
 @ExtendWith(SpringExtension.class)
 class EncoderTest {
 
-    @Value("${api.salt}")
-    private String salt;
+    @Value("${api.charge-id-salt}")
+    private String chargeIdSalt;
+
+    @Value("${api.trans-id-salt}")
+    private String transIdSalt;
+
     private Encoder encoder;
 
     @BeforeEach
     void setup() {
-        encoder = new Encoder(salt);
+        encoder = new Encoder(chargeIdSalt, transIdSalt);
     }
 
     @Test

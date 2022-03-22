@@ -23,7 +23,7 @@
       "short_particular_flags": [
         {
           "fixed_charge": "yes",
-          "contains_floating_charge": "yes",
+          "contains_floating_charge": "no",
           "floating_charge_all": "yes",
           "negative_pledge": "yes",
           "bare_trustee": "no"
