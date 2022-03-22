@@ -41,7 +41,7 @@ public class TestConfig {
 
         @Bean
         public Encoder encoder() {
-        return new Encoder("salt");
+        return new Encoder("chargeId_salt", "transId_salt");
     }
 
 

@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import uk.gov.companieshouse.api.delta.Charge;
-import uk.gov.companieshouse.api.delta.ChargesDelta;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.charges.delta.model.TestData;
 import uk.gov.companieshouse.charges.delta.producer.ChargesDeltaProducer;
@@ -53,7 +52,7 @@ public class ChargesDeltaProcessorTest {
 
     @BeforeEach
     void setUp() {
-        encoder = new Encoder("some_salt");
+        encoder = new Encoder("some_salt", "transId_salt");
         deltaProcessor = new ChargesDeltaProcessor(chargesDeltaProducer, transformer, logger, apiClientService, encoder);
         testData = new TestData();
     }

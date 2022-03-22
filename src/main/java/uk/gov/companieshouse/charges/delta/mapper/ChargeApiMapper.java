@@ -95,7 +95,7 @@ public interface ChargeApiMapper {
         ShortParticularFlags shortParticularFlags = charge.getShortParticularFlags() == null
                 ? null : charge.getShortParticularFlags().get(0);
         if (shortParticularFlags != null) {
-            mapShortParticularFlagsToParticularsApi(particularsApi, shortParticularFlags);
+            mapShortParticularFlagsToParticularsApi(particularsApi, shortParticularFlags, charge);
         }
 
         stringToParticularsApiEnum(charge.getDescriptionOfPropertyUndertaking(), particularsApi,
@@ -145,13 +145,15 @@ public interface ChargeApiMapper {
      */
     private void mapShortParticularFlagsToParticularsApi(
             ParticularsApi particularsApi,
-            ShortParticularFlags shortParticularFlags) {
+            ShortParticularFlags shortParticularFlags, Charge charge) {
         particularsApi.setContainsFixedCharge(
                 BooleanUtils.toBoolean(shortParticularFlags.getFixedCharge()));
         particularsApi.setChargorActingAsBareTrustee(
                 BooleanUtils.toBoolean(shortParticularFlags.getBareTrustee()));
         particularsApi.setContainsFloatingCharge(
-                BooleanUtils.toBoolean(shortParticularFlags.getContainsFloatingCharge()));
+                BooleanUtils.toBoolean(shortParticularFlags.getContainsFloatingCharge())
+                        ||
+                        BooleanUtils.toBoolean(charge.getFloatingCharge()));
         particularsApi.setContainsNegativePledge(
                 BooleanUtils.toBoolean(shortParticularFlags.getNegativePledge()));
         particularsApi.setFloatingChargeCoversAll(

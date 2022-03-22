@@ -12,11 +12,23 @@ public class Encoder {
 
     private static final String SHA_1 = "SHA-1";
 
-    public static String API_SALT;
+    public static String CHARGE_ID_SALT;
 
+    public static String TRANS_ID_SALT;
+
+    /**
+     * Initialize by passing in salts for chargeId and transId.
+     *
+     * @param chargeIdSalt input String value
+     * @param transIdSalt input String value
+     *
+     */
     @Autowired
-    public Encoder(@Value("${api.salt}") String salt) {
-        API_SALT = salt;
+    public Encoder(@Value("${api.charge-id-salt}") String chargeIdSalt,
+                   @Value("${api.trans-id-salt}") String transIdSalt) {
+
+        CHARGE_ID_SALT = chargeIdSalt;
+        TRANS_ID_SALT = transIdSalt;
     }
 
     public String base64Encode(final byte[] bytes) {
@@ -31,7 +43,7 @@ public class Encoder {
      */
     public byte[] getSha1Digest(final String plainValue) {
         //concatenate chargeId with salt. Salt is externalized
-        byte[] byteValue = (plainValue + API_SALT).getBytes(StandardCharsets.UTF_8);
+        byte[] byteValue = (plainValue + CHARGE_ID_SALT).getBytes(StandardCharsets.UTF_8);
         //get sha1 hash value using commons-codec.
         // Please note that this is a 40 char hex representation of a 20 byte value.
         String sha1Value = DigestUtils.sha1Hex(byteValue);
@@ -59,7 +71,7 @@ public class Encoder {
     public String encodeWithoutSha1(String plain) {
 
         return base64Encode(plain != null
-                ? (plain + API_SALT).getBytes(StandardCharsets.UTF_8) : null);
+                ? (plain + TRANS_ID_SALT).getBytes(StandardCharsets.UTF_8) : null);
     }
 
 
