@@ -75,6 +75,7 @@
     "satisfied_on": "1999-12-01"
   },
   "internal_data": {
-    "updated_by": "test-partition_1-offset_1"
+    "updated_by": "test-partition_1-offset_1",
+    "delta_at":"2021-10-29T14:20:43.36056Z"
   }
 }
