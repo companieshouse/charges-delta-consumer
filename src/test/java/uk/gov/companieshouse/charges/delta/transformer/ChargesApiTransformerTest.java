@@ -75,5 +75,26 @@ public class ChargesApiTransformerTest {
 
     }
 
+    @Test
+    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
+    void When_ValidChargesMessage_Expect_ValidTransformedInternal_minimum() throws IOException,
+            JSONException, NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
+
+        ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-3.json");
+
+        Charge charge = expectedChargesDelta.getCharges().get(0);
+
+        InternalChargeApi internalChargeApi = transformer.transform(charge, testData.createKafkaHeaders());
+
+        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
+        System.out.println("chargeApiJson = "+ chargeApiJson);
+        String expectedChargesApiJson = testData.loadTestdataFile("internal-charges-api-expected-3.json");
+        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
+                new CustomComparator(JSONCompareMode.LENIENT,
+                        new Customization("external_data.etag", (o1, o2) -> true)));
+
+
+    }
 
 }
