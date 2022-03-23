@@ -7,7 +7,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.MessageHeaders;
@@ -19,7 +18,6 @@ import uk.gov.companieshouse.api.charges.InternalData;
 import uk.gov.companieshouse.api.charges.TransactionsApi;
 import uk.gov.companieshouse.api.charges.TransactionsLinks;
 import uk.gov.companieshouse.api.delta.Charge;
-import uk.gov.companieshouse.api.delta.Insolvency;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
 import uk.gov.companieshouse.charges.delta.processor.Encoder;
 import uk.gov.companieshouse.logging.Logger;
@@ -72,12 +70,18 @@ public class ChargesApiTransformer {
 
     private void updateChargeApiWithLinks(Charge charge, ChargeApi chargeApi,
                                           String companyNumber) {
-        chargeApi.getTransactions().stream()
-                .forEach(transactionsApi -> transactionsApi.getLinks()
-                        .setFiling(COMPANY + companyNumber + FILING_HISTORY
-                                + encoder.encodeWithoutSha1(
-                                transactionsApi.getLinks() != null
-                                        ? transactionsApi.getLinks().getFiling() : null)));
+        if (chargeApi.getTransactions() != null) {
+            for (TransactionsApi transactionsApi : chargeApi.getTransactions()) {
+                if (transactionsApi.getLinks() != null
+                        &&
+                        transactionsApi.getLinks().getFiling() != null) {
+                    transactionsApi.getLinks()
+                            .setFiling(COMPANY + companyNumber + FILING_HISTORY
+                                    + encoder.encodeWithoutSha1(
+                                            transactionsApi.getLinks().getFiling()));
+                }
+            }
+        }
         mapTransIdAndNoticeType(charge, chargeApi, companyNumber);
         ChargeLink chargeLink = new ChargeLink();
         chargeLink.setSelf(COMPANY + companyNumber + CHARGES
@@ -106,7 +110,9 @@ public class ChargesApiTransformer {
                                           String companyNumber) {
         TransactionsApi transactionsApi = new TransactionsApi();
         TransactionsLinks transactionsLinks = new TransactionsLinks();
-        transactionsLinks.setFiling(encode(companyNumber, charge.getTransId()));
+
+        transactionsLinks.setFiling(charge.getTransId() != null
+                ? encode(companyNumber, charge.getTransId()) : null);
         transactionsApi.setLinks(transactionsLinks);
         transactionsApi.setFilingType(charge.getNoticeType());
         chargeApi.addTransactionsItem(transactionsApi);
