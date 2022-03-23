@@ -71,12 +71,16 @@ public class ChargesApiTransformer {
     private void updateChargeApiWithLinks(Charge charge, ChargeApi chargeApi,
                                           String companyNumber) {
         if (chargeApi.getTransactions() != null) {
-            chargeApi.getTransactions().stream()
-                    .forEach(transactionsApi -> transactionsApi.getLinks()
+            for (TransactionsApi transactionsApi : chargeApi.getTransactions()) {
+                if (transactionsApi.getLinks() != null
+                        &&
+                        transactionsApi.getLinks().getFiling() != null) {
+                    transactionsApi.getLinks()
                             .setFiling(COMPANY + companyNumber + FILING_HISTORY
                                     + encoder.encodeWithoutSha1(
-                                    transactionsApi.getLinks() != null
-                                            ? transactionsApi.getLinks().getFiling() : null)));
+                                            transactionsApi.getLinks().getFiling()));
+                }
+            }
         }
         mapTransIdAndNoticeType(charge, chargeApi, companyNumber);
         ChargeLink chargeLink = new ChargeLink();
