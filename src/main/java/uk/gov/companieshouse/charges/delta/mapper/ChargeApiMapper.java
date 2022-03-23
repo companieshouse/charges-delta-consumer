@@ -10,11 +10,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
-import org.mapstruct.MapperConfig;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import org.mapstruct.ReportingPolicy;
 import uk.gov.companieshouse.api.charges.ChargeApi;
 import uk.gov.companieshouse.api.charges.ClassificationApi;
 import uk.gov.companieshouse.api.charges.ParticularsApi;
@@ -137,7 +135,8 @@ public interface ChargeApiMapper {
     default void mapStatuses(@MappingTarget ChargeApi chargeApi,
                              Charge charge) {
 
-        chargeApi.setStatus(populateStatusEnumMap().get(Integer.parseInt(charge.getStatus())));
+        chargeApi.setStatus(populateStatusEnumMap().get(
+                charge.getStatus() != null ? Integer.parseInt(charge.getStatus()) : null));
     }
 
     /**
@@ -234,7 +233,8 @@ public interface ChargeApiMapper {
     default void mapAssetsCeasedReleasedEnum(@MappingTarget ChargeApi chargeApi,
                                              Charge charge) {
         chargeApi.setAssetsCeasedReleased(populateAssetsCeasedReleasedEnumMap()
-                .get(Integer.parseInt(charge.getAssetsCeasedReleased())));
+                .get(charge.getAssetsCeasedReleased() != null
+                        ? Integer.parseInt(charge.getAssetsCeasedReleased()) : null));
     }
 
 

@@ -1,8 +1,13 @@
 package uk.gov.companieshouse.charges.delta.transformer;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.MessageHeaders;
@@ -14,6 +19,7 @@ import uk.gov.companieshouse.api.charges.InternalData;
 import uk.gov.companieshouse.api.charges.TransactionsApi;
 import uk.gov.companieshouse.api.charges.TransactionsLinks;
 import uk.gov.companieshouse.api.delta.Charge;
+import uk.gov.companieshouse.api.delta.Insolvency;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
 import uk.gov.companieshouse.charges.delta.processor.Encoder;
 import uk.gov.companieshouse.logging.Logger;
@@ -58,7 +64,7 @@ public class ChargesApiTransformer {
         updateInternalChargeApi(
                 getKafkaHeader(headers, KafkaHeaders.RECEIVED_TOPIC),
                 getKafkaHeader(headers, KafkaHeaders.RECEIVED_PARTITION_ID),
-                getKafkaHeader(headers, KafkaHeaders.OFFSET), internalChargeApi);
+                getKafkaHeader(headers, KafkaHeaders.OFFSET), internalChargeApi, charge);
         logger.trace(String.format("DSND-498: Charge message transformed to InternalChargeApi "
                 + ": %s", internalChargeApi));
         return internalChargeApi;
@@ -80,10 +86,11 @@ public class ChargesApiTransformer {
     }
 
     private void updateInternalChargeApi(String receivedTopic, String partition, String offset,
-                                         InternalChargeApi internalChargeApi) {
+                                         InternalChargeApi internalChargeApi, Charge charge) {
         final String updatedBy = String.format("%s-%s-%s", receivedTopic, partition, offset);
         InternalData internalData = new InternalData();
         internalData.setUpdatedBy(updatedBy);
+        internalData.setDeltaAt(stringToOffsetDateTime(charge.getDeltaAt()));
         internalChargeApi.setInternalData(internalData);
     }
 
@@ -108,5 +115,12 @@ public class ChargesApiTransformer {
     private String encode(String companyNumber, String id) {
         return String.format(COMPANY + "%s" + FILING_HISTORY + "%s",
                 companyNumber, encoder.encodeWithoutSha1(id));
+    }
+
+    private OffsetDateTime stringToOffsetDateTime(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS")
+                .withZone(ZoneId.of("Z"));
+        ZonedDateTime datetime = ZonedDateTime.parse(date, formatter);
+        return datetime.toOffsetDateTime();
     }
 }
