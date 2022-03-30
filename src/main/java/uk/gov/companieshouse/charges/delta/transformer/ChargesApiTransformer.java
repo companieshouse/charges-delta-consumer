@@ -19,9 +19,9 @@ import uk.gov.companieshouse.api.charges.TransactionsApi;
 import uk.gov.companieshouse.api.charges.TransactionsLinks;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
+import uk.gov.companieshouse.charges.delta.mapper.MapperUtils;
 import uk.gov.companieshouse.charges.delta.processor.Encoder;
 import uk.gov.companieshouse.logging.Logger;
-
 
 @Component
 public class ChargesApiTransformer {
@@ -114,7 +114,8 @@ public class ChargesApiTransformer {
         transactionsLinks.setFiling(charge.getTransId() != null
                 ? encode(companyNumber, charge.getTransId()) : null);
         transactionsApi.setLinks(transactionsLinks);
-        transactionsApi.setFilingType(charge.getNoticeType());
+        transactionsApi.setFilingType(MapperUtils.map.get(charge.getNoticeType())
+                .getFilingType(charge.getTransDesc()));
         chargeApi.addTransactionsItem(transactionsApi);
     }
 
