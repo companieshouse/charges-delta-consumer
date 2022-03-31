@@ -33,7 +33,7 @@ class EncoderTest {
 
     @Test
     void encode() {
-        String expectedValue = "MDkwZWZkY2JiZjc1MjFlNDcwOTExZGMyMzQ5MzEyMzkzMzVjNTg4MA=="
+        String expectedValue = "CQ79y791IeRwkR3CNJMSOTNcWIA="
                 .replace("+", "-")
                 .replace("/", "_");
         String encodeValue = encoder.encodeWithSha1("3000117455");
