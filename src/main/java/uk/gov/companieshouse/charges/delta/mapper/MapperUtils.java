@@ -63,8 +63,6 @@ public class MapperUtils {
             }
         }
 
-        System.out.println(map);
-        System.out.println(map.size());
     }
 
     private static List<String> getDataFile(String fileName) {
@@ -76,32 +74,7 @@ public class MapperUtils {
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8))
                 .lines()
                 .collect(Collectors.toList());
-        System.out.println("list =" + list);
-        System.out.println("list size = " + list.size());
         return list;
-    }
-
-    /**
-     * main method.
-     */
-    public static void main(String[] args) {
-
-        populateData();
-        String filingType = map.get("MR01").getFilingType("REGISTRATION OF A CHARGE/"
-                + "CO EXTEND / CHARGE CODE 012033960816");
-        System.out.println("filingType = " + filingType);
-        //match();
-    }
-
-    private static void match() {
-        String input = "ACQUISITION OF A CHARGE/CO CHARLES/EXTEND / CHARGE CODE  012033960816";
-        String input2 = "ACQUISITION OF A CHARGE/CO CHARLES/EXTEND / CHARGE CODE tttttyyy9999";
-        String input3 = "REGISTRATION OF A CHARGE/CO EXTEND / CHARGE CODE 012033960816";
-        String pattern =
-                "^(?i:REGISTRATION OF A CHARGE/CO EXTEND / CHARGE.*?(\\S{8}\\d{4}|\\d+).*)$";
-        boolean match = input3.matches(pattern);
-        System.out.println(match);
-        System.out.println(pattern.length());
     }
 
 }

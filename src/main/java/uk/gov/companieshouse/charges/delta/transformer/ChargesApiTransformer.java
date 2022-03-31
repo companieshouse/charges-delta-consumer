@@ -114,9 +114,15 @@ public class ChargesApiTransformer {
         transactionsLinks.setFiling(charge.getTransId() != null
                 ? encode(companyNumber, charge.getTransId()) : null);
         transactionsApi.setLinks(transactionsLinks);
-        transactionsApi.setFilingType(MapperUtils.map.get(charge.getNoticeType())
-                .getFilingType(charge.getTransDesc()));
+        transactionsApi.setFilingType(getFilingType(charge));
         chargeApi.addTransactionsItem(transactionsApi);
+    }
+
+    private String getFilingType(Charge charge) {
+        String filingType = MapperUtils.map.get(charge.getNoticeType()) != null
+                ? MapperUtils.map.get(charge.getNoticeType())
+                .getFilingType(charge.getTransDesc()) : "1";
+        return filingType;
     }
 
     private String encode(String companyNumber, String id) {

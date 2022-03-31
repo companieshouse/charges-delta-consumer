@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class NoticeTypeTransDesc {
 
+    public static final String DEFAULT = "1";
     private String noticeType;
 
     private Map<String, String> filingTypeAndTransDescPattern;
@@ -61,6 +62,8 @@ public class NoticeTypeTransDesc {
                 .filter(x -> transDesc != null && transDesc.matches(x.getKey()))
                 .map(x -> x.getValue())
                 .collect(toSingleton());
+
+        filingType = StringUtils.isEmpty(filingType) ? DEFAULT : filingType;
         return filingType;
     }
 
