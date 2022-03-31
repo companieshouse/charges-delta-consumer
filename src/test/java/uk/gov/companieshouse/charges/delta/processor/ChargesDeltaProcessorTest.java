@@ -83,12 +83,12 @@ public class ChargesDeltaProcessorTest {
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
         when(transformer.transform(any(Charge.class), any(MessageHeaders.class))).thenReturn(testData.mockInternalChargeApi());
         doReturn(response).when(apiClientService).putCharge(eq("context_id"), eq("01099198"),
-                eq("ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA=="), eq(testData.mockInternalChargeApi()));
+                eq("6DrQgDD109T7kBnVwtx5HrEX9B0="), eq(testData.mockInternalChargeApi()));
 
         deltaProcessor.processDelta(testChsDeltaMessage);
         verify(transformer).transform(any(Charge.class), any(MessageHeaders.class));
         verify(apiClientService).putCharge("context_id", "01099198",
-                "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA==", testData.mockInternalChargeApi());
+                "6DrQgDD109T7kBnVwtx5HrEX9B0=", testData.mockInternalChargeApi());
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
