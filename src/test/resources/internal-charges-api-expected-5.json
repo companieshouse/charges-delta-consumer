@@ -1,0 +1,96 @@
+{
+  "external_data": {
+    "etag": null,
+    "id": "3001283055",
+    "charge_code": "081242070049",
+    "classification": {
+      "type": "charge-description",
+      "description": "A REGISTERED CHARGE"
+    },
+    "charge_number": 49,
+    "status": "part-satisfied",
+    "assets_ceased_released": "multiple-filings",
+    "acquired_on": null,
+    "delivered_on": "2019-10-17",
+    "resolved_on": null,
+    "covering_instrument_date": null,
+    "created_on": "2019-10-11",
+    "satisfied_on": null,
+    "particulars": {
+      "type": "brief-description",
+      "description": "THE FREEHOLD LAND KNOWN AS MILLENNIUM HOUSE, 60 VICTORIA STREET, LIVERPOOL AND REGISTERED WITH HM LAND REGISTRY UNDER TITLE NUMBER MS303172\\n",
+      "contains_floating_charge": true,
+      "contains_fixed_charge": true,
+      "floating_charge_covers_all": true,
+      "contains_negative_pledge": true,
+      "chargor_acting_as_bare_trustee": false
+    },
+    "secured_details": {
+      "type": "obligations-secured",
+      "description": "A REGISTERED CHARGE"
+    },
+    "scottish_alterations": {
+      "type": null,
+      "description": null,
+      "has_alterations_to_order": false,
+      "has_alterations_to_prohibitions": false,
+      "has_restricting_provisions": false
+    },
+    "more_than_four_persons_entitled": false,
+    "persons_entitled": [
+      {
+        "name": "LYELL TRADING LIMITED"
+      }
+    ],
+    "transactions": [
+      {
+        "filing_type": "charge-part-both",
+        "transaction_id": null,
+        "delivered_on": "2019-10-22",
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/08124207/filing-history/MzI0NzMyMzEzM3RyYW5zSWRfc2FsdA==",
+          "insolvency_case": null
+        }
+      },
+      {
+        "filing_type": "charge-part-satisfaction",
+        "transaction_id": null,
+        "delivered_on": "2019-10-29",
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/08124207/filing-history/MzI0Nzk3OTM0NnRyYW5zSWRfc2FsdA==",
+          "insolvency_case": null
+        }
+      },
+      {
+        "filing_type": "charge-part-release",
+        "transaction_id": null,
+        "delivered_on": "2019-11-01",
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/08124207/filing-history/MzI0ODI5MjUyMXRyYW5zSWRfc2FsdA==",
+          "insolvency_case": null
+        }
+      },
+      {
+        "filing_type": "1",
+        "transaction_id": null,
+        "delivered_on": null,
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/08124207/filing-history/MzI0NzA2NDA2M3RyYW5zSWRfc2FsdA==",
+          "insolvency_case": null
+        }
+      }
+    ],
+    "insolvency_cases": null,
+    "links": {
+      "self": "/company/08124207/charges/YmYxNDY5YmFmMzdiMGEwOGE4OTIxZDYzYjc3MjI4ZDJlZGU2Njk2Ng=="
+    }
+  },
+  "internal_data": {
+    "delta_at": "2021-10-29T14:20:43.36056Z",
+    "updated_by": "test-partition_1-offset_1"
+  }
+}

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class MapperUtils {
@@ -32,12 +33,17 @@ public class MapperUtils {
     private static void populateData() {
         List<String> list = getDataFile(NOTICE_TYPES_DATA_FILE);
 
-        for (String line: list) {
-            StringTokenizer st = new StringTokenizer(line, DELIMITER);
+        Consumer<String> setupDataMap = setupDataMap();
+        list.stream().forEach(setupDataMap);
+    }
+
+    private static Consumer<String> setupDataMap() {
+        Consumer<String> setupDataMap = line -> {
             String key = null;
             String filingType = null;
             String transDesc = null;
             NoticeTypeTransDesc noticeTypeTransDesc = new NoticeTypeTransDesc(key);
+            StringTokenizer st = new StringTokenizer(line, DELIMITER);
             while (st.hasMoreTokens()) {
                 String noticeType = st.nextToken().trim();
 
@@ -61,8 +67,8 @@ public class MapperUtils {
                 noticeTypeTransDesc.addTransDescPattern(transDesc, filingType);
                 map.put(key, noticeTypeTransDesc);
             }
-        }
-
+        };
+        return setupDataMap;
     }
 
     private static List<String> getDataFile(String fileName) {
