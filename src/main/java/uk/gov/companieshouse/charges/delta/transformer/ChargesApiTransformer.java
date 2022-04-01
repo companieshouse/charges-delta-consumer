@@ -28,6 +28,7 @@ public class ChargesApiTransformer {
     public static final String COMPANY = "/company/";
     public static final String FILING_HISTORY = "/filing-history/";
     public static final String CHARGES = "/charges/";
+    public static final String DEFAULT_FILING_TYPE = "1";
     private final ChargeApiMapper chargeApiMapper;
     private Encoder encoder;
     private final Logger logger;
@@ -121,7 +122,7 @@ public class ChargesApiTransformer {
     private String getFilingType(Charge charge) {
         String filingType = MapperUtils.map.get(charge.getNoticeType()) != null
                 ? MapperUtils.map.get(charge.getNoticeType())
-                .getFilingType(charge.getTransDesc()) : "1";
+                .getFilingType(charge.getTransDesc()) : DEFAULT_FILING_TYPE;
         return filingType;
     }
 

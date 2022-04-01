@@ -14,6 +14,8 @@ import uk.gov.companieshouse.api.delta.Charge;
 @Mapper(componentModel = "spring")
 public interface TransactionsApiMapper {
 
+    String DEFAULT_FILING_TYPE = "1";
+
     @Mapping(target = "links.filing", source = "transId")
     @Mapping(target = "filingType", ignore = true)
     @Mapping(target = "transactionId", ignore = true)
@@ -50,7 +52,7 @@ public interface TransactionsApiMapper {
     private String getFilingType(AdditionalNotice additionalNotice) {
         String filingType = MapperUtils.map.get(additionalNotice.getNoticeType()) != null
                 ? MapperUtils.map.get(additionalNotice.getNoticeType())
-                .getFilingType(additionalNotice.getTransDesc()) : "1";
+                .getFilingType(additionalNotice.getTransDesc()) : DEFAULT_FILING_TYPE;
         return filingType;
     }
 }
