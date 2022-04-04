@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
-import static uk.gov.companieshouse.charges.delta.mapper.MapperUtils.NO_PATTERN;
+import static uk.gov.companieshouse.charges.delta.mapper.NoticeTypeMapperUtils.NO_PATTERN;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import uk.gov.companieshouse.api.charges.TransactionsApi;
 import uk.gov.companieshouse.api.delta.AdditionalNotice;
-import uk.gov.companieshouse.api.delta.Charge;
 
 @Mapper(componentModel = "spring")
 public interface TransactionsApiMapper {
@@ -36,7 +35,7 @@ public interface TransactionsApiMapper {
     }
 
     /**
-     * Format dates to yyyyMMdd format.
+     * sets notice type based on matching rules and patterns.
      */
     @AfterMapping
     default void setNoticeType(@MappingTarget TransactionsApi transactionsApi,
@@ -50,8 +49,8 @@ public interface TransactionsApiMapper {
      * Get filing type for a given notice type and its matching trans desc pattern if applicable.
      */
     private String getFilingType(AdditionalNotice additionalNotice) {
-        String filingType = MapperUtils.map.get(additionalNotice.getNoticeType()) != null
-                ? MapperUtils.map.get(additionalNotice.getNoticeType())
+        String filingType = NoticeTypeMapperUtils.map.get(additionalNotice.getNoticeType()) != null
+                ? NoticeTypeMapperUtils.map.get(additionalNotice.getNoticeType())
                 .getFilingType(additionalNotice.getTransDesc()) : DEFAULT_FILING_TYPE;
         return filingType;
     }

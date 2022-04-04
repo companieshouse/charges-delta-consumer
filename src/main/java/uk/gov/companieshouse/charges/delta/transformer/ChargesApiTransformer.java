@@ -19,7 +19,7 @@ import uk.gov.companieshouse.api.charges.TransactionsApi;
 import uk.gov.companieshouse.api.charges.TransactionsLinks;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
-import uk.gov.companieshouse.charges.delta.mapper.MapperUtils;
+import uk.gov.companieshouse.charges.delta.mapper.NoticeTypeMapperUtils;
 import uk.gov.companieshouse.charges.delta.processor.Encoder;
 import uk.gov.companieshouse.logging.Logger;
 
@@ -120,8 +120,8 @@ public class ChargesApiTransformer {
     }
 
     private String getFilingType(Charge charge) {
-        String filingType = MapperUtils.map.get(charge.getNoticeType()) != null
-                ? MapperUtils.map.get(charge.getNoticeType())
+        String filingType = NoticeTypeMapperUtils.map.get(charge.getNoticeType()) != null
+                ? NoticeTypeMapperUtils.map.get(charge.getNoticeType())
                 .getFilingType(charge.getTransDesc()) : DEFAULT_FILING_TYPE;
         return filingType;
     }

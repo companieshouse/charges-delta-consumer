@@ -12,7 +12,7 @@ import java.util.StringTokenizer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class MapperUtils {
+public class NoticeTypeMapperUtils {
 
     public static final String NOTICE_TYPES_DATA_FILE = "noticeTypes.txt";
     public static final String NOTICE_TYPE = "notice_type:";
