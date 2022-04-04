@@ -33,18 +33,14 @@ class EncoderTest {
 
     @Test
     void encode() {
-        String expectedValue = "CQ79y791IeRwkR3CNJMSOTNcWIA="
-                .replace("+", "-")
-                .replace("/", "_");
+        String expectedValue = "CQ79y791IeRwkR3CNJMSOTNcWIA=";
         String encodeValue = encoder.encodeWithSha1("3000117455");
         assertThat(encodeValue).isEqualTo(expectedValue);
     }
 
     @Test
-    void encode_ChargedIdThatGeneratesAValueWithSlash() {
-        String expectedValue = "0Vx0iTn_oJBRsITU1jbtTaEZElk="
-                .replace("+", "-")
-                .replace("/", "_");
+    void encode_charged_Id_which_generates_value_with_slash() {
+        String expectedValue = "0Vx0iTn_oJBRsITU1jbtTaEZElk=";
         String encodeValue = encoder.encodeWithSha1("3001283055");
         assertThat(encodeValue).isEqualTo(expectedValue);
     }
