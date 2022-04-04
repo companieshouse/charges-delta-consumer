@@ -41,17 +41,19 @@ class EncoderTest {
     }
 
     @Test
-<<<<<<< feature/dsnd-684_Update_mappings
     void encodeWithoutSha1() {
         String expectedValue = "MzAwMDExNzQ1NXNvbWV0ZXN0Mg==";
         String encodeValue = encoder.encodeWithoutSha1("3000117455");
-=======
-    void encode_ChargedIdThatGeneratesAValueWithSlash() {
-        String expectedValue = "0Vx0iTn_oJBRsITU1jbtTaEZElk="
-                .replace("+", "-")
-                .replace("/", "_");
-        String encodeValue = encoder.encodeWithSha1("3001283055");
->>>>>>> main
         assertThat(encodeValue).isEqualTo(expectedValue);
     }
+
+    @Test
+    void encode_charged_Id_which_generates_value_with_slash() {
+        String expectedValue = "613cXqSXAA1Ce_fpkFQ9ZP_L5ZQ=";
+        String encodeValue = encoder.encodeWithSha1("3101283055");
+        assertThat(encodeValue).isEqualTo(expectedValue);
+
+
+    }
+
 }
