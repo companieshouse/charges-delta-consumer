@@ -39,4 +39,13 @@ class EncoderTest {
         String encodeValue = encoder.encodeWithSha1("3000117455");
         assertThat(encodeValue).isEqualTo(expectedValue);
     }
+
+    @Test
+    void encode_ChargedIdThatGeneratesAValueWithSlash() {
+        String expectedValue = "0Vx0iTn_oJBRsITU1jbtTaEZElk="
+                .replace("+", "-")
+                .replace("/", "_");
+        String encodeValue = encoder.encodeWithSha1("3001283055");
+        assertThat(encodeValue).isEqualTo(expectedValue);
+    }
 }
