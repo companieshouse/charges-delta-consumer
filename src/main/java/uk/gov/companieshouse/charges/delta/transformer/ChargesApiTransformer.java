@@ -19,15 +19,16 @@ import uk.gov.companieshouse.api.charges.TransactionsApi;
 import uk.gov.companieshouse.api.charges.TransactionsLinks;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
+import uk.gov.companieshouse.charges.delta.mapper.NoticeTypeMapperUtils;
 import uk.gov.companieshouse.charges.delta.processor.Encoder;
 import uk.gov.companieshouse.logging.Logger;
-
 
 @Component
 public class ChargesApiTransformer {
     public static final String COMPANY = "/company/";
     public static final String FILING_HISTORY = "/filing-history/";
     public static final String CHARGES = "/charges/";
+    public static final String DEFAULT_FILING_TYPE = "1";
     private final ChargeApiMapper chargeApiMapper;
     private Encoder encoder;
     private final Logger logger;
@@ -114,8 +115,15 @@ public class ChargesApiTransformer {
         transactionsLinks.setFiling(charge.getTransId() != null
                 ? encode(companyNumber, charge.getTransId()) : null);
         transactionsApi.setLinks(transactionsLinks);
-        transactionsApi.setFilingType(charge.getNoticeType());
+        transactionsApi.setFilingType(getFilingType(charge));
         chargeApi.addTransactionsItem(transactionsApi);
+    }
+
+    private String getFilingType(Charge charge) {
+        String filingType = NoticeTypeMapperUtils.map.get(charge.getNoticeType()) != null
+                ? NoticeTypeMapperUtils.map.get(charge.getNoticeType())
+                .getFilingType(charge.getTransDesc()) : DEFAULT_FILING_TYPE;
+        return filingType;
     }
 
     private String encode(String companyNumber, String id) {
