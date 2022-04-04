@@ -54,7 +54,9 @@ public class Encoder {
     public String encodeWithSha1(String plain) {
         var sha1Value = getSha1Digest(plain);
         var base10 = new BigInteger(sha1Value, 16); // base 10 int
-        return new String(Base64.encodeInteger(base10)); // base64 string
+        return new String(Base64.encodeInteger(base10))
+                .replace("+", "-")
+                .replace("/", "_"); // base64 string
     }
 
     /**
