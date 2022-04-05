@@ -73,8 +73,12 @@ public class ChargesDeltaProcessor {
                 throw new NonRetryableErrorException("No charge item found inside ChargesDelta");
             }
         } catch (RetryableErrorException ex) {
+            logger.error(String.format("DSND-684: exception "
+                    + "while processing: %s", ex.getMessage()), ex);
             retryDeltaMessage(chsDelta);
         } catch (Exception ex) {
+            logger.error(String.format("DSND-684: unexpected error "
+                    + "while processing message: %s", ex.getMessage()), ex);
             handleErrorMessage(chsDelta);
             // send to error topic
         }
