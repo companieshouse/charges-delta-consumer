@@ -1,0 +1,101 @@
+notice_type: Registration of a charge ,  filing_type: create-charge
+notice_type: MR01,  trans_desc: ^(?i:REGISTRATION OF A CHARGE/CO CHARLES/EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: create-charge-with-deed-with-charles-court-order, notice_type: MR01,  trans_desc: ^(?i:REGISTRATION OF A CHARGE/CO EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: create-charge-with-deed-with-court-order, notice_type: MR01 ,  filing_type: create-charge-with-deed
+notice_type: LLMR01,  trans_desc: ^(?i:REGISTRATION OF A CHARGE/CO CHARLES/EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: create-charge-with-deed-with-charles-court-order-limited-liability-partnership, notice_type: LLMR01,  trans_desc: ^(?i:REGISTRATION OF A CHARGE/CO EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: create-charge-with-deed-with-court-order-limited-liability-partnership, notice_type: LLMR01 ,  filing_type: create-charge-with-deed-limited-liability-partnership
+notice_type: MR02,  trans_desc: ^(?i:ACQUISITION OF A CHARGE/CO CHARLES/EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: acquire-charge-with-deed-with-charles-court-order, notice_type: MR02,  trans_desc: ^(?i:ACQUISITION OF A CHARGE/CO EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: acquire-charge-with-deed-with-court-order, notice_type: MR02 ,  filing_type: acquire-charge-with-deed
+notice_type: LLMR02,  trans_desc: ^(?i:ACQUISITION OF A CHARGE/CO CHARLES/EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: acquire-charge-with-deed-with-charles-court-order-limited-liability-partnership, notice_type: LLMR02,  trans_desc: ^(?i:ACQUISITION OF A CHARGE/CO EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: acquire-charge-with-deed-with-court-order-limited-liability-partnership, notice_type: LLMR02 ,  filing_type: acquire-charge-with-deed-limited-liability-partnership
+notice_type: MR03,  trans_desc: ^(?i:REGISTRATION OF A SERIES OF DEBENTURES/CO CHARLES/EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: debenture-with-deed-with-charles-court-order, notice_type: MR03,  trans_desc: ^(?i:REGISTRATION OF A SERIES OF DEBENTURES/CO EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: debenture-with-deed-with-court-order, notice_type: MR03 ,  filing_type: debenture-with-deed
+notice_type: LLMR03,  trans_desc: ^(?i:REGISTRATION OF A SERIES OF DEBENTURES/CO CHARLES/EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: debenture-with-deed-with-charles-court-order-limited-liability-partnership, notice_type: LLMR03,  trans_desc: ^(?i:REGISTRATION OF A SERIES OF DEBENTURES/CO EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: debenture-with-deed-with-court-order-limited-liability-partnership, notice_type: LLMR03 ,  filing_type: debenture-with-deed-limited-liability-partnership
+notice_type: MR04,  trans_desc: ^(?i:STATEMENT OF SATISFACTION OF A CHARGE / PART / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: charge-part-satisfaction, notice_type: MR04 ,  filing_type: charge-satisfaction
+notice_type: LLMR04,  trans_desc: ^(?i:STATEMENT OF SATISFACTION OF A CHARGE / PART / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: charge-part-satisfaction-limited-liability-partnership, notice_type: LLMR04 ,  filing_type: charge-satisfaction-limited-liability-partnership
+notice_type: MR05,  trans_desc: ^(?i:STATEMENT OF RELEASE / CEASE FROM CHARGE / WHOLE RELEASE / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: charge-whole-release, notice_type: MR05,  trans_desc: ^(?i:STATEMENT OF RELEASE / CEASE FROM CHARGE / WHOLE CEASE / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: charge-whole-cease, notice_type: MR05,  trans_desc: ^(?i:STATEMENT OF RELEASE / CEASE FROM CHARGE / WHOLE BOTH / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: charge-whole-both, notice_type: MR05,  trans_desc: ^(?i:STATEMENT OF RELEASE / CEASE FROM CHARGE / PART RELEASE / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: charge-part-release, notice_type: MR05,  trans_desc: ^(?i:STATEMENT OF RELEASE / CEASE FROM CHARGE / PART CEASE / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: charge-part-cease, notice_type: MR05,  trans_desc: ^(?i:STATEMENT OF RELEASE / CEASE FROM CHARGE / PART BOTH / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: charge-part-both, notice_type: MR05 ,  filing_type: charge-release-cease
+notice_type: LLMR05,  trans_desc: ^(?i:STATEMENT OF RELEASE / CEASE FROM CHARGE / WHOLE RELEASE / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: charge-whole-release-limited-liability-partnership, notice_type: LLMR05,  trans_desc: ^(?i:STATEMENT OF RELEASE / CEASE FROM CHARGE / WHOLE CEASE / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: charge-whole-cease-limited-liability-partnership, notice_type: LLMR05,  trans_desc: ^(?i:STATEMENT OF RELEASE / CEASE FROM CHARGE / WHOLE BOTH / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: charge-whole-both-limited-liability-partnership, notice_type: LLMR05,  trans_desc: ^(?i:STATEMENT OF RELEASE / CEASE FROM CHARGE / PART RELEASE / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: charge-part-release-limited-liability-partnership, notice_type: LLMR05,  trans_desc: ^(?i:STATEMENT OF RELEASE / CEASE FROM CHARGE / PART CEASE / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: charge-part-cease-limited-liability-partnership, notice_type: LLMR05,  trans_desc: ^(?i:STATEMENT OF RELEASE / CEASE FROM CHARGE / PART BOTH / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: charge-part-both-limited-liability-partnership, notice_type: LLMR05 ,  filing_type: charge-release-cease-limited-liability-partnership
+notice_type: MR06 ,  filing_type: trustee-acting
+notice_type: LLMR06 ,  filing_type: trustee-acting-as-limited-liability-partnership
+notice_type: MR07 ,  filing_type: alter-charge
+notice_type: LLMR07 ,  filing_type: alter-charge-limited-liability-partnership
+notice_type: MR08,  trans_desc: ^(?i:REGISTRATION OF A CHARGE WITHOUT DEED/CO CHARLES/EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: create-charge-without-deed-with-charles-court-order, notice_type: MR08,  trans_desc: ^(?i:REGISTRATION OF A CHARGE WITHOUT DEED/CO EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: create-charge-without-deed-with-court-order, notice_type: MR08 ,  filing_type: create-charge-without-deed
+notice_type: LLMR08,  trans_desc: ^(?i:REGISTRATION OF A CHARGE WITHOUT DEED/CO CHARLES/EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: create-charge-without-deed-with-charles-court-order-limited-liability-partnership, notice_type: LLMR08,  trans_desc: ^(?i:REGISTRATION OF A CHARGE WITHOUT DEED/CO EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: create-charge-without-deed-with-court-order-limited-liability-partnership, notice_type: LLMR08 ,  filing_type: create-charge-without-deed-limited-liability-partnership
+notice_type: MR09,  trans_desc: ^(?i:ACQUISITION OF A CHARGE WITHOUT DEED/CO CHARLES/EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: acquire-charge-without-deed-with-charles-court-order, notice_type: MR09,  trans_desc: ^(?i:ACQUISITION OF A CHARGE WITHOUT DEED/CO EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: acquire-charge-without-deed-with-court-order, notice_type: MR09 ,  filing_type: acquire-charge-without-deed
+notice_type: LLMR09,  trans_desc: ^(?i:ACQUISITION OF A CHARGE WITHOUT DEED/CO CHARLES/EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: acquire-charge-without-deed-with-charles-court-order-limited-liability-partnership, notice_type: LLMR09,  trans_desc: ^(?i:ACQUISITION OF A CHARGE WITHOUT DEED/CO EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: acquire-charge-without-deed-with-court-order-limited-liability-partnership, notice_type: LLMR09 ,  filing_type: acquire-charge-without-deed-limited-liability-partnership
+notice_type: MR10,  trans_desc: ^(?i:REGISTRATION OF A SERIES OF DEBENTURES WITHOUT DEED/CO CHARLES/EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: debenture-without-deed-with-charles-court-order, notice_type: MR10,  trans_desc: ^(?i:REGISTRATION OF A SERIES OF DEBENTURES WITHOUT DEED/CO EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: debenture-without-deed-with-court-order, notice_type: MR10 ,  filing_type: debenture-without-deed
+notice_type: LLMR10,  trans_desc: ^(?i:REGISTRATION OF A SERIES OF DEBENTURES WITHOUT DEED/CO CHARLES/EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: debenture-without-deed-with-charles-court-order-limited-liability-partnership, notice_type: LLMR10,  trans_desc: ^(?i:REGISTRATION OF A SERIES OF DEBENTURES WITHOUT DEED/CO EXTEND / CHARGE.*?(\S{8}\d{4}|\d+).*)$ ,  filing_type: debenture-without-deed-with-court-order-limited-liability-partnership, notice_type: LLMR10 ,  filing_type: debenture-without-deed-limited-liability-partnership
+notice_type: MG01 ,  filing_type: create-charge-pre-april-2013, notice_type: MG01s ,  filing_type: create-charge-scotland-pre-april-2013
+notice_type: LLMG01 ,  filing_type: create-charge-pre-april-2013-limited-liability-partnership
+notice_type: LLMG01s ,  filing_type: create-charge-pre-april-2013-limited-liability-partnership-scotland
+notice_type: MG02 ,  filing_type: charge-satisfaction-pre-april-2013
+notice_type: MG02s ,  filing_type: charge-satisfaction-scotland-pre-april-2013
+notice_type: LLMG02 ,  filing_type: charge-satisfaction-pre-april-2013-limited-liability-partnership
+notice_type: LLMG02s ,  filing_type: charge-satisfaction-pre-april-2013-limited-liability-partnership-scotland
+notice_type: MG03s ,  filing_type: charge-satisfaction-floating-charge-in-scotland-pre-april-2013
+notice_type: LLMG03s ,  filing_type: charge-satisfaction-floating-charge-in-scotland-pre-april-2013-limited-liability-partnership
+notice_type: MG04 ,  filing_type: charge-part-or-whole-release-pre-april-2013
+notice_type: MG04s ,  filing_type: charge-part-or-whole-release-scotland-pre-april-2013
+notice_type: LLMG04 ,  filing_type: charge-part-or-whole-release-limited-liability-partnership-pre-april-2013
+notice_type: LLMG04s ,  filing_type: charge-part-or-whole-release-pre-april-2013-limited-liability-partnership-scotland
+notice_type: MG05s ,  filing_type: charge-released-floating-charge-in-scotland-pre-april-2013
+notice_type: LLMG05s ,  filing_type: charge-released-floating-charge-in-scotland-pre-april-2013-limited-liability-partnership
+notice_type: MG06 ,  filing_type: acquire-charge-pre-april-2013
+notice_type: MG06s ,  filing_type: acquire-charge-scotland-pre-april-2013
+notice_type: LLMG06 ,  filing_type: acquire-charge-limited-liability-partnership-pre-april-2013
+notice_type: LLMG06s ,  filing_type: acquire-charge-limited-liability-partnership-pre-april-2013-scotland
+notice_type: MG07 ,  filing_type: create-charge-series-debentures-pre-april-2013
+notice_type: MG07s ,  filing_type: create-charge-series-debentures-scotland-pre-april-2013
+notice_type: LLMG07 ,  filing_type: create-charge-series-debentures-limited-liability-partnership
+notice_type: LLMG07s ,  filing_type: create-charge-series-debentures-limited-liability-partnership-scotland
+notice_type: MG08 ,  filing_type: create-issue-of-secured-debentures-pre-april-2013
+notice_type: MG08s ,  filing_type: create-issue-of-secured-debentures-scotland-pre-april-2013
+notice_type: LLMG08 ,  filing_type: create-issue-of-secured-debentures-limited-liability-partnership-pre-april-2013
+notice_type: LLMG08s ,  filing_type: create-issue-of-secured-debentures-limited-liability-partnership-scotland-pre-april-2013
+notice_type: MG01s ,  filing_type: create-floating-charge-scotland
+notice_type: RM01 ,  filing_type: liquidation-appointment-of-receiver
+notice_type: LLRM01 ,  filing_type: liquidation-appointment-of-receiver-limited-liability-partnership
+notice_type: RM02 ,  filing_type: liquidation-cease-to-act-receiver
+notice_type: LLRM02 ,  filing_type: liquidation-cease-to-act-receiver-limited-liability-partnership
+notice_type: LQ01 ,  filing_type: liquidation-appointment-of-receiver-pre-april-2013
+notice_type: LLLQ01 ,  filing_type: liquidation-appointment-of-receiver-pre-april-2013-limited-liability-partnership
+notice_type: OSLQ01 ,  filing_type: liquidation-appointment-of-receiver-pre-april-2013-overseas
+notice_type: LQ02 ,  filing_type: liquidation-cease-to-act-receiver-pre-april-2013
+notice_type: LLLQ02 ,  filing_type: liquidation-cease-to-act-receiver-pre-april-2013-limited-liability-partnership
+notice_type: OSLQ02 ,  filing_type: liquidation-cease-to-act-receiver-pre-april-2013-overseas
+notice_type: VL1 ,  filing_type: liquidation-appointment-of-liquidator
+notice_type: 1(Scot) ,  filing_type: liquidation-appointment-of-receiver-scotland
+notice_type: 2(Scot) ,  filing_type: liquidation-appointment-of-receiver-by-court-scotland
+notice_type: 3(Scot) ,  filing_type: liquidation-ceasing-to-act-receiver-scotland
+notice_type: 49A(NI) ,  filing_type: charge-satisfaction-cease-release-northen-pre-2006-companies-act-ireland
+notice_type: 395 ,  filing_type: create-charge-pre-2006-companies-act
+notice_type: LLP395 ,  filing_type: create-charge-pre-2006-companies-act-limited-liability-partnership
+notice_type: 397 ,  filing_type: create-charge-series-debentures-pre-2006-companies-act
+notice_type: 397a ,  filing_type: create-issue-of-secured-debentures-pre-2006-companies-act
+notice_type: 400 ,  filing_type: acquire-charge-pre-2006-companies-act
+notice_type: 402(NI) ,  filing_type: create-charge-northern-ireland-pre-2006-companies-act-form-402
+notice_type: C402(NI) ,  filing_type: create-charge-northern-ireland-pre-2006-companies-act-form-C402
+notice_type: LLP402(NI) ,  filing_type: create-charge-northern-ireland-pre-2006-companies-act-form-402-limited-liability-partnership
+notice_type: 402DF(NI) ,  filing_type: create-charge-northern-ireland-pre-2006-companies-act-form-402DF
+notice_type: 402PP(NI) ,  filing_type: create-charge-northern-ireland-pre-2006-companies-act-form-402PP
+notice_type: 402R(NI) ,  filing_type: create-charge-northern-ireland-pre-2006-companies-act-form-402R
+notice_type: 403a ,  filing_type: charge-satisfaction-pre-2006-companies-act
+notice_type: 403b ,  filing_type: charge-released-floating-charge-in-pre-2006-companies-act
+notice_type: LLP403a ,  filing_type: charge-satisfaction-pre-2006-companies-act-limited-liability-partnership
+notice_type: LLP403b ,  filing_type: charge-released-floating-charge-in-pre-2006-companies-act-limited-liability-partnership
+notice_type: C404(NI) ,  filing_type: charge-certificate-northern-ireland-pre-2006-companies-act-form-C404
+notice_type: 405(1) ,  filing_type: liquidation-appointment-of-receiver-pre-2006-companies-act
+notice_type: 405(2) ,  filing_type: liquidation-cease-to-act-receiver-pre-2006-companies-act
+notice_type: 405(NI) ,  filing_type: supporting-evidence-create-charge-northern-ireland-pre-2006-companies-act
+notice_type: LLP405(NI) ,  filing_type: supporting-evidence-create-charge-northern-ireland-pre-2006-companies-act-limited-liability-partnership
+notice_type: 407(NI) ,  filing_type: create-charge-northern-ireland-pre-2006-companies-act-form-407
+notice_type: 408(NI) ,  filing_type: create-charge-by-judgement-enforcement-office-northern-ireland-pre-2006-companies-act-form-408
+notice_type: C408(NI) ,  filing_type: create-charge-by-judgement-enforcement-office-northern-ireland-pre-2006-companies-act-form-C408
+notice_type: 410(Scot) ,  filing_type: create-charge-scotland-pre-2006-companies-act
+notice_type: 411A(NI) ,  filing_type: charge-satisfaction-northern-ireland-pre-2006-companies-act
+notice_type: 411B(NI) ,  filing_type: charge-release-cease-northern-ireland-pre-2006-companies-act
+notice_type: LLP411A(NI) ,  filing_type: charge-satisfaction-northern-ireland-pre-2006-companies-act-limited-liability-partnership
+notice_type: LLP411B(NI) ,  filing_type: charge-release-cease-northern-ireland-pre-2006-companies-act-limited-liability-partnership
+notice_type: 413(Scot) ,  filing_type: create-charge-series-debentures-scotland-pre-2006-companies-act
+notice_type: 413a(Scot) ,  filing_type: create-issue-out-of-series-debentures-scotland-pre-2006-companies-act
+notice_type: 416(Scot) ,  filing_type: acquire-charge-scotland-pre-2006-companies-act
+notice_type: 419a(Scot) ,  filing_type: charge-satisfaction-scotland-pre-2006-companies-act
+notice_type: 419b(Scot) ,  filing_type: charge-released-floating-charge-in-scotland-pre-2006-companies-act
+notice_type: LLP419a(Scot) ,  filing_type: charge-satisfaction-scotland-pre-2006-companies-act-limited-liability-partnership
+notice_type: LLP419b(Scot) ,  filing_type: charge-released-floating-charge-in-scotland-pre-2006-companies-act-limited-liability-partnership
+notice_type: 466(Scot) ,  filing_type: alter-floating-charge
+notice_type: LLP466(Scot) ,  filing_type: alter-floating-charge-limited-liability-partnership
