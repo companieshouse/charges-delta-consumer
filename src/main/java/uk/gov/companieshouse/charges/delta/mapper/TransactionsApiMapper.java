@@ -13,7 +13,7 @@ import uk.gov.companieshouse.api.delta.AdditionalNotice;
 @Mapper(componentModel = "spring")
 public interface TransactionsApiMapper {
 
-    String DEFAULT_FILING_TYPE = "1";
+    String DEFAULT_FILING_TYPE = "";
 
     @Mapping(target = "links.filing", source = "transId")
     @Mapping(target = "filingType", ignore = true)
