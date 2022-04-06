@@ -73,9 +73,8 @@ public class NoticeTypeMapperUtils {
 
     private static List<String> getDataFile(String fileName) {
 
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        InputStream inputStream = Objects.requireNonNull(classLoader
-                .getResourceAsStream(fileName));
+        InputStream inputStream = Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(fileName);
         List<String> list = new BufferedReader(
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8))
                 .lines()
