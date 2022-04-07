@@ -74,7 +74,7 @@
         }
       },
       {
-        "filing_type": "1",
+        "filing_type": "",
         "transaction_id": null,
         "delivered_on": null,
         "insolvency_case_number": null,

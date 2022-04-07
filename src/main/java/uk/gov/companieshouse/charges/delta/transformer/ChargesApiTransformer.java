@@ -28,7 +28,7 @@ public class ChargesApiTransformer {
     public static final String COMPANY = "/company/";
     public static final String FILING_HISTORY = "/filing-history/";
     public static final String CHARGES = "/charges/";
-    public static final String DEFAULT_FILING_TYPE = "1";
+    public static final String DEFAULT_FILING_TYPE = "";
     private final ChargeApiMapper chargeApiMapper;
     private Encoder encoder;
     private final Logger logger;
