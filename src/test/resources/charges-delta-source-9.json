@@ -1,0 +1,27 @@
+{
+  "charges":[
+    {"company_number":"08601674",
+      "delta_at": "20211029142043360560",
+      "id":"3000637742",
+      "more_than_4_persons":"N",
+      "persons_entitled":[
+        {"person":"BANK OF BARODA"}],
+      "notice_type":"419b(Scot)",
+      "trans_id":"3119703916",
+      "trans_desc":"",
+      "submission_type":"5",
+      "delivered_on":"20150314",
+      "additional_notices":[
+        {"notice_type":"MR04","trans_id":"3312780976","trans_desc":"STATEMENT OF SATISFACTION OF A CHARGE / FULL / CHARGE CODE 086016740008","submission_type":"2","delivered_on":"20210903"}],
+      "code":"086016740008","charge_number":"8",
+      "migrated_from":"CHIPS",
+      "type":"A REGISTERED CHARGE",
+      "brief_description":"17-19 MARKET STREET LEICESTER\\n",
+      "short_particular_flags":[{"fixed_charge":"yes","contains_floating_charge":"yes","floating_charge_all":"yes","negative_pledge":"yes","bare_trustee":"no"}],
+      "status":"1",
+      "satisfied_on":"20210903",
+      "delivered_on":"20150314",
+      "floating_charge":"Y",
+      "created_on":"20140811"
+    }]}
+

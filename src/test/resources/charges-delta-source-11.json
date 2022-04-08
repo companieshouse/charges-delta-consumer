@@ -1,0 +1,33 @@
+{
+  "charges":[
+    {"company_number":"00285630",
+      "delta_at": "20211029142043360560",
+      "id":"3000856820",
+      "more_than_4_persons":"Y",
+      "persons_entitled":[
+        {"person":"MICHAEL BEVAN"},
+        {"person":"MICHAEL D M THOMAS"},
+        {"person":"CLIVE FRANKTON"},
+        {"person":"JANE REES"}],
+      "notice_type":"RM01",
+      "trans_id":"3162053255",
+      "trans_desc":"",
+      "submission_type":"5",
+      "delivered_on":"20161101",
+      "additional_notices":[
+        {"notice_type":"MR04","trans_id":"3320977379","trans_desc":"STATEMENT OF SATISFACTION OF A CHARGE / FULL / CHARGE CODE 002856300006","submission_type":"5","delivered_on":"20211119"}],
+      "code":"002856300006",
+      "charge_number":"6",
+      "migrated_from":"CHIPS",
+      "type":"A REGISTERED CHARGE",
+      "short_particular_flags":[{"fixed_charge":"no","contains_floating_charge":"yes","floating_charge_all":"yes","negative_pledge":"yes","bare_trustee":"no"}],
+      "status":"1",
+      "satisfied_on":"20211119",
+      "delivered_on":"20161101",
+      "resolution_passed_on":"20160606",
+      "covering_instrument_date":"20161019",
+      "floating_charge":"Y",
+      "created_on":"20161019"
+    }]}
+
+

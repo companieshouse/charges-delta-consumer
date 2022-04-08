@@ -1,0 +1,76 @@
+{
+  "external_data": {
+    "etag": null,
+    "id": "3000637742",
+    "charge_code": "086016740008",
+    "classification": {
+      "type": "charge-description",
+      "description": "A REGISTERED CHARGE"
+    },
+    "charge_number": 8,
+    "status": "fully-satisfied",
+    "assets_ceased_released": null,
+    "acquired_on": null,
+    "delivered_on": "2015-03-14",
+    "resolved_on": null,
+    "covering_instrument_date": null,
+    "created_on": "2014-08-11",
+    "satisfied_on": "2021-09-03",
+    "particulars": {
+      "type": "brief-description",
+      "description": "17-19 MARKET STREET LEICESTER\\n",
+      "contains_floating_charge": true,
+      "contains_fixed_charge": true,
+      "floating_charge_covers_all": true,
+      "contains_negative_pledge": true,
+      "chargor_acting_as_bare_trustee": false
+    },
+    "secured_details": {
+      "type": "obligations-secured",
+      "description": "A REGISTERED CHARGE"
+    },
+    "scottish_alterations": {
+      "type": null,
+      "description": null,
+      "has_alterations_to_order": false,
+      "has_alterations_to_prohibitions": false,
+      "has_restricting_provisions": false
+    },
+    "more_than_four_persons_entitled": false,
+    "persons_entitled": [
+      {
+        "name": "BANK OF BARODA"
+      }
+    ],
+    "transactions": [
+      {
+        "filing_type": "charge-satisfaction",
+        "transaction_id": null,
+        "delivered_on": "2021-09-03",
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/08601674/filing-history/MzMxMjc4MDk3NnRyYW5zSWRfc2FsdA==",
+          "insolvency_case": null
+        }
+      },
+      {
+        "filing_type": "charge-released-floating-charge-in-scotland-pre-2006-companies-act",
+        "transaction_id": null,
+        "delivered_on": null,
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/08601674/filing-history/MzExOTcwMzkxNnRyYW5zSWRfc2FsdA==",
+          "insolvency_case": null
+        }
+      }
+    ],
+    "insolvency_cases": null,
+    "links": {
+      "self": "/company/08601674/charges/YssQtdIMlTXB_tREkeE5iiLBSQ8="
+    }
+  },
+  "internal_data": {
+    "delta_at": "2021-10-29T14:20:43.36056Z",
+    "updated_by": "test-partition_1-offset_1"
+  }
+}

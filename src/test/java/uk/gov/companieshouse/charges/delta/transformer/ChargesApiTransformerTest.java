@@ -161,4 +161,130 @@ public class ChargesApiTransformerTest {
 
 
     }
+
+    @Test
+    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
+    void When_ValidMessage_With_MR10_NoticeTypes_Expect_ValidTransformedInternal() throws IOException,
+            JSONException, NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
+
+        ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-7.json");
+
+        Charge charge = expectedChargesDelta.getCharges().get(0);
+
+        InternalChargeApi internalChargeApi = transformer.transform(charge, testData.createKafkaHeaders());
+
+        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
+        String expectedChargesApiJson = testData.loadTestdataFile("internal-charges-api-expected-7.json");
+        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
+                new CustomComparator(JSONCompareMode.LENIENT,
+                        new Customization("external_data.etag", (o1, o2) -> true)));
+
+
+    }
+
+    @Test
+    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
+    void When_ValidMessage_With_LLRM01_NoticeTypes_Expect_ValidTransformedInternal() throws IOException,
+            JSONException, NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
+
+        ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-8.json");
+
+        Charge charge = expectedChargesDelta.getCharges().get(0);
+
+        InternalChargeApi internalChargeApi = transformer.transform(charge, testData.createKafkaHeaders());
+
+        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
+        String expectedChargesApiJson = testData.loadTestdataFile("internal-charges-api-expected-8.json");
+        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
+                new CustomComparator(JSONCompareMode.LENIENT,
+                        new Customization("external_data.etag", (o1, o2) -> true)));
+
+
+    }
+
+    @Test
+    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
+    void When_ValidMessage_With_419bScot_NoticeTypes_Expect_ValidTransformedInternal() throws IOException,
+            JSONException, NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
+
+        ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-9.json");
+
+        Charge charge = expectedChargesDelta.getCharges().get(0);
+
+        InternalChargeApi internalChargeApi = transformer.transform(charge, testData.createKafkaHeaders());
+
+        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
+        String expectedChargesApiJson = testData.loadTestdataFile("internal-charges-api-expected-9.json");
+        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
+                new CustomComparator(JSONCompareMode.LENIENT,
+                        new Customization("external_data.etag", (o1, o2) -> true)));
+
+
+    }
+
+    @Test
+    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
+    void When_ValidMessage_With_395_NoticeTypes_Expect_ValidTransformedInternal() throws IOException,
+            JSONException, NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
+
+        ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-10.json");
+
+        Charge charge = expectedChargesDelta.getCharges().get(0);
+
+        InternalChargeApi internalChargeApi = transformer.transform(charge, testData.createKafkaHeaders());
+
+        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
+        String expectedChargesApiJson = testData.loadTestdataFile("internal-charges-api-expected-10.json");
+        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
+                new CustomComparator(JSONCompareMode.LENIENT,
+                        new Customization("external_data.etag", (o1, o2) -> true)));
+
+
+    }
+
+    @Test
+    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
+    void When_ValidMessage_With_RM01_NoticeTypes_Expect_ValidTransformedInternal() throws IOException,
+            JSONException, NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
+
+        ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-11.json");
+
+        Charge charge = expectedChargesDelta.getCharges().get(0);
+
+        InternalChargeApi internalChargeApi = transformer.transform(charge, testData.createKafkaHeaders());
+
+        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
+        String expectedChargesApiJson = testData.loadTestdataFile("internal-charges-api-expected-11.json");
+        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
+                new CustomComparator(JSONCompareMode.LENIENT,
+                        new Customization("external_data.etag", (o1, o2) -> true)));
+
+
+    }
+
+    @Test
+    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
+    void When_ValidMessage_With_LLMG01s_NoticeTypes_Expect_ValidTransformedInternal() throws IOException,
+            JSONException, NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
+
+        ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-12.json");
+
+        Charge charge = expectedChargesDelta.getCharges().get(0);
+
+        InternalChargeApi internalChargeApi = transformer.transform(charge, testData.createKafkaHeaders());
+
+        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
+        String expectedChargesApiJson = testData.loadTestdataFile("internal-charges-api-expected-12.json");
+        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
+                new CustomComparator(JSONCompareMode.LENIENT,
+                        new Customization("external_data.etag", (o1, o2) -> true)));
+
+
+    }
 }
