@@ -61,9 +61,16 @@ public class NoticeTypeTransDesc {
         }
         if (filingTypeAndTransDescPattern.size() > 1) {
             filingType = this.filingTypeAndTransDescPattern.entrySet().stream()
-                    .filter(x -> transDesc != null && transDesc.matches(x.getKey()))
+                    .filter(x -> !StringUtils.isEmpty(transDesc)
+                            && !x.getKey().equalsIgnoreCase(NO_PATTERN)
+                            && transDesc.matches(x.getKey()))
                     .map(x -> x.getValue())
                     .collect(toSingleton());
+
+            if (filingType == null
+                    && filingTypeAndTransDescPattern.containsKey(NO_PATTERN)) {
+                return filingTypeAndTransDescPattern.get(NO_PATTERN);
+            }
         }
         filingType = StringUtils.isEmpty(filingType) ? DEFAULT : filingType;
         return filingType;
