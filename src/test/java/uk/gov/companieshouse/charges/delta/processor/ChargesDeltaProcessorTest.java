@@ -15,8 +15,7 @@ import org.springframework.messaging.MessageHeaders;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.charges.delta.model.TestData;
-import uk.gov.companieshouse.charges.delta.producer.ChargesDeltaProducer;
-import uk.gov.companieshouse.charges.delta.service.api.ApiClientService;
+import uk.gov.companieshouse.charges.delta.service.ApiClientService;
 import uk.gov.companieshouse.charges.delta.transformer.ChargesApiTransformer;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.logging.Logger;
@@ -35,9 +34,6 @@ public class ChargesDeltaProcessorTest {
     private ChargesDeltaProcessor deltaProcessor;
 
     @Mock
-    private ChargesDeltaProducer chargesDeltaProducer;
-
-    @Mock
     private ChargesApiTransformer transformer;
 
     @Mock
@@ -46,14 +42,14 @@ public class ChargesDeltaProcessorTest {
     @Mock
     private ApiClientService apiClientService;
 
-    private Encoder encoder;
+    private EncoderUtil encoderUtil;
 
     private TestData testData;
 
     @BeforeEach
     void setUp() {
-        encoder = new Encoder("some_salt", "transId_salt");
-        deltaProcessor = new ChargesDeltaProcessor(chargesDeltaProducer, transformer, logger, apiClientService, encoder);
+        encoderUtil = new EncoderUtil("some_salt", "transId_salt");
+        deltaProcessor = new ChargesDeltaProcessor(transformer, logger, apiClientService, encoderUtil);
         testData = new TestData();
     }
 

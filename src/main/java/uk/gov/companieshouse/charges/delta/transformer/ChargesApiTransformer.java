@@ -20,7 +20,7 @@ import uk.gov.companieshouse.api.charges.TransactionsLinks;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
 import uk.gov.companieshouse.charges.delta.mapper.NoticeTypeMapperUtils;
-import uk.gov.companieshouse.charges.delta.processor.Encoder;
+import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
 import uk.gov.companieshouse.logging.Logger;
 
 @Component
@@ -30,7 +30,7 @@ public class ChargesApiTransformer {
     public static final String CHARGES = "/charges/";
     public static final String DEFAULT_FILING_TYPE = "";
     private final ChargeApiMapper chargeApiMapper;
-    private Encoder encoder;
+    private EncoderUtil encoderUtil;
     private final Logger logger;
 
     /**
@@ -38,10 +38,10 @@ public class ChargesApiTransformer {
      */
     @Autowired
     public ChargesApiTransformer(ChargeApiMapper chargeApiMapper,
-                                 Encoder encoder,
+                                 EncoderUtil encoderUtil,
                                  Logger logger) {
         this.chargeApiMapper = chargeApiMapper;
-        this.encoder = encoder;
+        this.encoderUtil = encoderUtil;
         this.logger = logger;
     }
 
@@ -78,7 +78,7 @@ public class ChargesApiTransformer {
                         transactionsApi.getLinks().getFiling() != null) {
                     transactionsApi.getLinks()
                             .setFiling(COMPANY + companyNumber + FILING_HISTORY
-                                    + encoder.encodeWithoutSha1(
+                                    + encoderUtil.encodeWithoutSha1(
                                             transactionsApi.getLinks().getFiling()));
                 }
             }
@@ -86,7 +86,7 @@ public class ChargesApiTransformer {
         mapTransIdAndNoticeType(charge, chargeApi, companyNumber);
         ChargeLink chargeLink = new ChargeLink();
         chargeLink.setSelf(COMPANY + companyNumber + CHARGES
-                + encoder.encodeWithSha1(charge.getId()));
+                + encoderUtil.encodeWithSha1(charge.getId()));
         chargeApi.setLinks(chargeLink);
     }
 
@@ -128,7 +128,7 @@ public class ChargesApiTransformer {
 
     private String encode(String companyNumber, String id) {
         return String.format(COMPANY + "%s" + FILING_HISTORY + "%s",
-                companyNumber, encoder.encodeWithoutSha1(id));
+                companyNumber, encoderUtil.encodeWithoutSha1(id));
     }
 
     private OffsetDateTime stringToOffsetDateTime(String date) {

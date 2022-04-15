@@ -9,7 +9,7 @@ public class CommonKafkaSteps {
     private ChsDelta lastMessageSent;
 
     @Autowired
-    protected KafkaTemplate<String, ChsDelta> kafkaTemplate;
+    protected KafkaTemplate<String, Object> kafkaTemplate;
 
 
 }

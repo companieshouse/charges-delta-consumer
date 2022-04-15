@@ -21,13 +21,11 @@ import uk.gov.companieshouse.api.delta.ChargesDelta;
 import uk.gov.companieshouse.charges.delta.config.TestConfig;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
 import uk.gov.companieshouse.charges.delta.model.TestData;
-import uk.gov.companieshouse.charges.delta.processor.Encoder;
+import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
 import uk.gov.companieshouse.logging.Logger;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 
 
@@ -38,7 +36,7 @@ public class ChargesApiTransformerTest {
     @Autowired
     private ChargeApiMapper chargeApiMapper;
     @Autowired
-    private Encoder encoder;
+    private EncoderUtil encoderUtil;
 
     @Mock
     private Logger logger;
@@ -49,7 +47,7 @@ public class ChargesApiTransformerTest {
 
     @BeforeEach
     public void setup() {
-        transformer = new ChargesApiTransformer(chargeApiMapper, encoder, logger);
+        transformer = new ChargesApiTransformer(chargeApiMapper, encoderUtil, logger);
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.setDateFormat(new SimpleDateFormat("yyyyMMdd"));
