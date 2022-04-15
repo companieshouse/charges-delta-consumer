@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Encoder {
+public class EncoderUtil {
 
     private static final String SHA_1 = "SHA-1";
 
@@ -24,8 +24,8 @@ public class Encoder {
      * @param transIdSalt  input String value
      */
     @Autowired
-    public Encoder(@Value("${api.charge-id-salt}") String chargeIdSalt,
-            @Value("${api.trans-id-salt}") String transIdSalt) {
+    public EncoderUtil(@Value("${api.charge-id-salt}") String chargeIdSalt,
+                       @Value("${api.trans-id-salt}") String transIdSalt) {
 
         CHARGE_ID_SALT = chargeIdSalt;
         TRANS_ID_SALT = transIdSalt;

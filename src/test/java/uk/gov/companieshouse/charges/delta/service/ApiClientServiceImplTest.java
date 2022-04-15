@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.charges.delta.service.api;
+package uk.gov.companieshouse.charges.delta.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,5 +1,5 @@
 
-package uk.gov.companieshouse.charges.delta.service.api;
+package uk.gov.companieshouse.charges.delta.service;
 
 import uk.gov.companieshouse.api.InternalApiClient;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;

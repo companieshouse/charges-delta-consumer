@@ -12,12 +12,9 @@ spring:
 charges:
   delta:
     group-id: charges-delta-consumer
-    main-id: charges-main-consumer
-    retry-id: charges-retry-consumer
-    topic:
-      main: charges-delta
-      retry: charges-topic-retry
-      error: charges-topic-error
+    topic: charges-delta
+    retry-attempts: 4
+    backoff-delay: 100
 
 logger:
   namespace: charges-delta-consumer

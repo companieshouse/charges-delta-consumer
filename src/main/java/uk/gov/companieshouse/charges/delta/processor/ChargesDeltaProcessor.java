@@ -17,8 +17,7 @@ import uk.gov.companieshouse.api.delta.ChargesDelta;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.charges.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
-import uk.gov.companieshouse.charges.delta.producer.ChargesDeltaProducer;
-import uk.gov.companieshouse.charges.delta.service.api.ApiClientService;
+import uk.gov.companieshouse.charges.delta.service.ApiClientService;
 import uk.gov.companieshouse.charges.delta.transformer.ChargesApiTransformer;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.logging.Logger;
@@ -27,26 +26,23 @@ import uk.gov.companieshouse.logging.Logger;
 @Component
 public class ChargesDeltaProcessor {
 
-    private final ChargesDeltaProducer deltaProducer;
     private final ChargesApiTransformer transformer;
     private final Logger logger;
     private final ApiClientService apiClientService;
-    private Encoder encoder;
+    private EncoderUtil encoderUtil;
 
     /**
      * The constructor.
      */
     @Autowired
-    public ChargesDeltaProcessor(ChargesDeltaProducer deltaProducer,
-                                 ChargesApiTransformer transformer,
+    public ChargesDeltaProcessor(ChargesApiTransformer transformer,
                                  Logger logger,
                                  ApiClientService apiClientService,
-                                 Encoder encoder) {
-        this.deltaProducer = deltaProducer;
+                                 EncoderUtil encoderUtil) {
         this.transformer = transformer;
         this.logger = logger;
         this.apiClientService = apiClientService;
-        this.encoder = encoder;
+        this.encoderUtil = encoderUtil;
     }
 
     /**
@@ -94,7 +90,7 @@ public class ChargesDeltaProcessor {
         final String companyNumber = charge.getCompanyNumber();
 
         //pass in the chargeId and encode it with base64 after doing a SHA1 hash
-        final String chargeId = encoder.encodeWithSha1(charge.getId());
+        final String chargeId = encoderUtil.encodeWithSha1(charge.getId());
         logger.infoContext(
                 logContext,
                 String.format("Process charge for company number [%s] and charge id [%s]",

@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.charges.delta.service.api;
+package uk.gov.companieshouse.charges.delta.service;
 
 import java.util.HashMap;
 import java.util.Map;

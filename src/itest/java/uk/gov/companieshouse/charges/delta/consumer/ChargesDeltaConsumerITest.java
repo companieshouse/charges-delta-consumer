@@ -10,9 +10,9 @@ import uk.gov.companieshouse.delta.ChsDelta;
 public class ChargesDeltaConsumerITest extends AbstractIntegrationTest {
 
     @Autowired
-    public KafkaTemplate<String, ChsDelta> kafkaTemplate;
+    public KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Value("${charges.delta.topic.main}")
+    @Value("${charges.delta.topic}")
     private String mainTopic;
 
     @Test
