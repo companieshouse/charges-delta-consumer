@@ -91,6 +91,22 @@ public class TestData {
                 .build();
     }
 
+    public Message<ChsDelta> createInvalidChsDeltaMessage() {
+        ChsDelta mockChsDelta = ChsDelta.newBuilder()
+                .setData("invalid data")
+                .setContextId("context_id")
+                .setAttempt(1)
+                .build();
+
+        return MessageBuilder
+                .withPayload(mockChsDelta)
+                .setHeader(KafkaHeaders.RECEIVED_TOPIC, "test")
+                .setHeader("CHARGES_DELTA_RETRY_COUNT", 1)
+                .setHeader(KafkaHeaders.RECEIVED_PARTITION_ID, "partition_1")
+                .setHeader(KafkaHeaders.OFFSET, "offset_1")
+                .build();
+    }
+
     public InternalChargeApi mockInternalChargeApi()
     {
         InternalChargeApi internalChargeApi = new InternalChargeApi();
