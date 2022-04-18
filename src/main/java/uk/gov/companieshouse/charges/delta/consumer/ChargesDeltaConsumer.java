@@ -5,7 +5,9 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.kafka.retrytopic.FixedDelayStrategy;
+import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.charges.delta.exception.NonRetryableErrorException;
@@ -40,10 +42,17 @@ public class ChargesDeltaConsumer {
     @KafkaListener(topics = "${charges.delta.topic}",
             groupId = "${charges.delta.group-id}",
             containerFactory = "listenerContainerFactory")
-    public void receiveMainMessages(Message<ChsDelta> chsDeltaMessage) {
+    public void receiveMainMessages(Message<ChsDelta> chsDeltaMessage,
+                                    @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
         logger.info("A new message read from charges-delta topic with payload: "
                 + chsDeltaMessage.getPayload());
-        deltaProcessor.processDelta(chsDeltaMessage);
+        try {
+            deltaProcessor.processDelta(chsDeltaMessage);
+        } catch (Exception exception) {
+            logger.error(String.format("Exception occurred while processing the topic: %s "
+                    + "with message: %s", topic, chsDeltaMessage), exception);
+            throw exception;
+        }
     }
 
 }

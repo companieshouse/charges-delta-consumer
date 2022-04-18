@@ -2,7 +2,7 @@ package uk.gov.companieshouse.charges.delta.transformer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.json.JSONException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,14 +19,15 @@ import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
 import uk.gov.companieshouse.charges.delta.config.TestConfig;
+import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
 import uk.gov.companieshouse.charges.delta.model.TestData;
 import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
 import uk.gov.companieshouse.logging.Logger;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @ExtendWith(SpringExtension.class)
@@ -56,9 +57,7 @@ public class ChargesApiTransformerTest {
 
     @Test
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidChargesMessage_Expect_ValidTransformedInternal() throws IOException,
-            JSONException, NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+    void When_ValidChargesMessage_Expect_ValidTransformedInternal() throws Exception {
 
         ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-2.json");
 
@@ -71,15 +70,11 @@ public class ChargesApiTransformerTest {
         JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true)));
-
-
     }
 
     @Test
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidChargesMessage_Expect_ValidTransformedInternal_minimum() throws IOException,
-            JSONException, NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+    void When_ValidChargesMessage_Expect_ValidTransformedInternal_minimum() throws Exception {
 
         ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-3.json");
 
@@ -92,15 +87,11 @@ public class ChargesApiTransformerTest {
         JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true)));
-
-
     }
 
     @Test
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_Unmatched_NoticeType_Expect_ValidTransformedInternal() throws IOException,
-            JSONException, NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+    void When_ValidMessage_With_Unmatched_NoticeType_Expect_ValidTransformedInternal() throws Exception {
 
         ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-4.json");
 
@@ -114,14 +105,11 @@ public class ChargesApiTransformerTest {
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true)));
 
-
     }
 
     @Test
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_Several_NoticeTypes_Expect_ValidTransformedInternal() throws IOException,
-            JSONException, NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+    void When_ValidMessage_With_Several_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
 
         ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-5.json");
 
@@ -136,14 +124,11 @@ public class ChargesApiTransformerTest {
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true)));
 
-
     }
 
     @Test
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_Different_NoticeTypes_Expect_ValidTransformedInternal() throws IOException,
-            JSONException, NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+    void When_ValidMessage_With_Different_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
 
         ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-6.json");
 
@@ -157,14 +142,11 @@ public class ChargesApiTransformerTest {
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true)));
 
-
     }
 
     @Test
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_MR10_NoticeTypes_Expect_ValidTransformedInternal() throws IOException,
-            JSONException, NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+    void When_ValidMessage_With_MR10_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
 
         ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-7.json");
 
@@ -178,14 +160,11 @@ public class ChargesApiTransformerTest {
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true)));
 
-
     }
 
     @Test
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_LLRM01_NoticeTypes_Expect_ValidTransformedInternal() throws IOException,
-            JSONException, NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+    void When_ValidMessage_With_LLRM01_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
 
         ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-8.json");
 
@@ -199,14 +178,11 @@ public class ChargesApiTransformerTest {
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true)));
 
-
     }
 
     @Test
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_419bScot_NoticeTypes_Expect_ValidTransformedInternal() throws IOException,
-            JSONException, NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+    void When_ValidMessage_With_419bScot_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
 
         ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-9.json");
 
@@ -220,14 +196,11 @@ public class ChargesApiTransformerTest {
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true)));
 
-
     }
 
     @Test
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_395_NoticeTypes_Expect_ValidTransformedInternal() throws IOException,
-            JSONException, NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+    void When_ValidMessage_With_395_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
 
         ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-10.json");
 
@@ -241,14 +214,11 @@ public class ChargesApiTransformerTest {
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true)));
 
-
     }
 
     @Test
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_RM01_NoticeTypes_Expect_ValidTransformedInternal() throws IOException,
-            JSONException, NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+    void When_ValidMessage_With_RM01_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
 
         ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-11.json");
 
@@ -262,14 +232,11 @@ public class ChargesApiTransformerTest {
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true)));
 
-
     }
 
     @Test
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_LLMG01s_NoticeTypes_Expect_ValidTransformedInternal() throws IOException,
-            JSONException, NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+    void When_ValidMessage_With_LLMG01s_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
 
         ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-12.json");
 
@@ -283,6 +250,13 @@ public class ChargesApiTransformerTest {
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true)));
 
+    }
 
+    @Test
+    @DisplayName("Throws a Retryable error when there's an issue with the transformation")
+    void When_ErrorDuringTransformation_ThenThrowRetryableErrorException() {
+        Charge charge = new Charge();
+
+        assertThrows(RetryableErrorException.class, () -> transformer.transform(charge,testData.createKafkaHeaders()));
     }
 }
