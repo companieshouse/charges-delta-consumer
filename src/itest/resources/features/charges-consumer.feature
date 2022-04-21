@@ -4,7 +4,7 @@ Feature: Process Charges Delta information
 
     Given Charges delta consumer service is running
     When a message with payload "<deltaMessage>" is published to topic
-    Then the Consumer should process and send a request with payload "<apiRequest>" to the Charges Data API
+    Then the Consumer should process and send a request with payload "<apiRequest>" to the Charges Data API getting back 200
 
   Examples:
     | deltaMessage                | apiRequest                           |

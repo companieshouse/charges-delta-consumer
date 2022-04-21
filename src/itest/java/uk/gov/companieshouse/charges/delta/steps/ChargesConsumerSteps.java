@@ -5,10 +5,14 @@ import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.apache.commons.io.FileUtils;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.json.JSONException;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeEach;
 import org.skyscreamer.jsonassert.Customization;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -19,32 +23,15 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.util.ResourceUtils;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
 import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
 import uk.gov.companieshouse.charges.delta.service.ApiClientService;
-import uk.gov.companieshouse.stream.EventRecord;
-import uk.gov.companieshouse.stream.ResourceChangedData;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getAllServeEvents;
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
-import static com.github.tomakehurst.wiremock.client.WireMock.patch;
-import static com.github.tomakehurst.wiremock.client.WireMock.patchRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.removeEventsByStubMetadata;
@@ -53,7 +40,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.common.Metadata.metadata;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class ChargesConsumerSteps {
@@ -93,7 +79,8 @@ public class ChargesConsumerSteps {
     }
 
     @When("a message with payload {string} is published to topic")
-    public void a_message_is_published_to_topic(String dataFile) throws InterruptedException, IOException {
+    public void a_message_is_published_to_topic(String dataFile)
+            throws InterruptedException, IOException {
         setupWiremock();
 
         String chargesDeltaDataJson = testData.loadInputFile(dataFile);
@@ -107,8 +94,10 @@ public class ChargesConsumerSteps {
         countDownLatch.await(5, TimeUnit.SECONDS);
     }
 
-    @Then("the Consumer should process and send a request with payload {string} to the Charges Data API")
-    public void should_process_and_send_a_request_to_the_charges_data_api(String apiRequestPayloadFile) throws JSONException {
+    @Then("the Consumer should process and send a request with payload {string} "
+            + "to the Charges Data API getting back {int}")
+    public void should_process_and_send_a_request_to_the_charges_data_api(
+            String apiRequestPayloadFile, int responseCode) throws JSONException {
 
         List<ServeEvent> allServeEvents = getAllServeEvents();
         Optional<ServeEvent> serveEvent = allServeEvents.stream().findFirst();
@@ -118,14 +107,18 @@ public class ChargesConsumerSteps {
                 urlEqualTo("/company/" + companyNumber + "/charge/" + chargeId
                 + "/internal"))
                 .withRequestBody(matchingJsonPath("$.internal_data.delta_at")));
-        //assert all fields in the payload, except for delta_at as wiremock is treating it differently
+
+        assertThat(serveEvent.get().getResponse().getStatus()).isEqualTo(responseCode);
+        //assert all fields in the payload, except for delta_at as wiremock is
+        // treating it differently
         //delta_at is being verified above using jsonpath
         JSONAssert.assertEquals(testData.loadOutputFile(apiRequestPayloadFile), request,
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true),
                         new Customization("internal_data.delta_at", (o1, o2) -> true)));
 
-        removeEventsByStubMetadata(matchingJsonPath("$.tags[0]", equalTo("a_message_is_published_to_topic")));
+        removeEventsByStubMetadata(matchingJsonPath("$.tags[0]",
+                equalTo("a_message_is_published_to_topic")));
 
         wireMockServer.stop();
     }
