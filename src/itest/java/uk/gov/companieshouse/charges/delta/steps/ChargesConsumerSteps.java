@@ -96,7 +96,7 @@ public class ChargesConsumerSteps {
     public void a_message_is_published_to_topic(String dataFile) throws InterruptedException, IOException {
         setupWiremock();
 
-        String chargesDeltaDataJson = testData.loadFile(dataFile);
+        String chargesDeltaDataJson = testData.loadInputFile(dataFile);
         ChargesDelta chargesDeltaData = testData.createChargesDelta(chargesDeltaDataJson);
         companyNumber = chargesDeltaData.getCharges().get(0).getCompanyNumber();
         chargeId = chargesDeltaData.getCharges().get(0).getId();
@@ -120,7 +120,7 @@ public class ChargesConsumerSteps {
                 .withRequestBody(matchingJsonPath("$.internal_data.delta_at")));
         //assert all fields in the payload, except for delta_at as wiremock is treating it differently
         //delta_at is being verified above using jsonpath
-        JSONAssert.assertEquals(testData.loadFile(apiRequestPayloadFile), request,
+        JSONAssert.assertEquals(testData.loadOutputFile(apiRequestPayloadFile), request,
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true),
                         new Customization("internal_data.delta_at", (o1, o2) -> true)));

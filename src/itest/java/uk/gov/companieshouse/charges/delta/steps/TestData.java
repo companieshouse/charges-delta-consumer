@@ -41,12 +41,21 @@ public class TestData {
                 .build();
     }
 
-    public String loadFile(String fileName) {
+    public String loadFile(String dir, String fileName) {
         try {
-            return FileUtils.readFileToString(ResourceUtils.getFile("classpath:payloads/"+fileName), StandardCharsets.UTF_8);
+            return FileUtils.readFileToString(ResourceUtils.getFile("classpath:payloads/"+ dir
+                    + "/" + fileName), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(String.format("Unable to locate file %s", fileName));
         }
+    }
+
+    public String loadInputFile(String fileName) {
+        return loadFile("input", fileName);
+    }
+
+    public String loadOutputFile(String fileName) {
+        return loadFile("output", fileName);
     }
 
     public ChargesDelta createChargesDelta(String chargesDeltaData) throws IOException {
