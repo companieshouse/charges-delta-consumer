@@ -7,6 +7,18 @@ Feature: Process Charges Delta information
     Then the Consumer should process and send a request with payload "<apiRequest>" to the Charges Data API getting back 200
 
   Examples:
-    | deltaMessage                | apiRequest                           |
-    | charges-delta-source-2.json | internal-charges-api-expected-2.json |
-    | Additional_notices_Happy_Path.json | Additional_notices_Happy_Path_output_correct_body.json |
+    | deltaMessage                                         | apiRequest                                                  |
+    | charges-delta-source-2.json                          | internal-charges-api-expected-2.json                        |
+    | Additional_notices_Happy_Path.json                   | Additional_notices_Happy_Path_output_correct_body.json      |
+    | alterations_to_order_alteration_to_prohibitions.json | alterations_to_order_alteration_to_prohibitions_output.json |
+    | assets_ceased_released_Happy_Path.json               | assets_ceased_released_output.json                          |
+    | created_on_Happy_Path.json               | created_on_output.json                          |
+    | floating_charge_Happy_Path.json              | floating_charge_output.json                          |
+
+
+
+
+
+
+
+

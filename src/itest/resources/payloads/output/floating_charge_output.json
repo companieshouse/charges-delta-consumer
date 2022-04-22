@@ -1,55 +1,82 @@
-
-    {
+{
   "external_data": {
     "persons_entitled": [
-     {
+      {
         "name": "NATIONAL WESTMINSTER BANK PLC"
       }
     ],
-    "charge_number": 816,
+    "charge_number": 817,
     "particulars": {
       "type": "brief-description",
-      "description": "Land at Coopers Lane Northaw Potters Bar Hertfordshire\\nsdcsdscscsc",
-      "contains_floating_charge": false,
-      "contains_fixed_charge": true,
+      "description": "UNIT 7 CALLYWITH GATE INDUSTRIAL ESTATE, LAUNCESTON ROAD, BODMIN, PL31 2RQ\\n",
+      "contains_floating_charge": true,
+      "contains_fixed_charge": false,
       "floating_charge_covers_all": false,
       "contains_negative_pledge": true,
-      "chargor_acting_as_bare_trustee": true
+      "chargor_acting_as_bare_trustee": false
     },
-    "charge_code":"012033960817",
+    "charge_code": "012033960817",
     "links": {
-           "self": "/company/01203396/charges/NUFERkZEQUU4MTU5MDQ4NUFCMEFDNDIzQjQ5QURBRDcxMzA2NjgwNg=="
-         },
+      "self": "/company/01203396/charges/NUFERkZEQUU4MTU5MDQ4NUFCMEFDNDIzQjQ5QURBRDcxMzA2NjgwNg=="
+    },
     "transactions": [
       {
-        "filing_type": "acquire-charge-with-deed-with-court-order",
+        "filing_type": "acquire-charge-with-deed",
         "transaction_id": null,
-        "delivered_on": null,
+        "delivered_on": [2017,3,16],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/01203396/filing-history/MzE3MDMxOTQzMGFkaXF6a2N4",
+          "filing": "/company/01203396/filing-history/MzE3MTI3MTc1MXRyYW5zSWRfc2FsdA==",
+          "insolvency_case": null
+        }
+      },
+      {
+        "filing_type": "charge-satisfaction",
+        "transaction_id": null,
+        "delivered_on": [
+          2019,
+          7,
+          10
+        ],
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/01203396/filing-history/MzIzOTg0Mjk5MnRyYW5zSWRfc2FsdA==",
           "insolvency_case": null
         }
       }
     ],
     "insolvency_cases": null,
     "links": {
-      "self": "/company/01203396/charges/Gn8EhnT4vqbZ7dEpVtye67uIuRo="
+      "self": "/company/01203396/charges/Fm26IH1ZZUnOBpJsKkFyfnEm624="
     },
-    "status": "outstanding",
+    "status": "fully-satisfied",
     "assets_ceased_released": null,
-    "acquired_on": "2016-07-29T00:00:00.000Z",
-    "delivered_on": "2017-02-25T00:00:00.000Z",
+    "acquired_on": [
+      2017,
+      3,
+      16
+    ],
+    "delivered_on": [
+      2017,
+      3,
+      16
+    ],
     "resolved_on": null,
     "covering_instrument_date": null,
-    "created_on": "2016-07-29T00:00:00.000Z",
-    "satisfied_on": null,
-
+    "created_on": [
+      2016,
+      6,
+      17
+    ],
+    "satisfied_on": [
+      2019,
+      7,
+      10
+    ],
     "classification": {
       "type": "charge-description",
       "description": "A REGISTERED CHARGE"
     },
-    
     "secured_details": {
       "type": "obligations-secured",
       "description": "A REGISTERED CHARGE"
@@ -61,12 +88,10 @@
       "has_alterations_to_prohibitions": false,
       "has_restricting_provisions": false
     },
-    "more_than_four_persons_entitled": false,
-
-    
+    "more_than_four_persons_entitled": false
   },
   "internal_data": {
     "delta_at": "20211029142043360560",
-    "updated_by": "test-partition_1-offset_1"
+    "updated_by": "charges-delta-0-0"
   }
 }
