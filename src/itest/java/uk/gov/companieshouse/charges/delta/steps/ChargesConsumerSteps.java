@@ -5,13 +5,11 @@ import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.Customization;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -44,30 +42,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ChargesConsumerSteps {
 
-    @Value("${wiremock.server.port}")
-    private String port;
-
-    @Value("${charges.delta.topic}")
-    private String topic;
-
-    private static WireMockServer wireMockServer;
-
-    private String companyNumber;
-
-    private String chargeId;
-
-    @Autowired
-    private ApiClientService apiClientService;
-
-    @Autowired
-    private EncoderUtil encoderUtil;
-
     @Autowired
     public KafkaTemplate<String, Object> kafkaTemplate;
-
     @Autowired
     protected TestRestTemplate restTemplate;
-
+    @Value("${charges.delta.topic}")
+    private String topic;
+    private WireMockServer wireMockServer = new WireMockServer(8888);
+    private String companyNumber;
+    private String chargeId;
+    @Autowired
+    private ApiClientService apiClientService;
+    @Autowired
+    private EncoderUtil encoderUtil;
     private TestData testData = new TestData();
 
     @Given("Charges delta consumer service is running")
@@ -105,13 +92,14 @@ public class ChargesConsumerSteps {
         //verify put request along with delta_at
         verify(1, putRequestedFor(
                 urlEqualTo("/company/" + companyNumber + "/charge/" + chargeId
-                + "/internal"))
+                        + "/internal"))
                 .withRequestBody(matchingJsonPath("$.internal_data.delta_at")));
 
         assertThat(serveEvent.get().getResponse().getStatus()).isEqualTo(responseCode);
-        //assert all fields in the payload, except for delta_at as wiremock is
+        //assert ALL fields in the payload, except for delta_at as wiremock is
         // treating it differently
         //delta_at is being verified above using jsonpath
+        System.out.println("Request = " + request);
         JSONAssert.assertEquals(testData.loadOutputFile(apiRequestPayloadFile), request,
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true),
@@ -119,14 +107,12 @@ public class ChargesConsumerSteps {
 
         removeEventsByStubMetadata(matchingJsonPath("$.tags[0]",
                 equalTo("a_message_is_published_to_topic")));
-
         wireMockServer.stop();
     }
 
     private void setupWiremock() {
-        wireMockServer = new WireMockServer(Integer.parseInt(port));
         wireMockServer.start();
-        configureFor("localhost", Integer.parseInt(port));
+        configureFor("localhost", wireMockServer.port());
     }
 
     private void stubChargeDataApi(String testMethodIdentifier) {

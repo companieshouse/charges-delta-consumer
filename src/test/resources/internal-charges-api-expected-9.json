@@ -56,7 +56,7 @@
       {
         "filing_type": "charge-released-floating-charge-in-scotland-pre-2006-companies-act",
         "transaction_id": null,
-        "delivered_on": null,
+        "delivered_on": "2015-03-14",
         "insolvency_case_number": null,
         "links": {
           "filing": "/company/08601674/filing-history/MzExOTcwMzkxNnRyYW5zSWRfc2FsdA==",

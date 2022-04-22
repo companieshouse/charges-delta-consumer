@@ -9,3 +9,4 @@ Feature: Process Charges Delta information
   Examples:
     | deltaMessage                | apiRequest                           |
     | charges-delta-source-2.json | internal-charges-api-expected-2.json |
+    | Additional_notices_Happy_Path.json | Additional_notices_Happy_Path_output_correct_body.json |

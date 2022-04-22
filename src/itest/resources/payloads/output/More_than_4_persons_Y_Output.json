@@ -1,0 +1,101 @@
+
+        {
+  "external_data": {
+    "persons_entitled":[ 
+    {"person":"MICHAEL BEVAN"},
+    {"person":"MICHAEL D M THOMAS"},
+    {"person":"CLIVE FRANKTON"},
+    {"person":"JANE REES"}
+        ],
+        "charge_number" : 6,
+        "particulars" : {
+            "type" : null,
+            "description" : null,
+            "contains_floating_charge" : true,
+            "contains_fixed_charge" : false,
+            "floating_charge_covers_all" : true,
+            "contains_negative_pledge" : true,
+            "chargor_acting_as_bare_trustee" : false
+        },
+
+        "links": {
+           "self": "/company/00285630/charges/NTdBQUUzMUI2OTg1RENBRTY3MTdDNjYwMTAzMDBDQzc2M0MyQzlFRA=="
+         },
+
+         },
+        "more_than_four_persons_entitled" : false,
+        "persons_entitled" : [ 
+            {
+                "name" : "MICHAEL BEVAN"
+            }, 
+            {
+                "name" : "MICHAEL D M THOMAS"
+            }, 
+            {
+                "name" : "CLIVE FRANKTON"
+            }, 
+            {
+                "name" : "JANE REES"
+            }
+        ],
+        "charge_code" : "002856300006",
+        "transactions" : [ 
+            {
+                "filing_type" : "",
+                "transaction_id" : null,
+                "delivered_on" :"2021-11-19",
+                "insolvency_case_number" : null,
+                "links" : {
+                    "filing" : "/company/00285630/filing-history/MzMyMDk3NzM3OWFkaXF6a2N4",
+                    "insolvency_case" : null
+                }
+            }, 
+            {
+                "filing_type" : "charge-satisfaction-limited-liability-partnership",
+                "transaction_id" : null,
+                "delivered_on" : null,
+                "insolvency_case_number" : null,
+                "links" : {
+                    "filing" : "/company/00285630/filing-history/MzE2MjA1MzI1NWFkaXF6a2N4",
+                    "insolvency_case" : null
+                }
+            }
+        ],
+        "insolvency_cases" : null,
+        "links" : {
+            "self" : "/company/00285630/charges/GyHMFQhgQJbWriC6S488kvtyRUY="
+        }
+    },
+
+        "status" : "fully-satisfied",
+        "assets_ceased_released" : null,
+        "acquired_on" : null,
+        "delivered_on" : "2016-11-01",
+        "resolved_on" : null,
+        "covering_instrument_date":"2016-10-19T",
+        "created_on" :"2016-10-19T",
+        "satisfied_on" :"2021-11-19",
+        "more_than_four_persons_entitled" : true
+
+        "classification" : {
+            "type" : "charge-description",
+            "description" : "A REGISTERED CHARGE"
+        },
+        
+        "secured_details" : {
+            "type" : "obligations-secured",
+            "description" : "A REGISTERED CHARGE"
+        },
+        "scottish_alterations" : {
+            "type" : null,
+            "description" : null,
+            "has_alterations_to_order" : false,
+            "has_alterations_to_prohibitions" : false,
+            "has_restricting_provisions" : false
+        }
+        
+     "internal_data": {
+     "delta_at": "20211029142043360560",
+     "updated_by": "test-partition_1-offset_1"
+   }
+  }

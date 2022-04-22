@@ -56,7 +56,7 @@
       {
         "filing_type": "create-charge",
         "transaction_id": null,
-        "delivered_on": null,
+        "delivered_on": "1989-03-15",
         "insolvency_case_number": null,
         "links": {
           "filing": null,
