@@ -15,8 +15,8 @@
       "contains_negative_pledge": true
     },
     "secured_details": {
-      "type": "obligations-secured",
-      "description": "A REGISTERED CHARGE"
+      "type": "amount-secured",
+      "description": "£220,000.00                              AND ALL OTHER MONIES DUE OR TO BECOME DUE"
     },
     "scottish_alterations": {
       "type": null,
@@ -40,7 +40,7 @@
     "transactions": [
       {
         "filing_type": "charge-satisfaction-pre-2006-companies-act",
-        "transaction_id": null,
+        "transaction_id": 3387778,
         "delivered_on": [2016,12,16],
         "insolvency_case_number": 1,
         "links": {

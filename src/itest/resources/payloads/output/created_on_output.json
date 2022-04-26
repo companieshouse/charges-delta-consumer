@@ -39,14 +39,10 @@
     "covering_instrument_date": [2008,12,3],
     "created_on": [2016,7,29],
     "satisfied_on": null,
-    "more_than_four_persons_entitled": null,
+    "more_than_four_persons_entitled": false,
     "persons_entitled": null,
     "classification": {
       "type": "charge-description",
-      "description": "A REGISTERED CHARGE"
-    },
-    "secured_details": {
-      "type": "obligations-secured",
       "description": "A REGISTERED CHARGE"
     },
     "scottish_alterations": {

@@ -26,8 +26,8 @@
       "chargor_acting_as_bare_trustee": false
     },
     "secured_details": {
-      "type": "obligations-secured",
-      "description": "FLOATING CHARGE"
+      "type": "amount-secured",
+      "description": "ALL SUMS DUE OR TO BECOME DUE"
     },
     "scottish_alterations": {
       "type": null,
@@ -36,7 +36,7 @@
       "has_alterations_to_prohibitions": false,
       "has_restricting_provisions": true
     },
-    "more_than_four_persons_entitled": null,
+    "more_than_four_persons_entitled": false,
     "persons_entitled": [
       {
         "name": "H I D B"
@@ -45,7 +45,7 @@
     "transactions": [
       {
         "filing_type": "charge-satisfaction-scotland-pre-2006-companies-act",
-        "transaction_id": null,
+        "transaction_id": 127126285,
         "delivered_on": "1998-03-24",
         "insolvency_case_number": null,
         "links": {

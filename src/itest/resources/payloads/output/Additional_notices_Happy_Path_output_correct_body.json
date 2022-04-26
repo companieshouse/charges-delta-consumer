@@ -15,10 +15,6 @@
       "contains_negative_pledge": true,
       "chargor_acting_as_bare_trustee": false
     },
-    "secured_details": {
-      "type": null,
-      "description": null
-    },
     "scottish_alterations": {
       "type": null,
       "description": null,
@@ -33,7 +29,7 @@
     "transactions": [
       {
         "filing_type": "charge-part-both",
-        "transaction_id": null,
+        "transaction_id": 3247323133,
         "delivered_on": [2019,10,22],
         "insolvency_case_number": null,
         "links": {
@@ -43,7 +39,7 @@
       },
       {
         "filing_type": "charge-part-satisfaction",
-        "transaction_id": null,
+        "transaction_id": 3247979346,
         "delivered_on": [2019,10,29],
         "insolvency_case_number": null,
         "links": {
@@ -53,7 +49,7 @@
       },
       {
         "filing_type": "charge-part-release",
-        "transaction_id": null,
+        "transaction_id": 3248292521,
         "delivered_on": [2019,11,1],
         "insolvency_case_number": null,
         "links": {
@@ -76,10 +72,6 @@
     "classification": {
       "description": "A REGISTERED CHARGE",
       "type": "charge-description"
-    },
-    "secured_details": {
-      "type": "obligations-secured",
-      "description": "A REGISTERED CHARGE"
     },
     "delivered_on": [2019,10,17],
     "assets_ceased_released": "multiple-filings",

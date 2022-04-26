@@ -22,30 +22,23 @@
     "scottish_alterations": {
       "type": null,
       "description": null,
-      "has_alterations_to_order": null,
-      "has_alterations_to_prohibitions": null,
-      "has_restricting_provisions": null
+      "has_alterations_to_order": false,
+      "has_alterations_to_prohibitions": false,
+      "has_restricting_provisions": false
     },
     "charge_code": "102862370001",
-    "insolvency_cases": [
-      {
-        "case_number": null,
-        "transaction_id": null,
-        "links": null
-      }
-    ],
     "links": {
-      "self": "/company/131242070049/charges/BzRiNTU3NjNjZWI1Y2YxMzkzYWY3MzQ0YzVlOTg4ZGVhZTBkYWI4Ng=="
+      "self": "/company/10286237/charges/eVLj32udeaZ533Y8Gunh38Rz-dc="
     },
-    "created_on": null,
+    "created_on": [2019,3,5],
     "transactions": [
       {
-        "filing_type": "create-charge-without-deed-with-court-order",
+        "filing_type": "create-charge-without-deed",
         "transaction_id": null,
-        "delivered_on": "2019-03-18",
+        "delivered_on": [2019,3,18],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/10286237/filing-history/MzIyOTk0NzQyMmFkaXF6a2N4",
+          "filing": "/company/10286237/filing-history/MzIyOTk0NzQyMnRyYW5zSWRfc2FsdA==",
           "insolvency_case": null
         }
       }
@@ -55,18 +48,15 @@
       "description": "Floating Charge",
       "type": "nature-of-charge"
     },
-   
-    "delivered_on": "2019-03-18",
+    "delivered_on": [2019,3,18],
     "assets_ceased_released": null,
     "acquired_on": null,
-    "delivered_on": null,
     "resolved_on": null,
-    "covering_instrument_date": null,
     "more_than_four_persons_entitled": false,
     "satisfied_on": null
   },
   "internal_data": {
-    "updated_by": "test-partition_1-offset_1",
+    "updated_by": "charges-delta-0-0",
     "delta_at": "2015-06-25T22:00:00.000Z"
   }
 }

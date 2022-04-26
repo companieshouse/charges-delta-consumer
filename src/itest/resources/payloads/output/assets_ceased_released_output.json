@@ -22,7 +22,7 @@
     "transactions": [
       {
         "filing_type": "charge-whole-release",
-        "transaction_id": null,
+        "transaction_id": 3118956563,
         "delivered_on": [2015,3,2],
         "insolvency_case_number": null,
         "links": {
@@ -53,14 +53,14 @@
     "covering_instrument_date": null,
     "created_on": [2003,8,4],
     "satisfied_on": null,
-    "more_than_four_persons_entitled": null,
+    "more_than_four_persons_entitled": false,
     "classification": {
       "type": "charge-description",
       "description": "MORTGAGE"
     },
     "secured_details": {
-      "type": "obligations-secured",
-      "description": "MORTGAGE"
+      "type": "amount-secured",
+      "description": "ALL MONIES DUE OR TO BECOME DUE FROM UMBRO INTERNATIONAL LIMITED TO THE TRUSTEE OR ANY OF THE OTHER BENEFICIARIES        UNDER THE TERMS OF THE AFOREMENTIONED INSTRUMENT CREATING OR EVIDENCING THE CHARGE"
     },
     "scottish_alterations": {
       "type": null,

@@ -17,7 +17,7 @@ public interface TransactionsApiMapper {
 
     @Mapping(target = "links.filing", source = "transId")
     @Mapping(target = "filingType", ignore = true)
-    @Mapping(target = "transactionId", ignore = true)
+    @Mapping(target = "transactionId", source = "transId")
     @Mapping(target = "insolvencyCaseNumber", source = "case")
     @Mapping(target = "deliveredOn", ignore = true)
     TransactionsApi additionalNoticeToTransactionsApi(AdditionalNotice additionalNotice);
