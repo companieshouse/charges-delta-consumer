@@ -99,7 +99,6 @@ public class ChargesConsumerSteps {
         //assert ALL fields in the payload, except for delta_at as wiremock is
         // treating it differently
         //delta_at is being verified above using jsonpath
-        System.out.println("Request = " + request);
         JSONAssert.assertEquals(testData.loadOutputFile(apiRequestPayloadFile), request,
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true),
