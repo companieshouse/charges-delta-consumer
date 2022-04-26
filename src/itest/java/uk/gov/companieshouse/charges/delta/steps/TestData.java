@@ -2,31 +2,13 @@ package uk.gov.companieshouse.charges.delta.steps;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.commons.io.FileUtils;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.util.ResourceUtils;
-import uk.gov.companieshouse.api.charges.ChargesApi;
-import uk.gov.companieshouse.api.charges.InternalChargeApi;
-import uk.gov.companieshouse.api.charges.InternalData;
-import uk.gov.companieshouse.api.delta.AdditionalNotice;
-import uk.gov.companieshouse.api.delta.Charge;
-import uk.gov.companieshouse.api.delta.ChargesDelta;
-import uk.gov.companieshouse.api.delta.Person;
-import uk.gov.companieshouse.delta.ChsDelta;
-
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import org.apache.commons.io.FileUtils;
+import org.springframework.util.ResourceUtils;
+import uk.gov.companieshouse.api.delta.ChargesDelta;
+import uk.gov.companieshouse.delta.ChsDelta;
 
 public class TestData {
 

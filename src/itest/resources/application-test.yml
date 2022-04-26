@@ -28,7 +28,3 @@ api:
 wiremock:
   server:
     port: 8888
-
-logging:
-  level:
-    uk.gov.companieshouse.logging: trace
