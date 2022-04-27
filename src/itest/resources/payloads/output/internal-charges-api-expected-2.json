@@ -1,6 +1,5 @@
 {
   "external_data": {
-    "id": "3000606655",
     "persons_entitled": [
       {
         "name": "THE GOVERNOR AND COMPANY OF THE BANK OF IRELAND"
@@ -37,12 +36,12 @@
     "links": {
       "self": "/company/NI622400/charges/NLVXY861zxOTr3NExemI3q4Nq4Y="
     },
-    "created_on": "2014-08-04",
+    "created_on": [2014,8,4],
     "transactions": [
       {
         "filing_type": "charge-satisfaction-pre-2006-companies-act",
         "transaction_id": 3387778,
-        "delivered_on": "2016-12-16",
+        "delivered_on": [2016,12,16],
         "insolvency_case_number": 1,
         "links": {
           "filing": "/company/NI622400/filing-history/MzM4Nzc3OHRyYW5zSWRfc2FsdA==",
@@ -52,7 +51,7 @@
       {
         "filing_type": "create-charge-with-deed-with-charles-court-order",
         "transaction_id": null,
-        "delivered_on": "2014-12-16",
+        "delivered_on": [2014,12,16],
         "insolvency_case_number": null,
         "links": {
           "filing": "/company/NI622400/filing-history/MzExMzg5MjgyM3RyYW5zSWRfc2FsdA==",
@@ -66,17 +65,17 @@
       "type": "charge-description"
     },
     "etag": "cee2625e329e4961e84e6df35f171f3e644a0f90",
-    "delivered_on": "2017-12-16",
+    "delivered_on": [2017,12,16],
     "assets_ceased_released": "property-ceased-to-belong",
-    "acquired_on": "1982-06-10",
-    "delivered_on": "2014-12-16",
+    "acquired_on": [1982,6,10],
+    "delivered_on": [2014,12,16],
     "resolved_on": null,
-    "covering_instrument_date": "1993-08-09",
+    "covering_instrument_date": [1993,8,9],
     "more_than_four_persons_entitled": false,
-    "satisfied_on": "1999-12-01"
+    "satisfied_on": [1999,12,1]
   },
   "internal_data": {
-    "updated_by": "test-partition_1-offset_1",
-    "delta_at":"2021-10-29T14:20:43.36056Z"
+    "updated_by": "charges-delta-0-0",
+    "delta_at": "1.63551724336056E9"
   }
 }

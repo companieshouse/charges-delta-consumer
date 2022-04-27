@@ -49,7 +49,8 @@ public interface ChargeApiMapper {
             expression = "java(org.apache.commons.lang3.BooleanUtils"
                     + ".toBoolean(charge.getAlterationsToProhibitions()))")
     @Mapping(target = "moreThanFourPersonsEntitled",
-            source = "moreThan4Persons")
+            expression = "java(org.apache.commons.lang3.BooleanUtils"
+                    + ".toBoolean(sourceCharge.getMoreThan4Persons()))")
     @Mapping(target = "transactions", source = "additionalNotices")
     @Mapping(target = "links", ignore = true)
     @Mapping(target = "insolvencyCases", source = "insolvencyCases")
@@ -116,12 +117,15 @@ public interface ChargeApiMapper {
             NoSuchMethodException, IllegalAccessException {
         SecuredDetailsApi securedDetailsApi = chargeApi.getSecuredDetails() == null
                 ? new SecuredDetailsApi() : chargeApi.getSecuredDetails();
+        if (!StringUtils.isEmpty(charge.getObligationsSecured())
+                || !StringUtils.isEmpty(charge.getAmountSecured())) {
+            stringToSecuredDetailsApiEnum(charge.getObligationsSecured(), securedDetailsApi,
+                    SecuredDetailsApi.TypeEnum.OBLIGATIONS_SECURED);
+            stringToSecuredDetailsApiEnum(charge.getAmountSecured(), securedDetailsApi,
+                    SecuredDetailsApi.TypeEnum.AMOUNT_SECURED);
+            chargeApi.setSecuredDetails(securedDetailsApi);
+        }
 
-        stringToSecuredDetailsApiEnum(charge.getType(), securedDetailsApi,
-                SecuredDetailsApi.TypeEnum.OBLIGATIONS_SECURED);
-        stringToSecuredDetailsApiEnum(charge.getNatureOfCharge(), securedDetailsApi,
-                SecuredDetailsApi.TypeEnum.AMOUNT_SECURED);
-        chargeApi.setSecuredDetails(securedDetailsApi);
     }
 
     /**
@@ -185,7 +189,9 @@ public interface ChargeApiMapper {
                                                SecuredDetailsApi securedDetailsApi,
                                                SecuredDetailsApi.TypeEnum theEnum)
             throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        stringToEnum(property, securedDetailsApi, theEnum);
+        if (!StringUtils.isEmpty(property)) {
+            stringToEnum(property, securedDetailsApi, theEnum);
+        }
     }
 
     /**

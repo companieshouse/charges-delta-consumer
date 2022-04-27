@@ -1,0 +1,69 @@
+{
+  "charges": [
+    {
+      "company_number": "04796390",
+      "delta_at": "20211029142043360560",
+      "id": "2000035972",
+      "persons_entitled": [
+        {
+          "person": "CLYDESDALE BANK PLC"
+        }
+      ],
+      "notice_type": "395",
+      "trans_id": "2005468736",
+      "trans_desc": "PARTICULARS OF A MORTGAGE OR CHARGE / CHARGE NO: 17",
+      "submission_type": "5",
+      "delivered_on": "20080513",
+      "additional_notices": [
+        {
+          "notice_type": "RM01",
+          "trans_id": "3129317274",
+          "trans_desc": "NOTICE OF APPOINTMENT OF RECEIVER OR MANAGER:LIQ. CASE NO.1:IP NO.00009406,00009446",
+          "submission_type": "5",
+          "case": "1",
+          "delivered_on": "20150812"
+        },
+        {
+          "notice_type": "RM02",
+          "trans_id": "3167238133",
+          "trans_desc": "NOTICE OF CEASING TO ACT AS RECEIVER OR MANAGER:LIQ. CASE NO.1:IP NO.00009406",
+          "submission_type": "5",
+          "case": "1",
+          "delivered_on": "20170114"
+        },
+        {
+          "notice_type": "RM02",
+          "trans_id": "3167238272",
+          "trans_desc": "NOTICE OF CEASING TO ACT AS RECEIVER OR MANAGER:LIQ. CASE NO.1:IP NO.00009446",
+          "submission_type": "5",
+          "case": "1",
+          "delivered_on": "20170114"
+        }
+      ],
+      "insolvency_cases": [
+        {
+          "case": "1",
+          "transaction_id": "3129317274"
+        }
+      ],
+      "charge_number": "17",
+      "migrated_from": "CHIPS",
+      "amount_secured": "All monies due or to become due from the company to the chargee on any account whatsoever",
+      "type": "Legal Mortgage",
+      "short_particulars": "34 MEADOW LANE, ST HELENS assigns the goodwill of all businesses, from time to time carried on at the property, with the benefit of all authorisations, permits, registration certificates or licences of any kind, also by way of fixed charge the equipment & goods (if any) & all other fixtures, fittings, plant & machinery & by way of floating charge on other moveable plant, machinery, furniture, equipment, goods & other effects which are from time to time on the property",
+      "short_particular_flags": [
+        {
+          "fixed_charge": "no",
+          "contains_floating_charge": "no",
+          "floating_charge_all": "no",
+          "negative_pledge": "no",
+          "bare_trustee": "no"
+        }
+      ],
+      "status": "0",
+      "delivered_on": "20080513",
+      "created_on": "20080507"
+    }
+  ]
+}
+	

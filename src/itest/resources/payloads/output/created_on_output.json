@@ -1,0 +1,60 @@
+{
+  "external_data": {
+    "persons_entitled": null,
+    "charge_number": 1,
+    "particulars": {
+      "type": null,
+      "description": null,
+      "contains_floating_charge": null,
+      "contains_fixed_charge": null,
+      "floating_charge_covers_all": null,
+      "contains_negative_pledge": null,
+      "chargor_acting_as_bare_trustee": null
+    },
+    "charge_code": null,
+    "links": {
+      "self": "/company/05288218/charges/MTQ2MzBGQjVEREY4QTFGMzQ4MTQ1QkVBRTAyRUM5NTVDM0E3RjQzOQ=="
+    },
+    "transactions": [
+      {
+        "filing_type": "create-charge-series-debentures-pre-2006-companies-act",
+        "transaction_id": null,
+        "delivered_on": [2008,12,23],
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/05288218/filing-history/MjAyMTQ0OTE0NHRyYW5zSWRfc2FsdA==",
+          "insolvency_case": null
+        }
+      }
+    ],
+    "insolvency_cases": null,
+    "links": {
+      "self": "/company/05288218/charges/Zltbgp66gvXKkcgm0Bxz9ohS2Yc="
+    },
+    "status": "outstanding",
+    "assets_ceased_released": null,
+    "acquired_on": null,
+    "delivered_on": [2008,12,23],
+    "resolved_on": null,
+    "covering_instrument_date": [2008,12,3],
+    "created_on": [2016,7,29],
+    "satisfied_on": null,
+    "more_than_four_persons_entitled": false,
+    "persons_entitled": null,
+    "classification": {
+      "type": "charge-description",
+      "description": "A REGISTERED CHARGE"
+    },
+    "scottish_alterations": {
+      "type": null,
+      "description": null,
+      "has_alterations_to_order": false,
+      "has_alterations_to_prohibitions": false,
+      "has_restricting_provisions": false
+    }
+  },
+  "internal_data": {
+    "delta_at": "20211029142043360560",
+    "updated_by": "charges-delta-0-0"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "charges": [
+    {
+      "company_number": "01203396",
+      "delta_at": "20211029142043360560",
+      "id": "3000900477",
+      "more_than_4_persons": "N",
+      "persons_entitled": [
+        {
+          "person": "NATIONAL WESTMINSTER BANK PLC"
+        }
+      ],
+      "notice_type": "MR02",
+      "trans_id": "3171271751",
+      "trans_desc": "ACQUISITION OF A CHARGE / CHARGE CODE  012033960817",
+      "submission_type": "2",
+      "delivered_on": "20170316",
+      "additional_notices": [
+        {
+          "notice_type": "MR04",
+          "trans_id": "3239842992",
+          "trans_desc": "STATEMENT OF SATISFACTION OF A CHARGE / FULL / CHARGE CODE 012033960817",
+          "submission_type": "5",
+          "delivered_on": "20190710"
+        }
+      ],
+      "code": "012033960817",
+      "charge_number": "817",
+      "migrated_from": "CHIPS",
+      "type": "A REGISTERED CHARGE",
+      "brief_description": "UNIT 7 CALLYWITH GATE INDUSTRIAL ESTATE, LAUNCESTON ROAD, BODMIN, PL31 2RQ\\n",
+      "short_particular_flags": [
+        {
+          "fixed_charge": "no",
+          "contains_floating_charge": "yes",
+          "floating_charge_all": "no",
+          "negative_pledge": "yes",
+          "bare_trustee": "no"
+        }
+      ],
+      "status": "1",
+      "satisfied_on": "20190710",
+      "delivered_on": "20170316",
+      "acquired_on": "20170316",
+      "floating_charge": "Y",
+      "created_on": "20160617"
+    }
+  ]
+}

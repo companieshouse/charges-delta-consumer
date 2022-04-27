@@ -1,0 +1,62 @@
+{
+  "external_data": {
+    "persons_entitled": [
+      {
+        "name": "WENDY KERR"
+      }
+    ],
+    "charge_number": 1,
+    "particulars": {
+      "floating_charge_covers_all": false,
+      "type": "charged-property-or-undertaking-description",
+      "contains_floating_charge": false,
+      "description": "OVER USED CAR STOCK",
+      "contains_fixed_charge": false,
+      "contains_negative_pledge": false,
+      "chargor_acting_as_bare_trustee": false
+    },
+    "secured_details": {
+      "type": "obligations-secured",
+      "description": "£225,000 DUE OR TO BECOME DUE"
+    },
+    "scottish_alterations": {
+      "type": null,
+      "description": null,
+      "has_alterations_to_order": false,
+      "has_alterations_to_prohibitions": false,
+      "has_restricting_provisions": false
+    },
+    "charge_code": "102862370001",
+    "links": {
+      "self": "/company/10286237/charges/eVLj32udeaZ533Y8Gunh38Rz-dc="
+    },
+    "created_on": [2019,3,5],
+    "transactions": [
+      {
+        "filing_type": "create-charge-without-deed",
+        "transaction_id": null,
+        "delivered_on": [2019,3,18],
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/10286237/filing-history/MzIyOTk0NzQyMnRyYW5zSWRfc2FsdA==",
+          "insolvency_case": null
+        }
+      }
+    ],
+    "status": "outstanding",
+    "classification": {
+      "description": "Floating Charge",
+      "type": "nature-of-charge"
+    },
+    "delivered_on": [2019,3,18],
+    "assets_ceased_released": null,
+    "acquired_on": null,
+    "resolved_on": null,
+    "more_than_four_persons_entitled": false,
+    "satisfied_on": null
+  },
+  "internal_data": {
+    "updated_by": "charges-delta-0-0",
+    "delta_at": "2015-06-25T22:00:00.000Z"
+  }
+}

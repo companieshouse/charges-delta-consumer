@@ -25,10 +25,6 @@
       "contains_negative_pledge": null,
       "chargor_acting_as_bare_trustee": null
     },
-    "secured_details": {
-      "type": "obligations-secured",
-      "description": "A REGISTERED CHARGE"
-    },
     "scottish_alterations": {
       "type": null,
       "description": null,
@@ -36,13 +32,13 @@
       "has_alterations_to_prohibitions": false,
       "has_restricting_provisions": false
     },
-    "more_than_four_persons_entitled": null,
+    "more_than_four_persons_entitled": false,
     "persons_entitled": null,
     "transactions": [
       {
         "filing_type": "",
         "transaction_id": null,
-        "delivered_on": null,
+        "delivered_on": "2008-12-23",
         "insolvency_case_number": null,
         "links": {
           "filing": "/company/05288218/filing-history/MjAyMTQ0OTE0NHRyYW5zSWRfc2FsdA==",

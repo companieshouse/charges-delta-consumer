@@ -1,0 +1,93 @@
+{
+  "external_data": {
+    "persons_entitled": [
+      {
+        "name": "NATIONAL WESTMINSTER BANK PLC"
+      }
+    ],
+    "charge_number": 817,
+    "particulars": {
+      "type": "brief-description",
+      "description": "UNIT 7 CALLYWITH GATE INDUSTRIAL ESTATE, LAUNCESTON ROAD, BODMIN, PL31 2RQ\\n",
+      "contains_floating_charge": true,
+      "contains_fixed_charge": false,
+      "floating_charge_covers_all": false,
+      "contains_negative_pledge": true,
+      "chargor_acting_as_bare_trustee": false
+    },
+    "charge_code": "012033960817",
+    "links": {
+      "self": "/company/01203396/charges/NUFERkZEQUU4MTU5MDQ4NUFCMEFDNDIzQjQ5QURBRDcxMzA2NjgwNg=="
+    },
+    "transactions": [
+      {
+        "filing_type": "acquire-charge-with-deed",
+        "transaction_id": null,
+        "delivered_on": [2017,3,16],
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/01203396/filing-history/MzE3MTI3MTc1MXRyYW5zSWRfc2FsdA==",
+          "insolvency_case": null
+        }
+      },
+      {
+        "filing_type": "charge-satisfaction",
+        "transaction_id": 3239842992,
+        "delivered_on": [
+          2019,
+          7,
+          10
+        ],
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/01203396/filing-history/MzIzOTg0Mjk5MnRyYW5zSWRfc2FsdA==",
+          "insolvency_case": null
+        }
+      }
+    ],
+    "insolvency_cases": null,
+    "links": {
+      "self": "/company/01203396/charges/Fm26IH1ZZUnOBpJsKkFyfnEm624="
+    },
+    "status": "fully-satisfied",
+    "assets_ceased_released": null,
+    "acquired_on": [
+      2017,
+      3,
+      16
+    ],
+    "delivered_on": [
+      2017,
+      3,
+      16
+    ],
+    "resolved_on": null,
+    "covering_instrument_date": null,
+    "created_on": [
+      2016,
+      6,
+      17
+    ],
+    "satisfied_on": [
+      2019,
+      7,
+      10
+    ],
+    "classification": {
+      "type": "charge-description",
+      "description": "A REGISTERED CHARGE"
+    },
+    "scottish_alterations": {
+      "type": null,
+      "description": null,
+      "has_alterations_to_order": false,
+      "has_alterations_to_prohibitions": false,
+      "has_restricting_provisions": false
+    },
+    "more_than_four_persons_entitled": false
+  },
+  "internal_data": {
+    "delta_at": "20211029142043360560",
+    "updated_by": "charges-delta-0-0"
+  }
+}

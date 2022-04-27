@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.charges.delta.transformer;
 
-import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -120,6 +120,8 @@ public class ChargesApiTransformer {
                 ? encode(companyNumber, charge.getTransId()) : null);
         transactionsApi.setLinks(transactionsLinks);
         transactionsApi.setFilingType(getFilingType(charge));
+        transactionsApi.setDeliveredOn(LocalDate.parse(charge.getDeliveredOn(),
+                        DateTimeFormatter.ofPattern("yyyyMMdd")));
         chargeApi.addTransactionsItem(transactionsApi);
     }
 
