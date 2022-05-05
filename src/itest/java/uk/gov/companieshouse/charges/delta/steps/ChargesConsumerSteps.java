@@ -87,16 +87,17 @@ public class ChargesConsumerSteps {
     public void should_process_and_send_a_request_to_the_charges_data_api(
             String apiRequestPayloadFile, int responseCode) throws JSONException {
 
-        List<ServeEvent> allServeEvents = getAllServeEvents();
-        Optional<ServeEvent> serveEvent = allServeEvents.stream().findFirst();
-        String request = serveEvent.get().getRequest().getBodyAsString();
+        List<ServeEvent> serverEvents = testSupport.getServeEvents();
+        assertThat(serverEvents.size()).isEqualTo(1);
+        assertThat(serverEvents.isEmpty()).isFalse(); // assert that the wiremock did something
+        String request = serverEvents.get(0).getRequest().getBodyAsString();
         //verify put request along with delta_at
         verify(1, putRequestedFor(
                 urlEqualTo("/company/" + companyNumber + "/charge/" + chargeId
                         + "/internal"))
                 .withRequestBody(matchingJsonPath("$.internal_data.delta_at")));
 
-        assertThat(serveEvent.get().getResponse().getStatus()).isEqualTo(responseCode);
+        assertThat(serverEvents.get(0).getResponse().getStatus()).isEqualTo(responseCode);
         //assert ALL fields in the payload, except for delta_at as wiremock is
         // treating it differently
         //delta_at is being verified above using jsonpath

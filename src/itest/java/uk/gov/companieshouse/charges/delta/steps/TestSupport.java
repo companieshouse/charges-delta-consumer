@@ -5,8 +5,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import org.apache.commons.io.FileUtils;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.util.ResourceUtils;
@@ -81,5 +84,10 @@ public class TestSupport {
             throw new RuntimeException("Wiremock not initialised");
         }
         wireMockServer.resetRequests();
+    }
+
+    public List<ServeEvent> getServeEvents() {
+        return wireMockServer != null ? wireMockServer.getAllServeEvents() :
+                new ArrayList<>();
     }
 }
