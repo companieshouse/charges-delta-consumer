@@ -47,11 +47,11 @@ class ApiClientServiceImplTest {
                 any(PrivateChargesUpsert.class));
 
         ApiResponse<Void> response2 = apiClientService2.putCharge("context_id", "12345678",
-                "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA==",
+                "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA",
                 new InternalChargeApi());
         verify(apiClientService2).executeOp(anyString(), eq("putCharge"),
                 eq("/company/12345678/charge/" +
-                        "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA==/internal"),
+                        "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA/internal"),
                 any(PrivateChargesUpsert.class));
 
         assertThat(response2).isEqualTo(response);

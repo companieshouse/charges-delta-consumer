@@ -26,7 +26,7 @@ import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
 import uk.gov.companieshouse.charges.delta.service.ApiClientService;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.getAllServeEvents;
 import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
@@ -48,14 +48,15 @@ public class ChargesConsumerSteps {
     protected TestRestTemplate restTemplate;
     @Value("${charges.delta.topic}")
     private String topic;
-    private WireMockServer wireMockServer = new WireMockServer(8888);
+    private WireMockServer wireMockServer;
     private String companyNumber;
     private String chargeId;
     @Autowired
     private ApiClientService apiClientService;
     @Autowired
     private EncoderUtil encoderUtil;
-    private TestData testData = new TestData();
+    @Autowired
+    private TestSupport testSupport;
 
     @Given("Charges delta consumer service is running")
     public void charges_delta_consumer_service_is_running() {
@@ -68,15 +69,15 @@ public class ChargesConsumerSteps {
     @When("a message with payload {string} is published to topic")
     public void a_message_is_published_to_topic(String dataFile)
             throws InterruptedException, IOException {
-        setupWiremock();
+        wireMockServer = testSupport.setupWiremock();
 
-        String chargesDeltaDataJson = testData.loadInputFile(dataFile);
-        ChargesDelta chargesDeltaData = testData.createChargesDelta(chargesDeltaDataJson);
+        String chargesDeltaDataJson = testSupport.loadInputFile(dataFile);
+        ChargesDelta chargesDeltaData = testSupport.createChargesDelta(chargesDeltaDataJson);
         companyNumber = chargesDeltaData.getCharges().get(0).getCompanyNumber();
         chargeId = chargesDeltaData.getCharges().get(0).getId();
         chargeId = encoderUtil.encodeWithSha1(chargeId);
         stubChargeDataApi("a_message_is_published_to_topic");
-        kafkaTemplate.send(topic, testData.createChsDeltaMessage(chargesDeltaDataJson));
+        kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson));
         CountDownLatch countDownLatch = new CountDownLatch(1);
         countDownLatch.await(5, TimeUnit.SECONDS);
     }
@@ -99,19 +100,13 @@ public class ChargesConsumerSteps {
         //assert ALL fields in the payload, except for delta_at as wiremock is
         // treating it differently
         //delta_at is being verified above using jsonpath
-        JSONAssert.assertEquals(testData.loadOutputFile(apiRequestPayloadFile), request,
+        JSONAssert.assertEquals(testSupport.loadOutputFile(apiRequestPayloadFile), request,
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("external_data.etag", (o1, o2) -> true),
                         new Customization("internal_data.delta_at", (o1, o2) -> true)));
 
         removeEventsByStubMetadata(matchingJsonPath("$.tags[0]",
                 equalTo("a_message_is_published_to_topic")));
-        wireMockServer.stop();
-    }
-
-    private void setupWiremock() {
-        wireMockServer.start();
-        configureFor("localhost", wireMockServer.port());
     }
 
     private void stubChargeDataApi(String testMethodIdentifier) {

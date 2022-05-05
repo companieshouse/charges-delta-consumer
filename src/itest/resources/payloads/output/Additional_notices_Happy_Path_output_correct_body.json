@@ -23,7 +23,7 @@
     },
     "charge_code": "081242070049",
     "links": {
-      "self": "/company/08124207/charges/vxRpuvN7Cgiokh1jt3Io0u3maWY="
+      "self": "/company/08124207/charges/vxRpuvN7Cgiokh1jt3Io0u3maWY"
     },
     "created_on": [2019,10,11],
     "transactions": [
@@ -33,7 +33,7 @@
         "delivered_on": [2019,10,22],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/08124207/filing-history/MzI0NzMyMzEzM3RyYW5zSWRfc2FsdA==",
+          "filing": "/company/08124207/filing-history/MzI0NzMyMzEzM3RyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       },
@@ -43,7 +43,7 @@
         "delivered_on": [2019,10,29],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/08124207/filing-history/MzI0Nzk3OTM0NnRyYW5zSWRfc2FsdA==",
+          "filing": "/company/08124207/filing-history/MzI0Nzk3OTM0NnRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       },
@@ -53,7 +53,7 @@
         "delivered_on": [2019,11,1],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/08124207/filing-history/MzI0ODI5MjUyMXRyYW5zSWRfc2FsdA==",
+          "filing": "/company/08124207/filing-history/MzI0ODI5MjUyMXRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       },
@@ -63,7 +63,7 @@
         "delivered_on": [2019,10,17],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/08124207/filing-history/MzI0NzA2NDA2M3RyYW5zSWRfc2FsdA==",
+          "filing": "/company/08124207/filing-history/MzI0NzA2NDA2M3RyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       }

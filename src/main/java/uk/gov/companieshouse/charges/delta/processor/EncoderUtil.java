@@ -1,12 +1,15 @@
 package uk.gov.companieshouse.charges.delta.processor;
 
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import uk.gov.companieshouse.charges.delta.exception.NonRetryableErrorException;
 
 @Component
 public class EncoderUtil {
@@ -32,7 +35,8 @@ public class EncoderUtil {
     }
 
     public String base64Encode(final byte[] plainValue) {
-        return Base64.encodeBase64String(plainValue);
+
+        return Base64.encodeBase64URLSafeString(plainValue);
     }
 
     /**
@@ -53,10 +57,11 @@ public class EncoderUtil {
      */
     public String encodeWithSha1(String plain) {
         var sha1Value = getSha1Digest(plain);
-        var base10 = new BigInteger(sha1Value, 16); // base 10 int
-        return new String(Base64.encodeInteger(base10))
-                .replace("+", "-")
-                .replace("/", "_"); // base64 string
+        try {
+            return base64Encode(Hex.decodeHex(sha1Value));
+        } catch (DecoderException exception) {
+            throw new NonRetryableErrorException("Invalid hex encountered");
+        }
     }
 
     /**
@@ -71,6 +76,5 @@ public class EncoderUtil {
         }
         return base64Encode((plain + TRANS_ID_SALT).getBytes(StandardCharsets.UTF_8));
     }
-
 
 }

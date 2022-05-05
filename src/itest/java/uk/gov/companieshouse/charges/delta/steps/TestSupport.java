@@ -5,14 +5,25 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
 import org.apache.commons.io.FileUtils;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.util.ResourceUtils;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
 import uk.gov.companieshouse.delta.ChsDelta;
 
-public class TestData {
+import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
+
+public class TestSupport {
 
     private ObjectMapper objectMapper;
+    private static WireMockServer wireMockServer = null;
+    KafkaTemplate<String, Object> kafkaTemplate;
+
+    public TestSupport(KafkaTemplate<String, Object> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
     public ChsDelta createChsDeltaMessage(String chargesDeltaData) throws IOException {
 
@@ -54,4 +65,21 @@ public class TestData {
         return objectMapper;
     }
 
+    public WireMockServer setupWiremock() {
+        if (wireMockServer == null) {
+            wireMockServer = new WireMockServer(8888);
+            wireMockServer.start();
+            configureFor("localhost", wireMockServer.port());
+        } else {
+            resetWiremock();
+        }
+        return wireMockServer;
+    }
+
+    public void resetWiremock() {
+        if (wireMockServer == null) {
+            throw new RuntimeException("Wiremock not initialised");
+        }
+        wireMockServer.resetRequests();
+    }
 }

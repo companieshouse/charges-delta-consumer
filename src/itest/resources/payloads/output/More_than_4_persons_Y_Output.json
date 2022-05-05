@@ -25,7 +25,7 @@
       "chargor_acting_as_bare_trustee": false
     },
     "links": {
-      "self": "/company/00285630/charges/NTdBQUUzMUI2OTg1RENBRTY3MTdDNjYwMTAzMDBDQzc2M0MyQzlFRA=="
+      "self": "/company/00285630/charges/NTdBQUUzMUI2OTg1RENBRTY3MTdDNjYwMTAzMDBDQzc2M0MyQzlFRA"
     },
     "more_than_four_persons_entitled": true,
     "persons_entitled": [
@@ -50,7 +50,7 @@
         "delivered_on": [2021,11,19],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/00285630/filing-history/MzMyMDk3NzM3OXRyYW5zSWRfc2FsdA==",
+          "filing": "/company/00285630/filing-history/MzMyMDk3NzM3OXRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       },
@@ -60,14 +60,14 @@
         "delivered_on": [2016,11,1],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/00285630/filing-history/MzE2MjA1MzI1NXRyYW5zSWRfc2FsdA==",
+          "filing": "/company/00285630/filing-history/MzE2MjA1MzI1NXRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       }
     ],
     "insolvency_cases": null,
     "links": {
-      "self": "/company/00285630/charges/uK2-CmXFEg_0qFF_31yfHkeBbG4="
+      "self": "/company/00285630/charges/uK2-CmXFEg_0qFF_31yfHkeBbG4"
     },
     "status": "fully-satisfied",
     "delivered_on": [2016,11,1],

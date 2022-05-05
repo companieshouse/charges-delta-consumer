@@ -17,7 +17,7 @@
     },
     "charge_code": "012033960817",
     "links": {
-      "self": "/company/01203396/charges/NUFERkZEQUU4MTU5MDQ4NUFCMEFDNDIzQjQ5QURBRDcxMzA2NjgwNg=="
+      "self": "/company/01203396/charges/NUFERkZEQUU4MTU5MDQ4NUFCMEFDNDIzQjQ5QURBRDcxMzA2NjgwNg"
     },
     "transactions": [
       {
@@ -26,7 +26,7 @@
         "delivered_on": [2017,3,16],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/01203396/filing-history/MzE3MTI3MTc1MXRyYW5zSWRfc2FsdA==",
+          "filing": "/company/01203396/filing-history/MzE3MTI3MTc1MXRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       },
@@ -40,14 +40,14 @@
         ],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/01203396/filing-history/MzIzOTg0Mjk5MnRyYW5zSWRfc2FsdA==",
+          "filing": "/company/01203396/filing-history/MzIzOTg0Mjk5MnRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       }
     ],
     "insolvency_cases": null,
     "links": {
-      "self": "/company/01203396/charges/Fm26IH1ZZUnOBpJsKkFyfnEm624="
+      "self": "/company/01203396/charges/Fm26IH1ZZUnOBpJsKkFyfnEm624"
     },
     "status": "fully-satisfied",
     "assets_ceased_released": null,
