@@ -29,7 +29,7 @@
     "transactions": [
       {
         "filing_type": "charge-part-both",
-        "transaction_id": 3247323133,
+        "transaction_id": null,
         "delivered_on": [2019,10,22],
         "insolvency_case_number": null,
         "links": {
@@ -39,7 +39,7 @@
       },
       {
         "filing_type": "charge-part-satisfaction",
-        "transaction_id": 3247979346,
+        "transaction_id": null,
         "delivered_on": [2019,10,29],
         "insolvency_case_number": null,
         "links": {
@@ -49,7 +49,7 @@
       },
       {
         "filing_type": "charge-part-release",
-        "transaction_id": 3248292521,
+        "transaction_id": null,
         "delivered_on": [2019,11,1],
         "insolvency_case_number": null,
         "links": {

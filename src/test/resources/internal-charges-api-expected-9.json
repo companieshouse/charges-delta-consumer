@@ -41,7 +41,7 @@
     "transactions": [
       {
         "filing_type": "charge-satisfaction",
-        "transaction_id": 3312780976,
+        "transaction_id": null,
         "delivered_on": "2021-09-03",
         "insolvency_case_number": null,
         "links": {

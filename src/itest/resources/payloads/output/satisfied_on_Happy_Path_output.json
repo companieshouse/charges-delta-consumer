@@ -40,7 +40,7 @@
       },
       {
         "filing_type": "charge-satisfaction-limited-liability-partnership",
-        "transaction_id": 3192976624,
+        "transaction_id": null,
         "delivered_on": [2017,12,15],
         "insolvency_case_number": null,
         "links": {

@@ -22,7 +22,7 @@
     "transactions": [
       {
         "filing_type": "charge-satisfaction-scotland-pre-2006-companies-act",
-        "transaction_id": 127126285,
+        "transaction_id": null,
         "delivered_on": [1998,3,24],
         "insolvency_case_number": null,
         "links": {

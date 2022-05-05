@@ -22,7 +22,7 @@
     "transactions": [
       {
         "filing_type": "charge-whole-release",
-        "transaction_id": 3118956563,
+        "transaction_id": null,
         "delivered_on": [2015,3,2],
         "insolvency_case_number": null,
         "links": {

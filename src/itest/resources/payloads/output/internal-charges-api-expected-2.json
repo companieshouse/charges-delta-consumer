@@ -40,7 +40,7 @@
     "transactions": [
       {
         "filing_type": "charge-satisfaction-pre-2006-companies-act",
-        "transaction_id": 3387778,
+        "transaction_id": null,
         "delivered_on": [2016,12,16],
         "insolvency_case_number": 1,
         "links": {

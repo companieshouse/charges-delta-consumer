@@ -49,7 +49,7 @@
       },
       {
         "filing_type": "liquidation-appointment-of-receiver",
-        "transaction_id": 3129317274,
+        "transaction_id": null,
         "delivered_on": [2015,8,12],
         "insolvency_case_number": 1,
         "links": {
@@ -59,7 +59,7 @@
       },
       {
         "filing_type": "liquidation-cease-to-act-receiver",
-        "transaction_id": 3167238133,
+        "transaction_id": null,
         "delivered_on": [2017,1,14],
         "insolvency_case_number": 1,
         "links": {
@@ -69,7 +69,7 @@
       },
       {
         "filing_type": "liquidation-cease-to-act-receiver",
-        "transaction_id": 3167238272,
+        "transaction_id": null,
         "delivered_on": [2017,1,14],
         "insolvency_case_number": 1,
         "links": {
