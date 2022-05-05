@@ -22,9 +22,10 @@ import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 import uk.gov.companieshouse.charges.delta.exception.RetryableTopicErrorInterceptor;
 import uk.gov.companieshouse.charges.delta.serialization.ChsDeltaSerializer;
+import uk.gov.companieshouse.charges.delta.steps.TestSupport;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.charges.delta.serialization.ChsDeltaDeserializer;
-import uk.gov.companieshouse.kafka.producer.CHKafkaProducer;
+
 
 @TestConfiguration
 public class KafkaTestContainerConfig {
@@ -92,6 +93,11 @@ public class KafkaTestContainerConfig {
     @Bean
     public KafkaTemplate<String, Object> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory(kafkaContainer()));
+    }
+
+    @Bean
+    public TestSupport testSupportBean(){
+        return new TestSupport(kafkaTemplate());
     }
 
 }

@@ -28,7 +28,7 @@
     },
     "charge_code": "102862370001",
     "links": {
-      "self": "/company/10286237/charges/eVLj32udeaZ533Y8Gunh38Rz-dc="
+      "self": "/company/10286237/charges/eVLj32udeaZ533Y8Gunh38Rz-dc"
     },
     "created_on": [2019,3,5],
     "transactions": [
@@ -38,7 +38,7 @@
         "delivered_on": [2019,3,18],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/10286237/filing-history/MzIyOTk0NzQyMnRyYW5zSWRfc2FsdA==",
+          "filing": "/company/10286237/filing-history/MzIyOTk0NzQyMnRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       }

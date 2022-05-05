@@ -45,11 +45,11 @@
     "transactions": [
       {
         "filing_type": "charge-satisfaction-scotland-pre-2006-companies-act",
-        "transaction_id": 127126285,
+        "transaction_id": null,
         "delivered_on": "1998-03-24",
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/SC109614/filing-history/MDEyNzEyNjI4NXRyYW5zSWRfc2FsdA==",
+          "filing": "/company/SC109614/filing-history/MDEyNzEyNjI4NXRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       },
@@ -66,7 +66,7 @@
     ],
     "insolvency_cases": null,
     "links": {
-      "self": "/company/SC109614/charges/2xTnBwLDKIAwKOKePuaUtr4Im6Y="
+      "self": "/company/SC109614/charges/2xTnBwLDKIAwKOKePuaUtr4Im6Y"
     }
   },
   "internal_data": {

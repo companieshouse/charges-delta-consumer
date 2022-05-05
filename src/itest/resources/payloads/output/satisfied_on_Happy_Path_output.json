@@ -24,7 +24,7 @@
     },
     "charge_code": "OC3420230003",
     "links": {
-      "self": "/company/OC342023/charges/TnYWNS5p1GdMPVGvNXIx63D5Uc8="
+      "self": "/company/OC342023/charges/TnYWNS5p1GdMPVGvNXIx63D5Uc8"
     },
     "created_on": [2015,12,18],
     "transactions": [
@@ -34,17 +34,17 @@
         "delivered_on": [2016,3,18],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/OC342023/filing-history/MzE0NTE4NjY3N3RyYW5zSWRfc2FsdA==",
+          "filing": "/company/OC342023/filing-history/MzE0NTE4NjY3N3RyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       },
       {
         "filing_type": "charge-satisfaction-limited-liability-partnership",
-        "transaction_id": 3192976624,
+        "transaction_id": null,
         "delivered_on": [2017,12,15],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/OC342023/filing-history/MzE5Mjk3NjYyNHRyYW5zSWRfc2FsdA==",
+          "filing": "/company/OC342023/filing-history/MzE5Mjk3NjYyNHRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       }

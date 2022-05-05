@@ -33,23 +33,21 @@ class EncoderUtilTest {
 
     @Test
     void encode() {
-        String expectedValue = "2e6X44GGkwsvYqCd5HF6a42mWZs="
-                .replace("+", "-")
-                .replace("/", "_");
+        String expectedValue = "2e6X44GGkwsvYqCd5HF6a42mWZs";
         String encodeValue = encoderUtil.encodeWithSha1("3000117455");
         assertThat(encodeValue).isEqualTo(expectedValue);
     }
 
     @Test
     void encodeWithoutSha1() {
-        String expectedValue = "MzAwMDExNzQ1NXNvbWV0ZXN0Mg==";
+        String expectedValue = "MzAwMDExNzQ1NXNvbWV0ZXN0Mg";
         String encodeValue = encoderUtil.encodeWithoutSha1("3000117455");
         assertThat(encodeValue).isEqualTo(expectedValue);
     }
 
     @Test
     void encode_charged_Id_which_generates_value_with_slash() {
-        String expectedValue = "613cXqSXAA1Ce_fpkFQ9ZP_L5ZQ=";
+        String expectedValue = "613cXqSXAA1Ce_fpkFQ9ZP_L5ZQ";
         String encodeValue = encoderUtil.encodeWithSha1("3101283055");
         assertThat(encodeValue).isEqualTo(expectedValue);
 

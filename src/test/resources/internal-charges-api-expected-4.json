@@ -41,14 +41,14 @@
         "delivered_on": "2008-12-23",
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/05288218/filing-history/MjAyMTQ0OTE0NHRyYW5zSWRfc2FsdA==",
+          "filing": "/company/05288218/filing-history/MjAyMTQ0OTE0NHRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       }
     ],
     "insolvency_cases": null,
     "links": {
-      "self": "/company/05288218/charges/Zltbgp66gvXKkcgm0Bxz9ohS2Yc="
+      "self": "/company/05288218/charges/Zltbgp66gvXKkcgm0Bxz9ohS2Yc"
     }
   },
   "internal_data": {

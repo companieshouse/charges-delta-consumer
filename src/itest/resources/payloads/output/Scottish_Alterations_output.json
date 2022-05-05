@@ -16,13 +16,13 @@
       "chargor_acting_as_bare_trustee": false
     },
     "links": {
-      "self": "/company/SC109614/charges/REU4N0IyMTI5MUQ0NDFGODVDQzdDNzQ3MjFBMzg5N0EyNjIzQ0YxMw=="
+      "self": "/company/SC109614/charges/REU4N0IyMTI5MUQ0NDFGODVDQzdDNzQ3MjFBMzg5N0EyNjIzQ0YxMw"
     },
     "charge_code": null,
     "transactions": [
       {
         "filing_type": "charge-satisfaction-scotland-pre-2006-companies-act",
-        "transaction_id": 127126285,
+        "transaction_id": null,
         "delivered_on": [
           1998,
           3,
@@ -30,7 +30,7 @@
         ],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/SC109614/filing-history/MDEyNzEyNjI4NXRyYW5zSWRfc2FsdA==",
+          "filing": "/company/SC109614/filing-history/MDEyNzEyNjI4NXRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       },
@@ -47,7 +47,7 @@
     ],
     "insolvency_cases": null,
     "links": {
-      "self": "/company/SC109614/charges/2xTnBwLDKIAwKOKePuaUtr4Im6Y="
+      "self": "/company/SC109614/charges/2xTnBwLDKIAwKOKePuaUtr4Im6Y"
     },
     "status": "fully-satisfied",
     "assets_ceased_released": null,

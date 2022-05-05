@@ -16,17 +16,17 @@
       "chargor_acting_as_bare_trustee": false
     },
     "links": {
-      "self": "/company/03674789/charges/MkNCRDZFODY1OTQ2MjcxNTgxREUzNjZCM0RCQTQ5MDkzNzFDRTgxRQ=="
+      "self": "/company/03674789/charges/MkNCRDZFODY1OTQ2MjcxNTgxREUzNjZCM0RCQTQ5MDkzNzFDRTgxRQ"
     },
     "charge_code": null,
     "transactions": [
       {
         "filing_type": "charge-whole-release",
-        "transaction_id": 3118956563,
+        "transaction_id": null,
         "delivered_on": [2015,3,2],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/03674789/filing-history/MzExODk1NjU2M3RyYW5zSWRfc2FsdA==",
+          "filing": "/company/03674789/filing-history/MzExODk1NjU2M3RyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       },
@@ -36,14 +36,14 @@
         "delivered_on": [2003,8,11],
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/03674789/filing-history/MDAyNjgxOTI1NHRyYW5zSWRfc2FsdA==",
+          "filing": "/company/03674789/filing-history/MDAyNjgxOTI1NHRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       }
     ],
     "insolvency_cases": null,
     "links": {
-      "self": "/company/03674789/charges/1UQh5rv070hvrx4UZdS-EnmPHpM="
+      "self": "/company/03674789/charges/1UQh5rv070hvrx4UZdS-EnmPHpM"
     },
     "status": "outstanding",
     "assets_ceased_released": "whole-property-released",

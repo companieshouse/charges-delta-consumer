@@ -41,11 +41,11 @@
     "transactions": [
       {
         "filing_type": "charge-satisfaction",
-        "transaction_id": 3312780976,
+        "transaction_id": null,
         "delivered_on": "2021-09-03",
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/08601674/filing-history/MzMxMjc4MDk3NnRyYW5zSWRfc2FsdA==",
+          "filing": "/company/08601674/filing-history/MzMxMjc4MDk3NnRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       },
@@ -55,14 +55,14 @@
         "delivered_on": "2015-03-14",
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/08601674/filing-history/MzExOTcwMzkxNnRyYW5zSWRfc2FsdA==",
+          "filing": "/company/08601674/filing-history/MzExOTcwMzkxNnRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       }
     ],
     "insolvency_cases": null,
     "links": {
-      "self": "/company/08601674/charges/YssQtdIMlTXB_tREkeE5iiLBSQ8="
+      "self": "/company/08601674/charges/YssQtdIMlTXB_tREkeE5iiLBSQ8"
     }
   },
   "internal_data": {
