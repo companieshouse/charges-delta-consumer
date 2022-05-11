@@ -3,6 +3,8 @@ package uk.gov.companieshouse.charges.delta.serialization;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.delta.ChsDelta;
@@ -22,9 +24,10 @@ public class ChsDeltaSerializerTest {
         serializer = new ChsDeltaSerializer(logger);
     }
 
-    @Test
-    void When_serialize_Expect_chsDeltaBytes() {
-        ChsDelta chsDelta = new ChsDelta("{\"key\": \"value\"}", 1, "context_id");
+    @ParameterizedTest
+    @ValueSource(booleans =  {true, false})
+    void When_serialize_Expect_chsDeltaBytes(boolean isDelete) {
+        ChsDelta chsDelta = new ChsDelta("{\"key\": \"value\"}", 1, "context_id", isDelete);
 
         byte[] result = serializer.serialize("", chsDelta);
 

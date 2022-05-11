@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.charges.delta.model;
+package uk.gov.companieshouse.charges.delta.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class TestData {
+public class TestSupport {
 
     private ObjectMapper objectMapper;
     public ChargesDelta createChargesDelta() {
@@ -71,7 +71,7 @@ public class TestData {
         return chargesDelta;
     }
 
-    public Message<ChsDelta> createChsDeltaMessage(String fileName) throws IOException {
+    public Message<ChsDelta> createChsDeltaMessage(String fileName, boolean isDelete) throws IOException {
         InputStreamReader exampleChargesJsonPayload = new InputStreamReader(
                 Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(fileName)));
         String chargesData = FileCopyUtils.copyToString(exampleChargesJsonPayload);
@@ -80,6 +80,7 @@ public class TestData {
                 .setData(chargesData)
                 .setContextId("context_id")
                 .setAttempt(1)
+                .setIsDelete(isDelete)
                 .build();
 
         return MessageBuilder
@@ -91,11 +92,12 @@ public class TestData {
                 .build();
     }
 
-    public Message<ChsDelta> createInvalidChsDeltaMessage() {
+    public Message<ChsDelta> createInvalidChsDeltaMessage(boolean isDelete) {
         ChsDelta mockChsDelta = ChsDelta.newBuilder()
                 .setData("invalid data")
                 .setContextId("context_id")
                 .setAttempt(1)
+                .setIsDelete(isDelete)
                 .build();
 
         return MessageBuilder

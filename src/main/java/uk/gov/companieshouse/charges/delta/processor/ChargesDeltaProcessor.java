@@ -14,6 +14,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.delta.Charge;
+import uk.gov.companieshouse.api.delta.ChargesDeleteDelta;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.charges.delta.exception.NonRetryableErrorException;
@@ -54,8 +55,9 @@ public class ChargesDeltaProcessor {
         final ChsDelta payload = chsDelta.getPayload();
         final String logContext = payload.getContextId();
         final Map<String, Object> logMap = new HashMap<>();
-        final ChargesDelta chargesDelta = mapToChargesDelta(payload);
-
+        final ChargesDelta chargesDelta = mapToChargesDelta(payload, ChargesDelta.class);
+        logger.trace(format("DSND-514: ChargesDelta extracted "
+                + "from a Kafka message: %s", chargesDelta));
         if (chargesDelta.getCharges().isEmpty()) {
             throw new NonRetryableErrorException("No charge items found inside ChargesDelta");
         }
@@ -68,13 +70,11 @@ public class ChargesDeltaProcessor {
         invokeChargesDataApi(logContext, charge, internalChargeApi, logMap);
     }
 
-    private ChargesDelta mapToChargesDelta(ChsDelta payload)
+    private <T> T mapToChargesDelta(ChsDelta payload, Class<T> deltaclass)
             throws NonRetryableErrorException {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            ChargesDelta chargesDelta = mapper.readValue(payload.getData(), ChargesDelta.class);
-            logger.trace(format("DSND-514: ChargesDelta extracted "
-                    + "from a Kafka message: %s", chargesDelta));
+            T chargesDelta = mapper.readValue(payload.getData(), deltaclass);
             return chargesDelta;
         } catch (Exception exception) {
             throw new NonRetryableErrorException("Error when extracting charges delta", exception);
@@ -125,6 +125,32 @@ public class ChargesDeltaProcessor {
         } else {
             logger.trace("Got success response from PUT endpoint of charges-data-api");
         }
+    }
+
+    /**
+     * Process Charges Delta Delete message.
+     */
+    public String processDelete(Message<ChsDelta> chsDelta) {
+        final MessageHeaders headers = chsDelta.getHeaders();
+        final ChsDelta payload = chsDelta.getPayload();
+        final String logContext = payload.getContextId();
+        final Map<String, Object> logMap = new HashMap<>();
+        final ChargesDeleteDelta chargesDeleteDelta =
+                mapToChargesDelta(payload, ChargesDeleteDelta.class);
+
+        logger.trace(String.format("ChargesDeleteDelta extracted from Kafka message: %s",
+                chargesDeleteDelta));
+
+        String chargeId = chargesDeleteDelta.getChargesId();
+        logMap.put("chargeId", chargeId);
+
+        logger.infoContext(
+                logContext,
+                String.format(
+                        "Process DELETE charge for charge id %s", chargeId),
+                logMap);
+
+        return chargeId;
     }
 
 }

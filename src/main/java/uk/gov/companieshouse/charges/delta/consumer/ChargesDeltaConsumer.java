@@ -44,10 +44,15 @@ public class ChargesDeltaConsumer {
             containerFactory = "listenerContainerFactory")
     public void receiveMainMessages(Message<ChsDelta> chsDeltaMessage,
                                     @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
-        logger.info("A new message read from charges-delta topic with payload: "
-                + chsDeltaMessage.getPayload());
+        logger.info(String.format("A new message read from %s topic with payload:%s "
+                + "and headers:%s ", topic, chsDeltaMessage.getPayload(),
+                chsDeltaMessage.getHeaders()));
         try {
-            deltaProcessor.processDelta(chsDeltaMessage);
+            if (Boolean.TRUE.equals(chsDeltaMessage.getPayload().getIsDelete())) {
+                deltaProcessor.processDelete(chsDeltaMessage);
+            } else {
+                deltaProcessor.processDelta(chsDeltaMessage);
+            }
         } catch (Exception exception) {
             logger.error(String.format("Exception occurred while processing the topic: %s "
                     + "with message: %s", topic, chsDeltaMessage), exception);
