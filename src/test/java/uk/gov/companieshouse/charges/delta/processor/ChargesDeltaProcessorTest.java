@@ -2,6 +2,7 @@ package uk.gov.companieshouse.charges.delta.processor;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.charges.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
-import uk.gov.companieshouse.charges.delta.model.TestData;
+import uk.gov.companieshouse.charges.delta.util.TestSupport;
 import uk.gov.companieshouse.charges.delta.service.ApiClientService;
 import uk.gov.companieshouse.charges.delta.transformer.ChargesApiTransformer;
 import uk.gov.companieshouse.delta.ChsDelta;
@@ -46,21 +47,21 @@ public class ChargesDeltaProcessorTest {
 
     private EncoderUtil encoderUtil;
 
-    private TestData testData;
+    private TestSupport testSupport;
 
     @BeforeEach
     void setUp() {
         encoderUtil = new EncoderUtil("some_salt", "transId_salt");
         deltaProcessor = new ChargesDeltaProcessor(transformer, logger, apiClientService, encoderUtil);
-        testData = new TestData();
+        testSupport = new TestSupport();
     }
 
     @Test
     @DisplayName("Transforms a kafka message containing a ChsDelta payload into an ChargesDelta")
     void When_ValidChsDeltaMessage_Expect_ValidChargesDelta() throws IOException {
-        Message<ChsDelta> testChsDeltaMessage = testData.createChsDeltaMessage("charges-delta-source-1.json");
+        Message<ChsDelta> testChsDeltaMessage = testSupport.createChsDeltaMessage("charges-delta-source-1.json", false);
         ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
-        when(transformer.transform(any(Charge.class), any(MessageHeaders.class))).thenReturn(testData.mockInternalChargeApi());
+        when(transformer.transform(any(Charge.class), any(MessageHeaders.class))).thenReturn(testSupport.mockInternalChargeApi());
         doReturn(response).when(apiClientService).putCharge(any(), any(), any(), any());
 
         deltaProcessor.processDelta(testChsDeltaMessage);
@@ -70,7 +71,7 @@ public class ChargesDeltaProcessorTest {
     @Test
     @DisplayName("Transforms a kafka message containing a ChsDelta payload into an ChargesDelta with no items")
     void When_InValidChsDeltaMessage_Expect_Exception() throws IOException {
-        Message<ChsDelta> chsDeltaMessage = testData.createChsDeltaMessage("charges-delta-source-no-charge.json");
+        Message<ChsDelta> chsDeltaMessage = testSupport.createChsDeltaMessage("charges-delta-source-no-charge.json", false);
         assertThrows(NonRetryableErrorException.class, () -> deltaProcessor.processDelta(chsDeltaMessage));
         verifyNoInteractions(transformer);
     }
@@ -78,65 +79,82 @@ public class ChargesDeltaProcessorTest {
     @Test
     @DisplayName("Transforms ChsDelta payload into an ChargesDelta and then calls Charges Data Api")
     void When_ValidChsDeltaMessage_Invoke_Data_Api_And_Get_Response() throws IOException {
-        Message<ChsDelta> testChsDeltaMessage = testData.createChsDeltaMessage("charges-delta-source-1.json");
+        Message<ChsDelta> testChsDeltaMessage = testSupport.createChsDeltaMessage("charges-delta-source-1.json", false);
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
-        when(transformer.transform(any(Charge.class), any(MessageHeaders.class))).thenReturn(testData.mockInternalChargeApi());
+        when(transformer.transform(any(Charge.class), any(MessageHeaders.class))).thenReturn(testSupport.mockInternalChargeApi());
         doReturn(response).when(apiClientService).putCharge(eq("context_id"), eq("01099198"),
-                eq("6DrQgDD109T7kBnVwtx5HrEX9B0"), eq(testData.mockInternalChargeApi()));
+                eq("6DrQgDD109T7kBnVwtx5HrEX9B0"), eq(testSupport.mockInternalChargeApi()));
 
         deltaProcessor.processDelta(testChsDeltaMessage);
         verify(transformer).transform(any(Charge.class), any(MessageHeaders.class));
         verify(apiClientService).putCharge("context_id", "01099198",
-                "6DrQgDD109T7kBnVwtx5HrEX9B0", testData.mockInternalChargeApi());
+                "6DrQgDD109T7kBnVwtx5HrEX9B0", testSupport.mockInternalChargeApi());
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
     @DisplayName("Bad request when calling put charges, throws non retryable error")
     void When_PutChargesBadRequest_NonRetryableError() throws IOException {
-        Message<ChsDelta> chsDeltaMessage = testData.createChsDeltaMessage("charges-delta-source-1.json");
+        Message<ChsDelta> chsDeltaMessage = testSupport.createChsDeltaMessage("charges-delta-source-1.json", false);
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), null, null);
 
-        when(transformer.transform(any(), any())).thenReturn(testData.mockInternalChargeApi());
+        when(transformer.transform(any(), any())).thenReturn(testSupport.mockInternalChargeApi());
         doReturn(response).when(apiClientService).putCharge(any(), any(), any(), any());
 
         assertThrows(NonRetryableErrorException.class, () -> deltaProcessor.processDelta(chsDeltaMessage));
         verify(apiClientService).putCharge("context_id", "01099198",
-                "6DrQgDD109T7kBnVwtx5HrEX9B0", testData.mockInternalChargeApi());
+                "6DrQgDD109T7kBnVwtx5HrEX9B0", testSupport.mockInternalChargeApi());
     }
 
     @Test
     @DisplayName("Getting another 4xx when calling put charges, throws retryable error")
     void When_PutChargesUnauthorized_RetryableError() throws IOException {
-        Message<ChsDelta> chsDeltaMessage = testData.createChsDeltaMessage("charges-delta-source-1.json");
+        Message<ChsDelta> chsDeltaMessage = testSupport.createChsDeltaMessage("charges-delta-source-1.json", false);
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), null, null);
 
-        when(transformer.transform(any(), any())).thenReturn(testData.mockInternalChargeApi());
+        when(transformer.transform(any(), any())).thenReturn(testSupport.mockInternalChargeApi());
         doReturn(response).when(apiClientService).putCharge(any(), any(), any(), any());
 
         assertThrows(RetryableErrorException.class, () -> deltaProcessor.processDelta(chsDeltaMessage));
         verify(apiClientService).putCharge("context_id", "01099198",
-                "6DrQgDD109T7kBnVwtx5HrEX9B0", testData.mockInternalChargeApi());
+                "6DrQgDD109T7kBnVwtx5HrEX9B0", testSupport.mockInternalChargeApi());
     }
 
     @Test
     @DisplayName("Getting internal server error when calling put charges API, throws retryable error")
     void When_PutChargesApiInternalServerError_RetryableError() throws IOException {
-        Message<ChsDelta> chsDeltaMessage = testData.createChsDeltaMessage("charges-delta-source-1.json");
+        Message<ChsDelta> chsDeltaMessage = testSupport.createChsDeltaMessage("charges-delta-source-1.json", false);
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), null, null);
 
-        when(transformer.transform(any(), any())).thenReturn(testData.mockInternalChargeApi());
+        when(transformer.transform(any(), any())).thenReturn(testSupport.mockInternalChargeApi());
         doReturn(response).when(apiClientService).putCharge(any(), any(), any(), any());
 
         assertThrows(RetryableErrorException.class, () -> deltaProcessor.processDelta(chsDeltaMessage));
         verify(apiClientService).putCharge("context_id", "01099198",
-                "6DrQgDD109T7kBnVwtx5HrEX9B0", testData.mockInternalChargeApi());
+                "6DrQgDD109T7kBnVwtx5HrEX9B0", testSupport.mockInternalChargeApi());
     }
 
     @Test
     @DisplayName("When can't transform into charges delta API, throws retryable error")
     void When_CantTransformIntoChargesDeltaApi_RetryableError() throws IOException {
-        Message<ChsDelta> invalidChsDeltaMessage = testData.createInvalidChsDeltaMessage();
+        Message<ChsDelta> invalidChsDeltaMessage = testSupport.createInvalidChsDeltaMessage(false);
         assertThrows(NonRetryableErrorException.class, () -> deltaProcessor.processDelta(invalidChsDeltaMessage));
+    }
+
+    @Test
+    @DisplayName("Transforms a kafka message containing a ChsDelta payload into an InsolvencyDeleteDelta")
+    void When_ValidChsDeltaMessage_Expect_ValidChargesDeleteDeltaMapping() throws IOException {
+        Message<ChsDelta> mockChsChargesDeleteDeltaMessage = testSupport.createChsDeltaMessage(
+                "charges-delete-delta-source-1.json", true);
+        final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
+        String chargeId = deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage);
+        Assertions.assertEquals("NLVXY861zxOTr3NExemI3q4Nq4Y", chargeId);
+    }
+
+    @Test
+    @DisplayName("When mapping an invalid ChsDelta message into Charges Delete Delta then throws a non-retryable exception")
+    void When_Invalid_ChargesDeleteDelta_nonRetryableError() throws IOException {
+        Message<ChsDelta> invalidChsChargesDeltaDeltaMessage = testSupport.createInvalidChsDeltaMessage(true);
+        Assertions.assertThrows(NonRetryableErrorException.class, () -> deltaProcessor.processDelete(invalidChsChargesDeltaDeltaMessage));
     }
 }
