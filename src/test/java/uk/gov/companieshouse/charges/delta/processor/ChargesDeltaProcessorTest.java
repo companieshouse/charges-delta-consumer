@@ -142,13 +142,19 @@ public class ChargesDeltaProcessorTest {
     }
 
     @Test
-    @DisplayName("Transforms a kafka message containing a ChsDelta payload into an InsolvencyDeleteDelta")
-    void When_ValidChsDeltaMessage_Expect_ValidChargesDeleteDeltaMapping() throws IOException {
+    @DisplayName("Transforms a kafka message containing a ChsDelta payload into an ChargesDeleteDelta and calling delete endpoint")
+    void When_ValidChsDeltaDelete_Message_Expect_Valid_ChargesDeleteResponse() throws IOException {
         Message<ChsDelta> mockChsChargesDeleteDeltaMessage = testSupport.createChsDeltaMessage(
                 "charges-delete-delta-source-1.json", true);
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
+        doReturn(response).when(apiClientService).deleteCharge(eq("context_id"), eq("0"),
+                eq("yt6cQ-A2DqNpqwAMDWxKX12Axv4"));
         String chargeId = deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage);
-        Assertions.assertEquals("NLVXY861zxOTr3NExemI3q4Nq4Y", chargeId);
+        Assertions.assertEquals("yt6cQ-A2DqNpqwAMDWxKX12Axv4", chargeId);
+
+        verify(apiClientService).deleteCharge("context_id", "0",
+                "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
@@ -156,5 +162,35 @@ public class ChargesDeltaProcessorTest {
     void When_Invalid_ChargesDeleteDelta_nonRetryableError() throws IOException {
         Message<ChsDelta> invalidChsChargesDeltaDeltaMessage = testSupport.createInvalidChsDeltaMessage(true);
         Assertions.assertThrows(NonRetryableErrorException.class, () -> deltaProcessor.processDelete(invalidChsChargesDeltaDeltaMessage));
+    }
+
+    @Test
+    @DisplayName("Transforms a kafka message containing a ChsDelta payload into an ChargesDeleteDelta and calling delete endpoint")
+    void When_ValidChsDeltaDelete_Message_And_ChargesDelete_Endpoint_Gives_Error() throws IOException {
+        Message<ChsDelta> mockChsChargesDeleteDeltaMessage = testSupport.createChsDeltaMessage(
+                "charges-delete-delta-source-1.json", true);
+        final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), null, null);
+        doReturn(response).when(apiClientService).deleteCharge(eq("context_id"), eq("0"),
+                eq("yt6cQ-A2DqNpqwAMDWxKX12Axv4"));
+
+        assertThrows(RetryableErrorException.class, () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
+        verify(apiClientService).deleteCharge("context_id", "0",
+                "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    @Test
+    @DisplayName("Transforms a kafka message containing a ChsDelta payload into an ChargesDeleteDelta and calling delete endpoint")
+    void When_Delete_Non_Existing_Charge_ErrorResponse() throws IOException {
+        Message<ChsDelta> mockChsChargesDeleteDeltaMessage = testSupport.createChsDeltaMessage(
+                "charges-delete-delta-source-1.json", true);
+        final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.NOT_FOUND.value(), null, null);
+        doReturn(response).when(apiClientService).deleteCharge(eq("context_id"), eq("0"),
+                eq("yt6cQ-A2DqNpqwAMDWxKX12Axv4"));
+
+        assertThrows(RetryableErrorException.class, () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
+        verify(apiClientService).deleteCharge("context_id", "0",
+                "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }

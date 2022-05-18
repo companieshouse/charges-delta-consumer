@@ -55,7 +55,7 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
     public ApiResponse<Void> putCharge(final String log, String companyNumber,
                                        final String chargeId,
                                        InternalChargeApi internalChargeApi) {
-        final String uri = String.format("/company/%s/charge/%s/internal", companyNumber, chargeId);
+        final String uri = String.format(PUT_CHARGE_URI, companyNumber, chargeId);
 
         Map<String, Object> logMap = createLogMap(companyNumber, "PUT", uri, chargeId);
         logger.infoContext(log, String.format("PUT %s", uri), logMap);
@@ -64,6 +64,20 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
                 getApiClient(log).privateDeltaChargeResourceHandler()
                         .putCharge()
                         .upsert(uri, internalChargeApi));
+    }
+
+    @Override
+    public ApiResponse<Void> deleteCharge(String log, String companyNumber,
+                                          String chargeId) {
+        final String uri =
+                String.format(DELETE_CHARGE_URI, companyNumber, chargeId);
+
+        Map<String,Object> logMap = createLogMap(companyNumber,"DELETE", uri, chargeId);
+        logger.infoContext(log, String.format("DELETE %s", uri), logMap);
+
+        return executeOp(log, "deleteCharge", uri,
+                getApiClient(log).privateDeltaChargeResourceHandler()
+                        .deleteCharge(uri));
     }
 
     private Map<String, Object> createLogMap(String companyNumber, String method, String path,
@@ -75,4 +89,7 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
         logMap.put("path", path);
         return logMap;
     }
+
+
+
 }

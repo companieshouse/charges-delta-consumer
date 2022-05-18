@@ -67,7 +67,10 @@ public class ChargesDeltaProcessor {
 
         InternalChargeApi internalChargeApi = transformer.transform(charge, headers);
 
-        invokeChargesDataApi(logContext, charge, internalChargeApi, logMap);
+        final ApiResponse<Void> apiResponse =
+                updateChargesData(logContext, charge, internalChargeApi, logMap);
+
+        handleResponse(HttpStatus.valueOf(apiResponse.getStatusCode()), logContext, logMap);
     }
 
     private <T> T mapToChargesDelta(ChsDelta payload, Class<T> deltaclass)
@@ -82,26 +85,27 @@ public class ChargesDeltaProcessor {
     }
 
     /**
-     * Invoke Charges Data API.
+     * Invoke Charges Data API to update charges database.
      */
-    private void invokeChargesDataApi(final String logContext, Charge charge,
-                                      InternalChargeApi internalChargeApi,
-                                      final Map<String, Object> logMap) {
+    private ApiResponse<Void> updateChargesData(final String logContext, Charge charge,
+                                   InternalChargeApi internalChargeApi,
+                                   final Map<String, Object> logMap) {
         final String companyNumber = charge.getCompanyNumber();
 
         //pass in the chargeId and encode it with base64 after doing a SHA1 hash
         final String chargeId = encoderUtil.encodeWithSha1(charge.getId());
+        logMap.put("company_number", companyNumber);
+        logMap.put("charge_id", chargeId);
         logger.infoContext(
                 logContext,
-                format("Process charge for company number [%s] and charge id [%s]",
+                format("Update charge for company number [%s] and charge id [%s]",
                         companyNumber, chargeId),
-                null);
-        final ApiResponse<Void> response =
-                apiClientService.putCharge(logContext,
+                logMap);
+        return apiClientService.putCharge(logContext,
                         companyNumber,
                         chargeId,
                         internalChargeApi);
-        handleResponse(HttpStatus.valueOf(response.getStatusCode()), logContext, logMap);
+
     }
 
     private void handleResponse(
@@ -142,6 +146,10 @@ public class ChargesDeltaProcessor {
                 chargesDeleteDelta));
 
         String chargeId = chargesDeleteDelta.getChargesId();
+
+        //pass in the chargeId and encode it with base64 after doing a SHA1 hash
+        chargeId = encoderUtil.encodeWithSha1(chargeId);
+
         logMap.put("chargeId", chargeId);
 
         logger.infoContext(
@@ -150,7 +158,26 @@ public class ChargesDeltaProcessor {
                         "Process DELETE charge for charge id %s", chargeId),
                 logMap);
 
+        final ApiResponse<Void> apiResponse =
+                deleteCharge(logContext, chargeId, logMap);
+
+        handleResponse(HttpStatus.valueOf(apiResponse.getStatusCode()), logContext, logMap);
+
         return chargeId;
+    }
+
+    /**
+     * Invoke Charges Data API to update charges database.
+     */
+    private ApiResponse<Void> deleteCharge(final String logContext, String chargeId,
+                                                final Map<String, Object> logMap) {
+        logger.infoContext(
+                logContext,
+                format("Deleting charge id [%s]", chargeId),
+                logMap);
+        return apiClientService.deleteCharge(logContext, "0",
+                chargeId);
+
     }
 
 }
