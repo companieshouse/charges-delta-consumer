@@ -1,12 +1,16 @@
 package uk.gov.companieshouse.charges.delta.processor;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -188,9 +192,37 @@ public class ChargesDeltaProcessorTest {
         doReturn(response).when(apiClientService).deleteCharge(eq("context_id"), eq("0"),
                 eq("yt6cQ-A2DqNpqwAMDWxKX12Axv4"));
 
-        assertThrows(RetryableErrorException.class, () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
+        assertThrows(NonRetryableErrorException.class, () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
         verify(apiClientService).deleteCharge("context_id", "0",
                 "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
+
+    private static Stream<Arguments> provideExceptionParameters() {
+        return Stream.of(
+                Arguments.of(HttpStatus.BAD_REQUEST, NonRetryableErrorException.class),
+                Arguments.of(HttpStatus.NOT_FOUND, NonRetryableErrorException.class),
+                Arguments.of(HttpStatus.UNAUTHORIZED, RetryableErrorException.class),
+                Arguments.of(HttpStatus.INTERNAL_SERVER_ERROR, RetryableErrorException.class)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideExceptionParameters")
+    @DisplayName("When calling DELETE charge and an error occurs then throw the appropriate exception based on the error type")
+    void When_Delete_Exception_Then_Throw_Appropriate_Exception(HttpStatus httpStatus,
+                                                                Class<Throwable> exception)
+            throws IOException {
+        Message<ChsDelta> mockChsChargesDeleteDeltaMessage = testSupport.createChsDeltaMessage(
+                "charges-delete-delta-source-1.json", true);
+        final ApiResponse<Void> response = new ApiResponse<>(httpStatus.value(), null, null);
+        doReturn(response).when(apiClientService).deleteCharge(eq("context_id"), eq("0"),
+                eq("yt6cQ-A2DqNpqwAMDWxKX12Axv4"));
+
+        assertThrows(exception, () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
+        verify(apiClientService).deleteCharge("context_id", "0",
+                "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
+        assertThat(response.getStatusCode()).isEqualTo(httpStatus.value());
+    }
+
 }
