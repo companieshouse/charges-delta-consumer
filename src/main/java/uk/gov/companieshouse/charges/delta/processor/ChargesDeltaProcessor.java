@@ -3,10 +3,9 @@ package uk.gov.companieshouse.charges.delta.processor;
 import static java.lang.String.format;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
@@ -67,8 +66,16 @@ public class ChargesDeltaProcessor {
 
         InternalChargeApi internalChargeApi = transformer.transform(charge, headers);
 
-        final ApiResponse<Void> apiResponse =
-                updateChargesData(logContext, charge, internalChargeApi, logMap);
+        ApiResponse<Void> apiResponse = new ApiResponse<>(Collections.emptyList());
+        try {
+            apiResponse = updateChargesData(logContext, charge, internalChargeApi, logMap);
+        } catch (Exception exception) {
+            Throwable cause = exception.getCause();
+            if ("400 Bad Request".equalsIgnoreCase(cause.getMessage())
+                    || "503 Service Unavailable".equalsIgnoreCase(cause.getMessage())) {
+                throw new NonRetryableErrorException(new Exception(cause));
+            }
+        }
 
         handleResponse(HttpStatus.valueOf(apiResponse.getStatusCode()), logContext, logMap);
     }
