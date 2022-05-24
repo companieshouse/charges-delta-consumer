@@ -4,8 +4,11 @@ import static java.lang.String.format;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
@@ -30,7 +33,7 @@ public class ChargesDeltaProcessor {
     private final ChargesApiTransformer transformer;
     private final Logger logger;
     private final ApiClientService apiClientService;
-    private EncoderUtil encoderUtil;
+    private final EncoderUtil encoderUtil;
 
     /**
      * The constructor.
@@ -84,8 +87,7 @@ public class ChargesDeltaProcessor {
             throws NonRetryableErrorException {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            T chargesDelta = mapper.readValue(payload.getData(), deltaclass);
-            return chargesDelta;
+            return mapper.readValue(payload.getData(), deltaclass);
         } catch (Exception exception) {
             throw new NonRetryableErrorException("Error when extracting charges delta", exception);
         }
@@ -142,7 +144,6 @@ public class ChargesDeltaProcessor {
      * Process Charges Delta Delete message.
      */
     public String processDelete(Message<ChsDelta> chsDelta) {
-        final MessageHeaders headers = chsDelta.getHeaders();
         final ChsDelta payload = chsDelta.getPayload();
         final String logContext = payload.getContextId();
         final Map<String, Object> logMap = new HashMap<>();
@@ -168,7 +169,7 @@ public class ChargesDeltaProcessor {
         final ApiResponse<Void> apiResponse =
                 deleteCharge(logContext, chargeId, logMap);
 
-        handleResponse(HttpStatus.valueOf(apiResponse.getStatusCode()), logContext, logMap);
+        handleDeleteResponse(HttpStatus.valueOf(apiResponse.getStatusCode()), logContext, logMap);
 
         return chargeId;
     }
@@ -185,6 +186,30 @@ public class ChargesDeltaProcessor {
         return apiClientService.deleteCharge(logContext, "0",
                 chargeId);
 
+    }
+
+    private void handleDeleteResponse(
+            final HttpStatus httpStatus,
+            final String logContext,
+            final Map<String, Object> logMap)
+            throws NonRetryableErrorException, RetryableErrorException {
+        logMap.put("status", httpStatus.toString());
+        String msg = "Response from DELETE charge request";
+        Set<HttpStatus> nonRetryableStatuses =
+                Collections.unmodifiableSet(EnumSet.of(
+                        HttpStatus.BAD_REQUEST, HttpStatus.NOT_FOUND));
+
+        if (nonRetryableStatuses.contains(httpStatus)) {
+            throw new NonRetryableErrorException(
+                    String.format("Bad request DELETE Api Response %s", msg));
+        } else if (!httpStatus.is2xxSuccessful()) {
+            // any other client or server status is retryable
+            logger.errorContext(logContext, msg + ", retry", null, logMap);
+            throw new RetryableErrorException(
+                    String.format("Unsuccessful DELETE API response, %s", msg));
+        } else {
+            logger.trace("Got success response from DELETE charge request");
+        }
     }
 
 }

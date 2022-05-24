@@ -153,14 +153,12 @@ public class ChargesConsumerErrorSteps {
     public void chargesDataAPIEndpointIsNeverInvoked() {
         GetServeEventsResult events = wireMockServer.getServeEvents();
         assertTrue(events.getServeEvents().isEmpty());
-        wireMockServer.stop();
     }
 
     @Then("Charges Data API endpoint is only invoked once")
     public void chargesDataAPIEndpointIsInvokedOnlyOnce() {
         GetServeEventsResult events = wireMockServer.getServeEvents();
         assertEquals(1, events.getServeEvents().size());
-        wireMockServer.stop();
     }
 
     @Then("the message should be retried {string} on retry topic {string}")
