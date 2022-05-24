@@ -15,7 +15,7 @@ public interface ApiClientService {
     String PUT_CHARGE_URI = "/company/%s/charge/%s/internal";
     String DELETE_CHARGE_URI = "/company/%s/charges/%s";
 
-    InternalApiClient getApiClient(String contextId);
+    //InternalApiClient getApiClient(String contextId);
 
     /**
      * Submit charge.
