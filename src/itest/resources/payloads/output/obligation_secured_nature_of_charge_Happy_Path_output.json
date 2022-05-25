@@ -22,9 +22,9 @@
     "scottish_alterations": {
       "type": null,
       "description": null,
-      "has_alterations_to_order": false,
-      "has_alterations_to_prohibitions": false,
-      "has_restricting_provisions": false
+      "has_alterations_to_order": null,
+      "has_alterations_to_prohibitions": null,
+      "has_restricting_provisions": null
     },
     "charge_code": "102862370001",
     "links": {
@@ -52,7 +52,7 @@
     "assets_ceased_released": null,
     "acquired_on": null,
     "resolved_on": null,
-    "more_than_four_persons_entitled": false,
+    "more_than_four_persons_entitled": null,
     "satisfied_on": null
   },
   "internal_data": {

@@ -161,6 +161,14 @@ public class ChargesConsumerErrorSteps {
         assertEquals(1, events.getServeEvents().size());
     }
 
+    @Then("Charges Data API endpoint is retried {string}")
+    public void chargesDataAPIEndpointIsretried(String retries) {
+        int retryCount = Integer.parseInt(retries);
+        GetServeEventsResult events = wireMockServer.getServeEvents();
+        // initial attempt plus retries
+        assertEquals(retryCount + 1, events.getServeEvents().size());
+    }
+
     @Then("the message should be retried {string} on retry topic {string}")
     public void theMessageShouldBeRetried(String requiredRetries, String retryTopic) {
         ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer, retryTopic);
@@ -170,6 +178,6 @@ public class ChargesConsumerErrorSteps {
             .filter(header -> header.key().equalsIgnoreCase(RETRY_TOPIC_ATTEMPTS))
             .collect(Collectors.toList());
 
-        assertThat(retryList.size()).isEqualTo(Integer.parseInt(requiredRetries));
+        assertThat(retryList.size()).isEqualTo(Integer.parseInt(requiredRetries) + 1);
     }
 }

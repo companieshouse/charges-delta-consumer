@@ -4,7 +4,6 @@
       "company_number": "01203396",
       "delta_at": "20211029142043360560",
       "id": "3000900477",
-      "more_than_4_persons": "N",
       "persons_entitled": [
         {
           "person": "NATIONAL WESTMINSTER BANK PLC"
@@ -40,7 +39,6 @@
       ],
       "status": "1",
       "satisfied_on": "20190710",
-      "delivered_on": "20170316",
       "acquired_on": "20170316",
       "floating_charge": "Y",
       "created_on": "20160617"

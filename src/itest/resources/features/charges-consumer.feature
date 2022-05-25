@@ -6,7 +6,7 @@ Feature: Process Charges Delta information
     When a message with payload "<deltaMessage>" is published to topic
     Then the Consumer should process and send a request with payload "<apiRequest>" to the Charges Data API getting back 200
 
-  Examples:
+    Examples:
     | deltaMessage                                         | apiRequest                                                  |
     | charges-delta-source-2.json                          | internal-charges-api-expected-2.json                        |
     | Additional_notices_Happy_Path.json                   | Additional_notices_Happy_Path_output_correct_body.json      |
@@ -18,7 +18,7 @@ Feature: Process Charges Delta information
     | More_than_4_persons_Y_Happy_Path.json                | More_than_4_persons_Y_Output.json                           |
     | obligations_secured_nature_of_charge_Happy_Path.json | obligation_secured_nature_of_charge_Happy_Path_output.json  |
     | satisfied_on_Happy_Path.json                         | satisfied_on_Happy_Path_output.json                         |
-    | Scottish_Alterations.json                         | Scottish_Alterations_output.json                         |
+    | Scottish_Alterations.json                            | Scottish_Alterations_output.json                            |
 
 
 

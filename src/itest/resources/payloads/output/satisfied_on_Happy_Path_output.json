@@ -18,9 +18,9 @@
     "scottish_alterations": {
       "type": null,
       "description": null,
-      "has_alterations_to_order": false,
-      "has_alterations_to_prohibitions": false,
-      "has_restricting_provisions": false
+      "has_alterations_to_order": null,
+      "has_alterations_to_prohibitions": null,
+      "has_restricting_provisions": null
     },
     "charge_code": "OC3420230003",
     "links": {
@@ -56,7 +56,7 @@
     },
    
     "delivered_on": [2016,3,18],
-    "more_than_four_persons_entitled": false,
+    "more_than_four_persons_entitled": null,
     "satisfied_on": [2017,12,15]
   },
   "internal_data": {

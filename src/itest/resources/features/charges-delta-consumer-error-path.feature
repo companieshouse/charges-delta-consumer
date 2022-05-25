@@ -1,4 +1,4 @@
-Feature: Process Charges Delta information
+Feature: Process Charges Delta information with error conditions
 
   Scenario Outline: Consume a non-avro message, process it and move to invalid message topic charges data api never called
 
@@ -40,11 +40,11 @@ Feature: Process Charges Delta information
     And Stubbed Charges Data API endpoint will return "<response>" http response code for "<companyNumber>" and "<chargeId>"
     When a message with payload "<deltaMessage>" is published to charges topic
     Then the message should be moved to topic "<targetTopic>"
-    And Charges Data API endpoint is only invoked once
+    And Charges Data API endpoint is retried "<retries>"
 
     Examples:
-      | response    | targetTopic                                    | deltaMessage                     | companyNumber | chargeId                    |
-      | 503         | charges-delta-charges-delta-consumer-invalid   | satisfied_on_Happy_Path.json     | OC342023      | TnYWNS5p1GdMPVGvNXIx63D5Uc8 |
+      | response    | targetTopic                                  | deltaMessage                     | companyNumber | chargeId                    | retries |
+      | 503         | charges-delta-charges-delta-consumer-error   | satisfied_on_Happy_Path.json     | OC342023      | TnYWNS5p1GdMPVGvNXIx63D5Uc8 | 3       |
 
   Scenario Outline: Consume a valid message with null charges in payload
     Given Charges delta consumer service is running
@@ -55,4 +55,4 @@ Feature: Process Charges Delta information
 
     Examples:
       | response    | targetTopic                                  | retries | companyNumber | chargeId                    |
-      | 200         | charges-delta-charges-delta-consumer-error   | 4       | OC342023      | TnYWNS5p1GdMPVGvNXIx63D5Uc8 |
+      | 200         | charges-delta-charges-delta-consumer-error   | 3       | OC342023      | TnYWNS5p1GdMPVGvNXIx63D5Uc8 |

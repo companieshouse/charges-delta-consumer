@@ -4,7 +4,6 @@
       "company_number": "08124207",
       "delta_at": "20211029142043360560",
       "id": "3001283055",
-      "more_than_4_persons": "N",
       "persons_entitled": [
         {
           "person": "LYELL TRADING LIMITED"
@@ -54,7 +53,6 @@
       ],
       "status": "2",
       "assets_ceased_released": "9",
-      "delivered_on": "20191017",
       "floating_charge": "Y",
       "created_on": "20191011"
     }

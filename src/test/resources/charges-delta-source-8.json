@@ -23,7 +23,6 @@
       "short_particular_flags":[{"fixed_charge":"no","contains_floating_charge":"yes","floating_charge_all":"yes","negative_pledge":"yes","bare_trustee":"no"}],
       "status":"1",
       "satisfied_on":"20211119",
-      "delivered_on":"20161101",
       "resolution_passed_on":"20160606",
       "covering_instrument_date":"20161019",
       "floating_charge":"Y",

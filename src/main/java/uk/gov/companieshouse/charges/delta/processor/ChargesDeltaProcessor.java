@@ -8,7 +8,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
@@ -18,6 +17,7 @@ import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ChargesDeleteDelta;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
+import uk.gov.companieshouse.api.error.ApiErrorResponseException;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.charges.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
@@ -69,16 +69,8 @@ public class ChargesDeltaProcessor {
 
         InternalChargeApi internalChargeApi = transformer.transform(charge, headers);
 
-        ApiResponse<Void> apiResponse = new ApiResponse<>(Collections.emptyList());
-        try {
-            apiResponse = updateChargesData(logContext, charge, internalChargeApi, logMap);
-        } catch (Exception exception) {
-            Throwable cause = exception.getCause();
-            if ("400 Bad Request".equalsIgnoreCase(cause.getMessage())
-                    || "503 Service Unavailable".equalsIgnoreCase(cause.getMessage())) {
-                throw new NonRetryableErrorException(new Exception(cause));
-            }
-        }
+        ApiResponse<Void> apiResponse = updateChargesData(logContext, charge,
+                internalChargeApi, logMap);
 
         handleResponse(HttpStatus.valueOf(apiResponse.getStatusCode()), logContext, logMap);
     }
