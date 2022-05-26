@@ -6,7 +6,7 @@
       "id": "3000606655",
       "persons_entitled": [
         {
-          "person": "THE GOVERNOR AND COMPANY OF THE BANK OF IRELAND"
+          "person": "The Governor and Company of the Bank of Ireland"
         }
       ],
       "notice_type": "MR01",
@@ -29,6 +29,7 @@
         }
       ],
       "status": "0",
+      "delivered_on": "20141216",
       "additional_notices": [
         {
           "notice_type": "403a",

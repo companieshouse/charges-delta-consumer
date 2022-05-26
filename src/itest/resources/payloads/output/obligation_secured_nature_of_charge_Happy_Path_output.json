@@ -52,7 +52,7 @@
     "assets_ceased_released": null,
     "acquired_on": null,
     "resolved_on": null,
-    "more_than_four_persons_entitled": null,
+    "more_than_four_persons_entitled": false,
     "satisfied_on": null
   },
   "internal_data": {
