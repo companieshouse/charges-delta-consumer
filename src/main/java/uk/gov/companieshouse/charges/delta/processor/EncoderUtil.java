@@ -1,11 +1,13 @@
 package uk.gov.companieshouse.charges.delta.processor;
 
-import java.nio.charset.StandardCharsets;
+import static org.apache.commons.lang3.StringUtils.trim;
 
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -28,7 +30,7 @@ public class EncoderUtil {
      */
     @Autowired
     public EncoderUtil(@Value("${api.charge-id-salt}") String chargeIdSalt,
-                       @Value("${api.trans-id-salt}") String transIdSalt) {
+            @Value("${api.trans-id-salt}") String transIdSalt) {
 
         CHARGE_ID_SALT = chargeIdSalt;
         TRANS_ID_SALT = transIdSalt;
@@ -56,7 +58,7 @@ public class EncoderUtil {
      * @return returns base64 encoded String with salt
      */
     public String encodeWithSha1(String plain) {
-        var sha1Value = getSha1Digest(plain);
+        var sha1Value = getSha1Digest(trim(plain));
         try {
             return base64Encode(Hex.decodeHex(sha1Value));
         } catch (DecoderException exception) {
@@ -74,7 +76,8 @@ public class EncoderUtil {
         if (plain == null || plain.isEmpty()) {
             return plain;
         }
-        return base64Encode((plain + TRANS_ID_SALT).getBytes(StandardCharsets.UTF_8));
+        return base64Encode(
+                (trim(plain) + TRANS_ID_SALT).getBytes(StandardCharsets.UTF_8));
     }
 
 }

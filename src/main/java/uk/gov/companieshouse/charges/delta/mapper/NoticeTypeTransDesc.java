@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
+import static org.apache.commons.lang3.StringUtils.trim;
 import static uk.gov.companieshouse.charges.delta.mapper.NoticeTypeMapperUtils.NO_PATTERN;
 
 import java.util.HashMap;
@@ -61,9 +62,9 @@ public class NoticeTypeTransDesc {
         }
         if (filingTypeAndTransDescPattern.size() > 1) {
             filingType = this.filingTypeAndTransDescPattern.entrySet().stream()
-                    .filter(x -> !StringUtils.isEmpty(transDesc)
+                    .filter(x -> !StringUtils.isEmpty(trim(transDesc))
                             && !x.getKey().equalsIgnoreCase(NO_PATTERN)
-                            && transDesc.matches(x.getKey()))
+                            && trim(transDesc).matches(x.getKey()))
                     .map(x -> x.getValue())
                     .collect(toSingleton());
 
