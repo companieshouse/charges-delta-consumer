@@ -1,12 +1,13 @@
 package uk.gov.companieshouse.charges.delta.transformer;
 
+import static org.apache.commons.lang3.StringUtils.trim;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.MessageHeaders;
@@ -117,7 +118,7 @@ public class ChargesApiTransformer {
         TransactionsLinks transactionsLinks = new TransactionsLinks();
 
         transactionsLinks.setFiling(charge.getTransId() != null
-                ? encode(companyNumber, charge.getTransId()) : null);
+                ? encode(companyNumber, trim(charge.getTransId())) : null);
         transactionsApi.setLinks(transactionsLinks);
         transactionsApi.setFilingType(getFilingType(charge));
         transactionsApi.setDeliveredOn(LocalDate.parse(charge.getDeliveredOn(),
@@ -126,8 +127,8 @@ public class ChargesApiTransformer {
     }
 
     private String getFilingType(Charge charge) {
-        String filingType = NoticeTypeMapperUtils.map.get(charge.getNoticeType()) != null
-                ? NoticeTypeMapperUtils.map.get(charge.getNoticeType())
+        String filingType = NoticeTypeMapperUtils.map.get(trim(charge.getNoticeType())) != null
+                ? NoticeTypeMapperUtils.map.get(trim(charge.getNoticeType()))
                 .getFilingType(charge.getTransDesc()) : DEFAULT_FILING_TYPE;
         return filingType;
     }

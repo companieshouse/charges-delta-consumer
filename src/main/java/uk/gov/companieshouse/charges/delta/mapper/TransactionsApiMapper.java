@@ -1,8 +1,9 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
+import static org.apache.commons.lang3.StringUtils.trim;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -27,7 +28,7 @@ public interface TransactionsApiMapper {
      */
     @AfterMapping
     default void setDates(@MappingTarget TransactionsApi transactionsApi,
-                          AdditionalNotice additionalNotice) {
+            AdditionalNotice additionalNotice) {
         if (additionalNotice.getDeliveredOn() != null) {
             transactionsApi.setDeliveredOn(LocalDate.parse(additionalNotice.getDeliveredOn(),
                     DateTimeFormatter.ofPattern("yyyyMMdd")));
@@ -39,7 +40,7 @@ public interface TransactionsApiMapper {
      */
     @AfterMapping
     default void setNoticeType(@MappingTarget TransactionsApi transactionsApi,
-                          AdditionalNotice additionalNotice) {
+            AdditionalNotice additionalNotice) {
         if (additionalNotice.getNoticeType() != null) {
             transactionsApi.setFilingType(getFilingType(additionalNotice));
         }
@@ -49,9 +50,10 @@ public interface TransactionsApiMapper {
      * Get filing type for a given notice type and its matching trans desc pattern if applicable.
      */
     private String getFilingType(AdditionalNotice additionalNotice) {
-        String filingType = NoticeTypeMapperUtils.map.get(additionalNotice.getNoticeType()) != null
-                ? NoticeTypeMapperUtils.map.get(additionalNotice.getNoticeType())
-                .getFilingType(additionalNotice.getTransDesc()) : DEFAULT_FILING_TYPE;
+        String filingType =
+                NoticeTypeMapperUtils.map.get(trim(additionalNotice.getNoticeType())) != null
+                        ? NoticeTypeMapperUtils.map.get(trim(additionalNotice.getNoticeType()))
+                        .getFilingType(additionalNotice.getTransDesc()) : DEFAULT_FILING_TYPE;
         return filingType;
     }
 }
