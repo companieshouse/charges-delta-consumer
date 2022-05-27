@@ -14,6 +14,7 @@
       "trans_desc": "REGISTRATION OF A CHARGE / CHARGE CODE  081242070049",
       "submission_type": "2",
       "delivered_on": "20191017",
+      "more_than_4_persons": "N",
       "additional_notices": [
         {
           "notice_type": "MR05",
