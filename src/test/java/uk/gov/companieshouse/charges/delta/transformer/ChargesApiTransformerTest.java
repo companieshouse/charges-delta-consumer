@@ -95,6 +95,24 @@ public class ChargesApiTransformerTest {
     }
 
     @Test
+    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
+    void When_ValidMessage_With_LLMG01s_NoticeTypes_with_space_at_start_Expect_ValidTransformedInternal() throws Exception {
+
+        ChargesDelta expectedChargesDelta = testData.createChargesDelta("charges-delta-source-12_notice_type_with_space_at_start.json");
+
+        Charge charge = expectedChargesDelta.getCharges().get(0);
+
+        InternalChargeApi internalChargeApi = transformer.transform(charge, testData.createKafkaHeaders());
+
+        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
+        String expectedChargesApiJson = testData.loadTestdataFile("internal-charges-api-expected-12.json");
+        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
+                new CustomComparator(JSONCompareMode.LENIENT,
+                        new Customization("external_data.etag", (o1, o2) -> true)));
+
+    }
+
+    @Test
     @DisplayName("Throws a Retryable error when there's an issue with the transformation")
     void When_ErrorDuringTransformation_ThenThrowRetryableErrorException() {
         Charge charge = new Charge();
