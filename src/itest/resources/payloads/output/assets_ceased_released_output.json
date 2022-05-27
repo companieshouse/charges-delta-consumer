@@ -53,7 +53,7 @@
     "covering_instrument_date": null,
     "created_on": [2003,8,4],
     "satisfied_on": null,
-    "more_than_four_persons_entitled": false,
+    "more_than_four_persons_entitled": null,
     "classification": {
       "type": "charge-description",
       "description": "MORTGAGE"
@@ -65,9 +65,9 @@
     "scottish_alterations": {
       "type": null,
       "description": null,
-      "has_alterations_to_order": false,
-      "has_alterations_to_prohibitions": false,
-      "has_restricting_provisions": false
+      "has_alterations_to_order": null,
+      "has_alterations_to_prohibitions": null,
+      "has_restricting_provisions": null
     }
   },
   "internal_data": {

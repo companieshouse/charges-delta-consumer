@@ -28,13 +28,22 @@ public class TestSupport {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public ChsDelta createChsDeltaMessage(String chargesDeltaData) throws IOException {
+    public ChsDelta createChsDeltaMessage(String chargesDeltaData){
 
         return ChsDelta.newBuilder()
                 .setData(chargesDeltaData)
                 .setContextId("context_id")
                 .setAttempt(1)
                 .build();
+    }
+
+    public ChsDelta createChsDeltaMessageNulPayload(){
+        String messageText = loadInputFile("created_on_Happy_Path.json").replace("\"charge_number\": \"1\"", "XXXXXXX");
+        return ChsDelta.newBuilder()
+            .setData(messageText)
+            .setContextId("context_id")
+            .setAttempt(1)
+            .build();
     }
 
     public String loadFile(String dir, String fileName) {

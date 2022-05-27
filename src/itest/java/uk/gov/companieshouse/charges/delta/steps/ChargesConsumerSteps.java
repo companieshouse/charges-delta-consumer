@@ -38,6 +38,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.common.Metadata.metadata;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 public class ChargesConsumerSteps {
@@ -79,7 +80,8 @@ public class ChargesConsumerSteps {
         stubChargeDataApi("a_message_is_published_to_topic");
         kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson));
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        countDownLatch.await(5, TimeUnit.SECONDS);
+        // Returned vale is true if countdown reached zero false if timed out - we should be timing out!
+        assertFalse(countDownLatch.await(5, TimeUnit.SECONDS));
     }
 
     @Then("the Consumer should process and send a request with payload {string} "

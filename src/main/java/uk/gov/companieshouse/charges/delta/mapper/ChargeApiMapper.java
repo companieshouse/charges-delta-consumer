@@ -5,14 +5,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
 import uk.gov.companieshouse.api.charges.ChargeApi;
 import uk.gov.companieshouse.api.charges.ClassificationApi;
 import uk.gov.companieshouse.api.charges.ParticularsApi;
@@ -23,9 +21,9 @@ import uk.gov.companieshouse.api.delta.ShortParticularFlags;
 
 @Mapper(componentModel = "spring",
         uses = {
-        PersonsEntitledApiMapper.class,
-        InsolvencyCasesApiMapper.class,
-        TransactionsApiMapper.class})
+            PersonsEntitledApiMapper.class,
+            InsolvencyCasesApiMapper.class,
+            TransactionsApiMapper.class})
 public interface ChargeApiMapper {
 
     String YYYY_MM_DD = "yyyyMMdd";
@@ -33,6 +31,7 @@ public interface ChargeApiMapper {
     String SET_DESCRIPTION = "setDescription";
     //TODO Better way of ignoring fields to be looked at
     // etag doesn't exist on source. This needs to be populated by data api
+
     @Mapping(target = "etag", ignore = true)
     @Mapping(target = "chargeCode", source = "code")
     @Mapping(target = "classification", ignore = true)
@@ -41,16 +40,16 @@ public interface ChargeApiMapper {
     @Mapping(target = "securedDetails", ignore = true)
     @Mapping(target = "scottishAlterations.hasRestrictingProvisions",
             expression = "java(org.apache.commons.lang3.BooleanUtils"
-                    + ".toBoolean(charge.getRestrictingProvisions()))")
+                    + ".toBooleanObject(charge.getRestrictingProvisions()))")
     @Mapping(target = "scottishAlterations.hasAlterationsToOrder",
             expression = "java(org.apache.commons.lang3.BooleanUtils"
-                    + ".toBoolean(charge.getAlterationsToOrder()))")
+                    + ".toBooleanObject(charge.getAlterationsToOrder()))")
     @Mapping(target = "scottishAlterations.hasAlterationsToProhibitions",
             expression = "java(org.apache.commons.lang3.BooleanUtils"
-                    + ".toBoolean(charge.getAlterationsToProhibitions()))")
+                    + ".toBooleanObject(charge.getAlterationsToProhibitions()))")
     @Mapping(target = "moreThanFourPersonsEntitled",
             expression = "java(org.apache.commons.lang3.BooleanUtils"
-                    + ".toBoolean(sourceCharge.getMoreThan4Persons()))")
+                    + ".toBooleanObject(sourceCharge.getMoreThan4Persons()))")
     @Mapping(target = "transactions", source = "additionalNotices")
     @Mapping(target = "links", ignore = true)
     @Mapping(target = "insolvencyCases", source = "insolvencyCases")
@@ -150,17 +149,35 @@ public interface ChargeApiMapper {
             ParticularsApi particularsApi,
             ShortParticularFlags shortParticularFlags, Charge charge) {
         particularsApi.setContainsFixedCharge(
-                BooleanUtils.toBoolean(shortParticularFlags.getFixedCharge()));
+                BooleanUtils.toBooleanObject(shortParticularFlags.getFixedCharge()));
         particularsApi.setChargorActingAsBareTrustee(
-                BooleanUtils.toBoolean(shortParticularFlags.getBareTrustee()));
+                BooleanUtils.toBooleanObject(shortParticularFlags.getBareTrustee()));
         particularsApi.setContainsFloatingCharge(
-                BooleanUtils.toBoolean(shortParticularFlags.getContainsFloatingCharge())
-                        ||
-                        BooleanUtils.toBoolean(charge.getFloatingCharge()));
+                orAsBoleanObjects(shortParticularFlags.getContainsFloatingCharge(),
+                charge.getFloatingCharge()));
         particularsApi.setContainsNegativePledge(
-                BooleanUtils.toBoolean(shortParticularFlags.getNegativePledge()));
+                BooleanUtils.toBooleanObject(shortParticularFlags.getNegativePledge()));
         particularsApi.setFloatingChargeCoversAll(
-                BooleanUtils.toBoolean(shortParticularFlags.getFloatingChargeAll()));
+                BooleanUtils.toBooleanObject(shortParticularFlags.getFloatingChargeAll()));
+    }
+
+    /**
+     * Converting strings to Boolean could result in null value oring then gives NPE.
+     *
+     * @param str1 first 'boolean string'
+     * @param str2 second 'boolean string'
+     * @return the 2 values ord together ignoring any nulls
+     */
+    private Boolean orAsBoleanObjects(String str1, String str2) {
+        Boolean bool1 = BooleanUtils.toBooleanObject(str1);
+        Boolean bool2 = BooleanUtils.toBooleanObject(str2);
+        if (bool1 == null) {
+            return bool2;
+        }
+        if (bool2 == null) {
+            return bool1;
+        }
+        return bool1 || bool2;
     }
 
     /**

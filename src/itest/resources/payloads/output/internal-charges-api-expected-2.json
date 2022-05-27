@@ -22,7 +22,7 @@
       "type": null,
       "description": null,
       "has_alterations_to_order": true,
-      "has_alterations_to_prohibitions": false,
+      "has_alterations_to_prohibitions": null,
       "has_restricting_provisions": true
     },
     "charge_code": "NI6224000001",
@@ -71,7 +71,7 @@
     "delivered_on": [2014,12,16],
     "resolved_on": null,
     "covering_instrument_date": [1993,8,9],
-    "more_than_four_persons_entitled": false,
+    "more_than_four_persons_entitled": null,
     "satisfied_on": [1999,12,1]
   },
   "internal_data": {

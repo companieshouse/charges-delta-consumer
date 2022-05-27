@@ -3,10 +3,14 @@ package uk.gov.companieshouse.charges.delta.transformer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.skyscreamer.jsonassert.Customization;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -55,201 +59,39 @@ public class ChargesApiTransformerTest {
         testSupport = new TestSupport();
     }
 
-    @Test
-    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidChargesMessage_Expect_ValidTransformedInternal() throws Exception {
 
-        ChargesDelta expectedChargesDelta = testSupport.createChargesDelta("charges-delta-source-2.json");
-
-        Charge charge = expectedChargesDelta.getCharges().get(0);
-
-        InternalChargeApi internalChargeApi = transformer.transform(charge, testSupport.createKafkaHeaders());
-
-        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
-        String expectedChargesApiJson = testSupport.loadTestdataFile("internal-charges-api-expected-2.json");
-        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
-                new CustomComparator(JSONCompareMode.LENIENT,
-                        new Customization("external_data.etag", (o1, o2) -> true)));
+    private static Stream<Arguments> jsonFileSourceNames() {
+        return Stream.of(
+            Arguments.of("charges-delta-source-2.json", "internal-charges-api-expected-2.json"),
+//            Arguments.of("charges-delta-source-3.json", "internal-charges-api-expected-3.json"),
+//            Arguments.of("charges-delta-source-4.json", "internal-charges-api-expected-4.json"),
+//            Arguments.of("charges-delta-source-5.json", "internal-charges-api-expected-5.json"),
+//            Arguments.of("charges-delta-source-6.json", "internal-charges-api-expected-6.json"),
+//            Arguments.of("charges-delta-source-7.json", "internal-charges-api-expected-7.json"),
+//            Arguments.of("charges-delta-source-8.json", "internal-charges-api-expected-8.json"),
+//            Arguments.of("charges-delta-source-9.json", "internal-charges-api-expected-9.json"),
+//            Arguments.of("charges-delta-source-10.json", "internal-charges-api-expected-10.json"),
+//            Arguments.of("charges-delta-source-11.json", "internal-charges-api-expected-11.json"),
+            Arguments.of("charges-delta-source-12.json", "internal-charges-api-expected-12.json")
+        );
     }
 
-    @Test
+    @MethodSource("jsonFileSourceNames")
+    @ParameterizedTest
     @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidChargesMessage_Expect_ValidTransformedInternal_minimum() throws Exception {
+    void When_ValidChargesMessage_Expect_ValidTransformedInternal(String source, String expected) throws Exception {
 
-        ChargesDelta expectedChargesDelta = testSupport.createChargesDelta("charges-delta-source-3.json");
+        ChargesDelta expectedChargesDelta = testSupport.createChargesDelta(source);
 
         Charge charge = expectedChargesDelta.getCharges().get(0);
 
         InternalChargeApi internalChargeApi = transformer.transform(charge, testSupport.createKafkaHeaders());
 
         String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
-        String expectedChargesApiJson = testSupport.loadTestdataFile("internal-charges-api-expected-3.json");
+        String expectedChargesApiJson = testSupport.loadTestdataFile(expected);
         JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
-                new CustomComparator(JSONCompareMode.LENIENT,
-                        new Customization("external_data.etag", (o1, o2) -> true)));
-    }
-
-    @Test
-    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_Unmatched_NoticeType_Expect_ValidTransformedInternal() throws Exception {
-
-        ChargesDelta expectedChargesDelta = testSupport.createChargesDelta("charges-delta-source-4.json");
-
-        Charge charge = expectedChargesDelta.getCharges().get(0);
-
-        InternalChargeApi internalChargeApi = transformer.transform(charge, testSupport.createKafkaHeaders());
-
-        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
-        String expectedChargesApiJson = testSupport.loadTestdataFile("internal-charges-api-expected-4.json");
-        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
-                new CustomComparator(JSONCompareMode.LENIENT,
-                        new Customization("external_data.etag", (o1, o2) -> true)));
-
-    }
-
-    @Test
-    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_Several_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
-
-        ChargesDelta expectedChargesDelta = testSupport.createChargesDelta("charges-delta-source-5.json");
-
-        Charge charge = expectedChargesDelta.getCharges().get(0);
-
-        InternalChargeApi internalChargeApi = transformer.transform(charge, testSupport.createKafkaHeaders());
-
-        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
-
-        String expectedChargesApiJson = testSupport.loadTestdataFile("internal-charges-api-expected-5.json");
-        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
-                new CustomComparator(JSONCompareMode.LENIENT,
-                        new Customization("external_data.etag", (o1, o2) -> true)));
-
-    }
-
-    @Test
-    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_Different_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
-
-        ChargesDelta expectedChargesDelta = testSupport.createChargesDelta("charges-delta-source-6.json");
-
-        Charge charge = expectedChargesDelta.getCharges().get(0);
-
-        InternalChargeApi internalChargeApi = transformer.transform(charge, testSupport.createKafkaHeaders());
-
-        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
-        String expectedChargesApiJson = testSupport.loadTestdataFile("internal-charges-api-expected-6.json");
-        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
-                new CustomComparator(JSONCompareMode.LENIENT,
-                        new Customization("external_data.etag", (o1, o2) -> true)));
-
-    }
-
-    @Test
-    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_MR10_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
-
-        ChargesDelta expectedChargesDelta = testSupport.createChargesDelta("charges-delta-source-7.json");
-
-        Charge charge = expectedChargesDelta.getCharges().get(0);
-
-        InternalChargeApi internalChargeApi = transformer.transform(charge, testSupport.createKafkaHeaders());
-
-        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
-        String expectedChargesApiJson = testSupport.loadTestdataFile("internal-charges-api-expected-7.json");
-        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
-                new CustomComparator(JSONCompareMode.LENIENT,
-                        new Customization("external_data.etag", (o1, o2) -> true)));
-
-    }
-
-    @Test
-    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_LLRM01_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
-
-        ChargesDelta expectedChargesDelta = testSupport.createChargesDelta("charges-delta-source-8.json");
-
-        Charge charge = expectedChargesDelta.getCharges().get(0);
-
-        InternalChargeApi internalChargeApi = transformer.transform(charge, testSupport.createKafkaHeaders());
-
-        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
-        String expectedChargesApiJson = testSupport.loadTestdataFile("internal-charges-api-expected-8.json");
-        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
-                new CustomComparator(JSONCompareMode.LENIENT,
-                        new Customization("external_data.etag", (o1, o2) -> true)));
-
-    }
-
-    @Test
-    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_419bScot_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
-
-        ChargesDelta expectedChargesDelta = testSupport.createChargesDelta("charges-delta-source-9.json");
-
-        Charge charge = expectedChargesDelta.getCharges().get(0);
-
-        InternalChargeApi internalChargeApi = transformer.transform(charge, testSupport.createKafkaHeaders());
-
-        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
-        String expectedChargesApiJson = testSupport.loadTestdataFile("internal-charges-api-expected-9.json");
-        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
-                new CustomComparator(JSONCompareMode.LENIENT,
-                        new Customization("external_data.etag", (o1, o2) -> true)));
-
-    }
-
-    @Test
-    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_395_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
-
-        ChargesDelta expectedChargesDelta = testSupport.createChargesDelta("charges-delta-source-10.json");
-
-        Charge charge = expectedChargesDelta.getCharges().get(0);
-
-        InternalChargeApi internalChargeApi = transformer.transform(charge, testSupport.createKafkaHeaders());
-
-        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
-        String expectedChargesApiJson = testSupport.loadTestdataFile("internal-charges-api-expected-10.json");
-        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
-                new CustomComparator(JSONCompareMode.LENIENT,
-                        new Customization("external_data.etag", (o1, o2) -> true)));
-
-    }
-
-    @Test
-    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_RM01_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
-
-        ChargesDelta expectedChargesDelta = testSupport.createChargesDelta("charges-delta-source-11.json");
-
-        Charge charge = expectedChargesDelta.getCharges().get(0);
-
-        InternalChargeApi internalChargeApi = transformer.transform(charge, testSupport.createKafkaHeaders());
-
-        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
-        String expectedChargesApiJson = testSupport.loadTestdataFile("internal-charges-api-expected-11.json");
-        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
-                new CustomComparator(JSONCompareMode.LENIENT,
-                        new Customization("external_data.etag", (o1, o2) -> true)));
-
-    }
-
-    @Test
-    @DisplayName("ChargesApiTransformer to transform Charge to InternalChargeApi mapping")
-    void When_ValidMessage_With_LLMG01s_NoticeTypes_Expect_ValidTransformedInternal() throws Exception {
-
-        ChargesDelta expectedChargesDelta = testSupport.createChargesDelta("charges-delta-source-12.json");
-
-        Charge charge = expectedChargesDelta.getCharges().get(0);
-
-        InternalChargeApi internalChargeApi = transformer.transform(charge, testSupport.createKafkaHeaders());
-
-        String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
-        String expectedChargesApiJson = testSupport.loadTestdataFile("internal-charges-api-expected-12.json");
-        JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
-                new CustomComparator(JSONCompareMode.LENIENT,
-                        new Customization("external_data.etag", (o1, o2) -> true)));
-
+            new CustomComparator(JSONCompareMode.LENIENT,
+                new Customization("external_data.etag", (o1, o2) -> true)));
     }
 
     @Test

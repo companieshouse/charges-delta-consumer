@@ -3,13 +3,11 @@ package uk.gov.companieshouse.charges.delta.processor;
 import static java.lang.String.format;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
@@ -19,6 +17,7 @@ import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ChargesDeleteDelta;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
+import uk.gov.companieshouse.api.error.ApiErrorResponseException;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.charges.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
@@ -34,7 +33,7 @@ public class ChargesDeltaProcessor {
     private final ChargesApiTransformer transformer;
     private final Logger logger;
     private final ApiClientService apiClientService;
-    private EncoderUtil encoderUtil;
+    private final EncoderUtil encoderUtil;
 
     /**
      * The constructor.
@@ -70,8 +69,8 @@ public class ChargesDeltaProcessor {
 
         InternalChargeApi internalChargeApi = transformer.transform(charge, headers);
 
-        final ApiResponse<Void> apiResponse =
-                updateChargesData(logContext, charge, internalChargeApi, logMap);
+        ApiResponse<Void> apiResponse = updateChargesData(logContext, charge,
+                internalChargeApi, logMap);
 
         handleResponse(HttpStatus.valueOf(apiResponse.getStatusCode()), logContext, logMap);
     }
@@ -80,8 +79,7 @@ public class ChargesDeltaProcessor {
             throws NonRetryableErrorException {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            T chargesDelta = mapper.readValue(payload.getData(), deltaclass);
-            return chargesDelta;
+            return mapper.readValue(payload.getData(), deltaclass);
         } catch (Exception exception) {
             throw new NonRetryableErrorException("Error when extracting charges delta", exception);
         }
@@ -138,7 +136,6 @@ public class ChargesDeltaProcessor {
      * Process Charges Delta Delete message.
      */
     public String processDelete(Message<ChsDelta> chsDelta) {
-        final MessageHeaders headers = chsDelta.getHeaders();
         final ChsDelta payload = chsDelta.getPayload();
         final String logContext = payload.getContextId();
         final Map<String, Object> logMap = new HashMap<>();
