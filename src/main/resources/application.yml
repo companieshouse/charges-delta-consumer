@@ -11,10 +11,10 @@ spring:
 
 charges:
   delta:
-    group-id: charges-delta-consumer
-    topic: charges-delta
-    retry-attempts: 4
-    backoff-delay: 100
+    group-id: ${CHARGES_DELTA_GROUP_ID:charges-delta-consumer}
+    topic: ${CHARGES_DELTA_TOPIC:charges-delta}
+    retry-attempts: ${CHARGES_DELTA_ATTEMPTS:4}
+    backoff-delay: ${CHARGES_DELTA_BACKOFF_DELAY:100}
 
 logger:
   namespace: charges-delta-consumer

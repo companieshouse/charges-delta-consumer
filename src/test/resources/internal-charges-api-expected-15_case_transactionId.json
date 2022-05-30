@@ -1,0 +1,88 @@
+{
+  "external_data": {
+    "etag": null,
+    "id": "374283",
+    "charge_code": null,
+    "classification": {
+      "type": "charge-description",
+      "description": "BOND & FLOATING CHARGE"
+    },
+    "charge_number": 1,
+    "status": "outstanding",
+    "assets_ceased_released": null,
+    "acquired_on": null,
+    "delivered_on": "1988-01-18",
+    "resolved_on": null,
+    "covering_instrument_date": null,
+    "created_on": "1988-01-12",
+    "satisfied_on": null,
+    "particulars": {
+      "type": "short-particulars",
+      "description": "THE WHOLE ASSETS OF THE COMPANY         ",
+      "contains_floating_charge": true,
+      "contains_fixed_charge": false,
+      "floating_charge_covers_all": false,
+      "contains_negative_pledge": false,
+      "chargor_acting_as_bare_trustee": false
+    },
+    "secured_details": {
+      "type": "amount-secured",
+      "description": "ALL SUMS DUE OR TO BECOME DUE"
+    },
+    "scottish_alterations": {
+      "type": null,
+      "description": null,
+      "has_alterations_to_order": null,
+      "has_alterations_to_prohibitions": null,
+      "has_restricting_provisions": true
+    },
+    "more_than_four_persons_entitled": null,
+    "persons_entitled": null,
+    "transactions": [
+      {
+        "filing_type": "liquidation-appointment-of-receiver-scotland",
+        "transaction_id": null,
+        "delivered_on": "1993-05-28",
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/SC091922/filing-history/MDEwMDUyMjMwMnRyYW5zSWRfc2FsdA",
+          "insolvency_case": null
+        }
+      },
+      {
+        "filing_type": "liquidation-ceasing-to-act-receiver-scotland",
+        "transaction_id": null,
+        "delivered_on": "1996-12-13",
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/SC091922/filing-history/MDA3NDc4MjU2OXRyYW5zSWRfc2FsdA",
+          "insolvency_case": null
+        }
+      },
+      {
+        "filing_type": "create-charge",
+        "transaction_id": null,
+        "delivered_on": "1988-01-18",
+        "insolvency_case_number": null,
+        "links": {
+          "filing": null,
+          "insolvency_case": null
+        }
+      }
+    ],
+    "insolvency_cases": [
+      {
+        "case_number": 11223344,
+        "transaction_id": 223344,
+        "links": null
+      }
+    ],
+    "links": {
+      "self": "/company/SC091922/charges/PIFl4D_Hw1GIvy9TGS4s7nQgEDg"
+    }
+  },
+  "internal_data": {
+    "delta_at": "2022-05-25T16:12:03.320356Z",
+    "updated_by": "test-partition_1-offset_1"
+  }
+}

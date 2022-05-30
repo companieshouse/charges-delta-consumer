@@ -1,0 +1,54 @@
+{
+  "charges": [
+    {
+      "company_number": "SC091922",
+      "delta_at": "20220525161203320356",
+      "id": "374283",
+      "notice_type": "Registration of a charge",
+      "trans_desc": "",
+      "submission_type": "",
+      "delivered_on": "19880118",
+      "additional_notices": [
+        {
+          "notice_type": " 1(Scot)",
+          "trans_id": "0100522302",
+          "trans_desc": "APP OF RECEIVER            *****",
+          "submission_type": "9",
+          "delivered_on": "19930528"
+        },
+        {
+          "notice_type": " 3(Scot)",
+          "trans_id": "0074782569",
+          "trans_desc": "RECEIVERS CESSATION        *****",
+          "submission_type": "9",
+          "delivered_on": "19961213"
+        }
+      ],
+      "insolvency_cases": [
+        {
+          "case": "1",
+          "transaction_id": ""
+        }
+      ],
+      "charge_number": "1",
+      "migrated_from": "STEM",
+      "amount_secured": "ALL SUMS DUE OR TO BECOME DUE",
+      "type": "BOND & FLOATING CHARGE",
+      "short_particulars": "THE WHOLE ASSETS OF THE COMPANY         ",
+      "short_particular_flags": [
+        {
+          "fixed_charge": "no",
+          "contains_floating_charge": "no",
+          "floating_charge_all": "no",
+          "negative_pledge": "no",
+          "bare_trustee": "no"
+        }
+      ],
+      "status": "0",
+      "delivered_on": "19880118",
+      "floating_charge": "Y",
+      "restricting_provisions": "Y",
+      "created_on": "19880112"
+    }
+  ]
+}
