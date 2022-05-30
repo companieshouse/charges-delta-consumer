@@ -72,7 +72,14 @@ public class ChargesApiTransformerTest {
             Arguments.of("charges-delta-source-9.json", "internal-charges-api-expected-9.json"),
             Arguments.of("charges-delta-source-10.json", "internal-charges-api-expected-10.json"),
             Arguments.of("charges-delta-source-11.json", "internal-charges-api-expected-11.json"),
-            Arguments.of("charges-delta-source-12.json", "internal-charges-api-expected-12.json")
+            Arguments.of("charges-delta-source-12.json", "internal-charges-api-expected-12.json"),
+            Arguments.of("charges-delta-source-13_empty_transactionId.json",
+                    "internal-charges-api-expected-13_empty_transactionId.json"),
+            Arguments.of("charges-delta-source-14_empty_case_transactionId.json",
+                    "internal-charges-api-expected-14_empty_case_transactionId.json"),
+            Arguments.of("charges-delta-source-15_case_transactionId.json",
+                        "internal-charges-api-expected-15_case_transactionId.json")
+
         );
     }
 
@@ -88,6 +95,7 @@ public class ChargesApiTransformerTest {
         InternalChargeApi internalChargeApi = transformer.transform(charge, testSupport.createKafkaHeaders());
 
         String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
+        System.out.println("chargeApiJson = " + chargeApiJson);
         String expectedChargesApiJson = testSupport.loadTestdataFile(expected);
         JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
             new CustomComparator(JSONCompareMode.LENIENT,
