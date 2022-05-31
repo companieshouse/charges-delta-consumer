@@ -73,8 +73,10 @@
     "insolvency_cases": [
       {
         "case_number": 1,
-        "transaction_id": 0,
-        "links": null
+        "transaction_id": null,
+        "links": {
+          "case": "/company/SC091922/insolvency#case-1"
+        }
       }
     ],
     "links": {

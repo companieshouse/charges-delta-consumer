@@ -57,7 +57,8 @@ public class ChargesApiTransformer {
         logger.trace(String.format("DSND-498: Charge message to be transformed "
                 + ": %s", charge));
         try {
-            ChargeApi chargeApi = chargeApiMapper.chargeToChargeApi(charge);
+            ChargeApi chargeApi = chargeApiMapper.chargeToChargeApi(charge,
+                    charge.getCompanyNumber());
             updateChargeApiWithLinks(charge, chargeApi, charge.getCompanyNumber());
             InternalChargeApi internalChargeApi = new InternalChargeApi();
             internalChargeApi.setExternalData(chargeApi);

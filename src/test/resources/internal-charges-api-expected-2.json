@@ -31,7 +31,9 @@
       {
         "case_number": 2,
         "transaction_id": 22222,
-        "links": null
+        "links": {
+          "case": "/company/NI622400/insolvency#case-2"
+        }
       }
     ],
     "links": {
@@ -77,6 +79,6 @@
   },
   "internal_data": {
     "updated_by": "test-partition_1-offset_1",
-    "delta_at":"2021-10-29T14:20:43.36056Z"
+    "delta_at": "2021-10-29T14:20:43.36056Z"
   }
 }
