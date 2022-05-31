@@ -16,6 +16,7 @@ public interface InsolvencyCasesApiMapper {
     @Mapping(target = "caseNumber", ignore = true)
     @Mapping(target = "transactionId", ignore = true)
     @Mapping(target = "links", ignore = true)
+
     InsolvencyCasesApi insolvencyCaseToInsolvencyCasesApi(
             InsolvencyCase insolvencyCase, @Context String companyNumber);
 
