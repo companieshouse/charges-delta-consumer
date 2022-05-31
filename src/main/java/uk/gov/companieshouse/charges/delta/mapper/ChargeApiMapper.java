@@ -61,6 +61,7 @@ public interface ChargeApiMapper {
     @Mapping(target = "acquiredOn", ignore = true)
     @Mapping(target = "assetsCeasedReleased", ignore = true)
     @Mapping(target = "coveringInstrumentDate", ignore = true)
+    @Mapping(target = "id", ignore = true)
     ChargeApi chargeToChargeApi(Charge sourceCharge,
                                 @Context String companyNumber) throws NoSuchMethodException,
             InvocationTargetException, IllegalAccessException;
