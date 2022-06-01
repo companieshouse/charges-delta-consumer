@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.mapstruct.AfterMapping;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -61,7 +62,8 @@ public interface ChargeApiMapper {
     @Mapping(target = "assetsCeasedReleased", ignore = true)
     @Mapping(target = "coveringInstrumentDate", ignore = true)
     @Mapping(target = "id", ignore = true)
-    ChargeApi chargeToChargeApi(Charge sourceCharge) throws NoSuchMethodException,
+    ChargeApi chargeToChargeApi(Charge sourceCharge,
+                                @Context String companyNumber) throws NoSuchMethodException,
             InvocationTargetException, IllegalAccessException;
 
     /**

@@ -30,7 +30,9 @@
       {
         "case_number": 2,
         "transaction_id": 22222,
-        "links": null
+        "links": {
+          "case": "/company/NI622400/insolvency#case-2"
+        }
       }
     ],
     "links": {

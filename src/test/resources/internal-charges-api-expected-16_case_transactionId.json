@@ -76,6 +76,13 @@
         "links": {
           "case": "/company/SC091922/insolvency#case-11223344"
         }
+      },
+      {
+        "case_number": 445566,
+        "transaction_id": 889900,
+        "links": {
+          "case": "/company/SC091922/insolvency#case-445566"
+        }
       }
     ],
     "links": {

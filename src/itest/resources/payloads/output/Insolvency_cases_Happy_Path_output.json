@@ -29,7 +29,9 @@
       { 
       "case_number" : 1,
       "transaction_id" : 3129317274,
-      "links": null
+        "links": {
+          "case": "/company/04796390/insolvency#case-1"
+        }
       } 
     ],
     "links": {

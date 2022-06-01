@@ -25,7 +25,14 @@
         }
       ],
       "insolvency_cases": [
-        { }
+        {
+          "case": "11223344",
+          "transaction_id": "223344"
+        },
+        {
+          "case": "445566",
+          "transaction_id": "889900"
+        }
       ],
       "charge_number": "1",
       "migrated_from": "STEM",
