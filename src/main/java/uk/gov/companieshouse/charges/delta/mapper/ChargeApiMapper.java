@@ -54,8 +54,8 @@ public interface ChargeApiMapper {
             expression = "java(org.apache.commons.lang3.BooleanUtils"
                     + ".toBooleanObject(charge.getAlterationsToProhibitions()))")
     @Mapping(target = "moreThanFourPersonsEntitled",
-            expression = "java(org.apache.commons.lang3.BooleanUtils"
-                    + ".toBooleanObject(sourceCharge.getMoreThan4Persons()))")
+            expression = "java(org.apache.commons.lang3.BooleanUtils.toBooleanObject"
+                    + "(sourceCharge.getMoreThan4Persons()) == Boolean.TRUE ? Boolean.TRUE : null)")
     @Mapping(target = "transactions", source = "additionalNotices")
     @Mapping(target = "links", ignore = true)
     @Mapping(target = "insolvencyCases", source = "insolvencyCases")
