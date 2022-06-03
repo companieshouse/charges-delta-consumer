@@ -1,12 +1,15 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
+import static java.lang.Boolean.TRUE;
+import static org.apache.commons.lang3.BooleanUtils.toBooleanObject;
+
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -152,16 +155,16 @@ public interface ChargeApiMapper {
             ParticularsApi particularsApi,
             ShortParticularFlags shortParticularFlags, Charge charge) {
         particularsApi.setContainsFixedCharge(
-                BooleanUtils.toBooleanObject(shortParticularFlags.getFixedCharge()));
+                toBooleanObject(shortParticularFlags.getFixedCharge()) == TRUE ? TRUE : null);
         particularsApi.setChargorActingAsBareTrustee(
-                BooleanUtils.toBooleanObject(shortParticularFlags.getBareTrustee()));
+                toBooleanObject(shortParticularFlags.getBareTrustee()) == TRUE ? TRUE : null);
         particularsApi.setContainsFloatingCharge(
                 orAsBoleanObjects(shortParticularFlags.getContainsFloatingCharge(),
-                charge.getFloatingCharge()));
+                charge.getFloatingCharge()) == TRUE ? TRUE : null);
         particularsApi.setContainsNegativePledge(
-                BooleanUtils.toBooleanObject(shortParticularFlags.getNegativePledge()));
+                toBooleanObject(shortParticularFlags.getNegativePledge()) == TRUE ? TRUE : null);
         particularsApi.setFloatingChargeCoversAll(
-                BooleanUtils.toBooleanObject(shortParticularFlags.getFloatingChargeAll()));
+                toBooleanObject(shortParticularFlags.getFloatingChargeAll()) == TRUE ? TRUE : null);
     }
 
     /**
@@ -172,8 +175,8 @@ public interface ChargeApiMapper {
      * @return the 2 values ord together ignoring any nulls
      */
     private Boolean orAsBoleanObjects(String str1, String str2) {
-        Boolean bool1 = BooleanUtils.toBooleanObject(str1);
-        Boolean bool2 = BooleanUtils.toBooleanObject(str2);
+        Boolean bool1 = toBooleanObject(str1);
+        Boolean bool2 = toBooleanObject(str2);
         if (bool1 == null) {
             return bool2;
         }
