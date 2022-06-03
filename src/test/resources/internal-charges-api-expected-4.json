@@ -15,15 +15,7 @@
     "covering_instrument_date": "2008-12-03",
     "created_on": "2016-07-29",
     "satisfied_on": null,
-    "particulars": {
-      "type": null,
-      "description": null,
-      "contains_floating_charge": null,
-      "contains_fixed_charge": null,
-      "floating_charge_covers_all": null,
-      "contains_negative_pledge": null,
-      "chargor_acting_as_bare_trustee": null
-    },
+    "particulars": null,
     "scottish_alterations": {
       "type": null,
       "description": null,
