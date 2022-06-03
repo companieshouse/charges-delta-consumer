@@ -7,13 +7,13 @@
     ],
     "charge_number": 1,
     "particulars": {
-      "floating_charge_covers_all": false,
+      "floating_charge_covers_all": null,
       "type": "charged-property-or-undertaking-description",
-      "contains_floating_charge": false,
+      "contains_floating_charge": null,
       "description": "OVER USED CAR STOCK",
-      "contains_fixed_charge": false,
-      "contains_negative_pledge": false,
-      "chargor_acting_as_bare_trustee": false
+      "contains_fixed_charge": null,
+      "contains_negative_pledge": null,
+      "chargor_acting_as_bare_trustee": null
     },
     "secured_details": {
       "type": "obligations-secured",

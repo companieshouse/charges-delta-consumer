@@ -22,7 +22,7 @@
       "contains_fixed_charge": true,
       "floating_charge_covers_all": true,
       "contains_negative_pledge": true,
-      "chargor_acting_as_bare_trustee": false
+      "chargor_acting_as_bare_trustee": null
     },
     "scottish_alterations": {
       "type": null,

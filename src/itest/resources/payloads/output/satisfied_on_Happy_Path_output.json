@@ -13,7 +13,7 @@
       "description": "SUNNYHILL ROSE LANE MYNYDD ISA MOLD T/NO CYM343806\\n",
       "contains_fixed_charge": true,
       "contains_negative_pledge": true,
-      "chargor_acting_as_bare_trustee": false
+      "chargor_acting_as_bare_trustee": null
     },
     "scottish_alterations": {
       "type": null,
