@@ -31,7 +31,7 @@
       "has_alterations_to_prohibitions": null,
       "has_restricting_provisions": null
     },
-    "more_than_four_persons_entitled": false,
+    "more_than_four_persons_entitled": null,
     "persons_entitled": [
       {
         "name": "BANK OF BARODA"
