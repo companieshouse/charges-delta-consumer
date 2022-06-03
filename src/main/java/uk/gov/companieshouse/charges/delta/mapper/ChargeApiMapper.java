@@ -6,10 +6,12 @@ import static org.apache.commons.lang3.BooleanUtils.toBooleanObject;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -110,7 +112,28 @@ public interface ChargeApiMapper {
                 ParticularsApi.TypeEnum.BRIEF_DESCRIPTION);
         stringToParticularsApiEnum(charge.getShortParticulars(), particularsApi,
                 ParticularsApi.TypeEnum.SHORT_PARTICULARS);
-        chargeApi.setParticulars(particularsApi);
+
+        chargeApi.setParticulars(isAnyFieldValueNotNull(particularsApi) ? particularsApi : null);
+    }
+
+    /**
+     * Helper method to determine if any first level field value in an object is not null.
+     */
+    private boolean isAnyFieldValueNotNull(Object targetObject) {
+        if (targetObject == null) {
+            return false;
+        }
+
+        return ObjectUtils.anyNotNull(Arrays.stream(targetObject.getClass().getDeclaredFields())
+                .filter(field -> !field.isSynthetic())
+                .map(field -> {
+                    try {
+                        field.setAccessible(true);
+                        return field.get(targetObject);
+                    } catch (IllegalAccessException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }).toArray(Object[]::new));
     }
 
     /**
