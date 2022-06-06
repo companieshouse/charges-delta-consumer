@@ -1,12 +1,17 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
+import static java.lang.Boolean.TRUE;
+import static org.apache.commons.lang3.BooleanUtils.toBooleanObject;
+
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -49,8 +54,8 @@ public interface ChargeApiMapper {
             expression = "java(org.apache.commons.lang3.BooleanUtils"
                     + ".toBooleanObject(charge.getAlterationsToProhibitions()))")
     @Mapping(target = "moreThanFourPersonsEntitled",
-            expression = "java(org.apache.commons.lang3.BooleanUtils"
-                    + ".toBooleanObject(sourceCharge.getMoreThan4Persons()))")
+            expression = "java(org.apache.commons.lang3.BooleanUtils.toBooleanObject"
+                    + "(sourceCharge.getMoreThan4Persons()) == Boolean.TRUE ? Boolean.TRUE : null)")
     @Mapping(target = "transactions", source = "additionalNotices")
     @Mapping(target = "links", ignore = true)
     @Mapping(target = "insolvencyCases", source = "insolvencyCases")
@@ -107,7 +112,28 @@ public interface ChargeApiMapper {
                 ParticularsApi.TypeEnum.BRIEF_DESCRIPTION);
         stringToParticularsApiEnum(charge.getShortParticulars(), particularsApi,
                 ParticularsApi.TypeEnum.SHORT_PARTICULARS);
-        chargeApi.setParticulars(particularsApi);
+
+        chargeApi.setParticulars(isAnyFieldValueNotNull(particularsApi) ? particularsApi : null);
+    }
+
+    /**
+     * Helper method to determine if any first level field value in an object is not null.
+     */
+    private boolean isAnyFieldValueNotNull(Object targetObject) {
+        if (targetObject == null) {
+            return false;
+        }
+
+        return ObjectUtils.anyNotNull(Arrays.stream(targetObject.getClass().getDeclaredFields())
+                .filter(field -> !field.isSynthetic())
+                .map(field -> {
+                    try {
+                        field.setAccessible(true);
+                        return field.get(targetObject);
+                    } catch (IllegalAccessException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }).toArray(Object[]::new));
     }
 
     /**
@@ -152,16 +178,16 @@ public interface ChargeApiMapper {
             ParticularsApi particularsApi,
             ShortParticularFlags shortParticularFlags, Charge charge) {
         particularsApi.setContainsFixedCharge(
-                BooleanUtils.toBooleanObject(shortParticularFlags.getFixedCharge()));
+                toBooleanObject(shortParticularFlags.getFixedCharge()) == TRUE ? TRUE : null);
         particularsApi.setChargorActingAsBareTrustee(
-                BooleanUtils.toBooleanObject(shortParticularFlags.getBareTrustee()));
+                toBooleanObject(shortParticularFlags.getBareTrustee()) == TRUE ? TRUE : null);
         particularsApi.setContainsFloatingCharge(
                 orAsBoleanObjects(shortParticularFlags.getContainsFloatingCharge(),
-                charge.getFloatingCharge()));
+                charge.getFloatingCharge()) == TRUE ? TRUE : null);
         particularsApi.setContainsNegativePledge(
-                BooleanUtils.toBooleanObject(shortParticularFlags.getNegativePledge()));
+                toBooleanObject(shortParticularFlags.getNegativePledge()) == TRUE ? TRUE : null);
         particularsApi.setFloatingChargeCoversAll(
-                BooleanUtils.toBooleanObject(shortParticularFlags.getFloatingChargeAll()));
+                toBooleanObject(shortParticularFlags.getFloatingChargeAll()) == TRUE ? TRUE : null);
     }
 
     /**
@@ -172,8 +198,8 @@ public interface ChargeApiMapper {
      * @return the 2 values ord together ignoring any nulls
      */
     private Boolean orAsBoleanObjects(String str1, String str2) {
-        Boolean bool1 = BooleanUtils.toBooleanObject(str1);
-        Boolean bool2 = BooleanUtils.toBooleanObject(str2);
+        Boolean bool1 = toBooleanObject(str1);
+        Boolean bool2 = toBooleanObject(str2);
         if (bool1 == null) {
             return bool2;
         }

@@ -19,10 +19,10 @@
       "type": "short-particulars",
       "description": "THE WHOLE ASSETS OF THE COMPANY         ",
       "contains_floating_charge": true,
-      "contains_fixed_charge": false,
-      "floating_charge_covers_all": false,
-      "contains_negative_pledge": false,
-      "chargor_acting_as_bare_trustee": false
+      "contains_fixed_charge": null,
+      "floating_charge_covers_all": null,
+      "contains_negative_pledge": null,
+      "chargor_acting_as_bare_trustee": null
     },
     "secured_details": {
       "type": "amount-secured",

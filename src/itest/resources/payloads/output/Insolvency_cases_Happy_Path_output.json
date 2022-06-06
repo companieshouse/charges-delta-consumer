@@ -7,11 +7,11 @@
     ],
     "charge_number": 17,
     "particulars": {
-      "floating_charge_covers_all": false,
-      "contains_floating_charge": false,
-      "contains_fixed_charge": false,
-      "contains_negative_pledge": false,
-      "chargor_acting_as_bare_trustee": false
+      "floating_charge_covers_all": null,
+      "contains_floating_charge": null,
+      "contains_fixed_charge": null,
+      "contains_negative_pledge": null,
+      "chargor_acting_as_bare_trustee": null
     },
     "secured_details": {
       "type" : "amount-secured",  

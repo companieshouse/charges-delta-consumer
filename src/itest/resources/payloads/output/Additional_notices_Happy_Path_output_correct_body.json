@@ -13,7 +13,7 @@
       "description": "THE FREEHOLD LAND KNOWN AS MILLENNIUM HOUSE, 60 VICTORIA STREET, LIVERPOOL AND REGISTERED WITH HM LAND REGISTRY UNDER TITLE NUMBER MS303172\\n",
       "contains_fixed_charge": true,
       "contains_negative_pledge": true,
-      "chargor_acting_as_bare_trustee": false
+      "chargor_acting_as_bare_trustee": null
     },
     "scottish_alterations": {
       "type": null,
@@ -78,7 +78,7 @@
     "acquired_on": null,
     "resolved_on": null,
     "covering_instrument_date": null,
-    "more_than_four_persons_entitled": false,
+    "more_than_four_persons_entitled": null,
     "satisfied_on": null
   },
   "internal_data": {

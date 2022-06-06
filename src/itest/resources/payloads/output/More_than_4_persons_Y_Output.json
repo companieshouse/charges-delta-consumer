@@ -19,10 +19,10 @@
       "type": null,
       "description": null,
       "contains_floating_charge": true,
-      "contains_fixed_charge": false,
+      "contains_fixed_charge": null,
       "floating_charge_covers_all": true,
       "contains_negative_pledge": true,
-      "chargor_acting_as_bare_trustee": false
+      "chargor_acting_as_bare_trustee": null
     },
     "links": {
       "self": "/company/00285630/charges/NTdBQUUzMUI2OTg1RENBRTY3MTdDNjYwMTAzMDBDQzc2M0MyQzlFRA"

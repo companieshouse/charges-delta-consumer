@@ -10,10 +10,10 @@
       "type": "brief-description",
       "description": "UNIT 7 CALLYWITH GATE INDUSTRIAL ESTATE, LAUNCESTON ROAD, BODMIN, PL31 2RQ\\n",
       "contains_floating_charge": true,
-      "contains_fixed_charge": false,
-      "floating_charge_covers_all": false,
+      "contains_fixed_charge": null,
+      "floating_charge_covers_all": null,
       "contains_negative_pledge": true,
-      "chargor_acting_as_bare_trustee": false
+      "chargor_acting_as_bare_trustee": null
     },
     "charge_code": "012033960817",
     "links": {
