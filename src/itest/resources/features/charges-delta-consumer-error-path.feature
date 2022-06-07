@@ -56,3 +56,15 @@ Feature: Process Charges Delta information with error conditions
     Examples:
       | response    | targetTopic                                  | retries | companyNumber | chargeId                    |
       | 200         | charges-delta-charges-delta-consumer-error   | 3       | OC342023      | TnYWNS5p1GdMPVGvNXIx63D5Uc8 |
+
+  Scenario Outline: Consume a message, with null/empty charge id
+    Given Charges delta consumer service is running
+    And Stubbed Charges Data API endpoint will return "<response>" http response code for "<companyNumber>" and "<chargeId>"
+    When a message with payload "<deltaMessage>" is published to charges topic
+    Then the message should be moved to topic "<targetTopic>"
+    And Charges Data API endpoint is never invoked
+
+    Examples:
+      | response | targetTopic                                  | deltaMessage                              | companyNumber | chargeId                    |
+      | 200      | charges-delta-charges-delta-consumer-invalid | charges-delta-source-null-charge-id.json  | NI622400      | TnYWNS5p1GdMPVGvNXIx63D5Uc8 |
+      | 200      | charges-delta-charges-delta-consumer-invalid | charges-delta-source-empty-charge-id.json | NI622400      | TnYWNS5p1GdMPVGvNXIx63D5Uc8 |
