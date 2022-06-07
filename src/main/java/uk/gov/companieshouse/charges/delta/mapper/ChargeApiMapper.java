@@ -2,6 +2,8 @@ package uk.gov.companieshouse.charges.delta.mapper;
 
 import static java.lang.Boolean.TRUE;
 import static org.apache.commons.lang3.BooleanUtils.toBooleanObject;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.trim;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
@@ -263,7 +265,7 @@ public interface ChargeApiMapper {
      * Format string dates of format yyyyMMdd to LocalDate.
      */
     private LocalDate parseDate(String sourceDate, String format) {
-        if (sourceDate != null) {
+        if (!isEmpty(trim(sourceDate))) {
             return LocalDate.parse(sourceDate,
                     DateTimeFormatter.ofPattern(format));
         }
