@@ -43,6 +43,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class ChargesConsumerSteps {
 
+    private static final String HEALTHCHECK_URI = "/charges-delta-consumer/healthcheck";
+    private static final String HEALTHCHECK_RESPONSE_BODY = "{\"status\":\"UP\"}";
+
     @Autowired
     public KafkaTemplate<String, Object> kafkaTemplate;
     @Autowired
@@ -62,9 +65,9 @@ public class ChargesConsumerSteps {
     @Given("Charges delta consumer service is running")
     public void charges_delta_consumer_service_is_running() {
 
-        ResponseEntity<String> response = restTemplate.getForEntity("/healthcheck", String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(HEALTHCHECK_URI, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.valueOf(200));
-        assertThat(response.getBody()).isEqualTo("I am healthy");
+        assertThat(response.getBody()).isEqualTo(HEALTHCHECK_RESPONSE_BODY);
     }
 
     @When("a message with payload {string} is published to topic")
