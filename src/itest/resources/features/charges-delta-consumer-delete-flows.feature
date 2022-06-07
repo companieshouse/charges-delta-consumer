@@ -63,3 +63,16 @@ Feature: Process Charges Delete Delta information with happy and error condition
       | response | deltaMessage                       | companyNumber | chargeId                    | responseCode | targetTopic                                | retries |  |
       | 500      | charges-delete-delta-source-1.json | 0             | NLVXY861zxOTr3NExemI3q4Nq4Y | 500          | charges-delta-charges-delta-consumer-error | 4       |  |
 
+  Scenario Outline: Consume a Charges Delete message null/empty charge id,
+  process it and move to invalid message topic charges data api never called
+
+    Given Charges delta consumer service for delete is running
+    And Stubbed Charges Data API delete endpoint will return "<response>" http response code for "<companyNumber>" and "<chargeId>"
+    When delete message with payload "<deltaMessage>" is published to charges topic
+    Then delete message should be moved to topic "<targetTopic>"
+    And Charges Data API delete endpoint is never invoked
+
+    Examples:
+      | response | targetTopic                                  | deltaMessage                                     | companyNumber | chargeId                    |
+      | 200      | charges-delta-charges-delta-consumer-invalid | charges-delete-delta-source-null_charge-id.json  | 0             | NLVXY861zxOTr3NExemI3q4Nq4Y |
+      | 200      | charges-delta-charges-delta-consumer-invalid | charges-delete-delta-source-empty_charge-id.json | 0             | NLVXY861zxOTr3NExemI3q4Nq4Y |
