@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -36,6 +35,7 @@ class TextFormatterTest {
                 Arguments.arguments("King (of in the) Hill", "King (Of in The) Hill"),
                 Arguments.arguments("King (is king of the) Hill", "King (Is King of The) Hill"),
                 Arguments.arguments("An apple; an orange","An Apple; An Orange"),
+                Arguments.arguments("An apple; and; an orange","An Apple; And; An Orange"),
                 Arguments.arguments("java coffee 4l1f3", "Java Coffee 4L1F3"),
                 Arguments.arguments("llp", "LLP"),
                 Arguments.arguments("Director is from the uk", "Director is from the UK"),
