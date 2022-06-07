@@ -33,7 +33,16 @@ class TextFormatterTest {
                 Arguments.arguments("bReAD BuTteR", "Bread Butter"),
                 Arguments.arguments("bread and butter", "Bread and Butter"),
                 Arguments.arguments("and or the", "And or The"),
-                Arguments.arguments("King (of in the) Hill", "King (Of in The) Hill")
+                Arguments.arguments("King (of in the) Hill", "King (Of in The) Hill"),
+                Arguments.arguments("King (is king of the) Hill", "King (Is King of The) Hill"),
+                Arguments.arguments("An apple; an orange","An Apple; An Orange"),
+                Arguments.arguments("java coffee 4l1f3", "Java Coffee 4L1F3"),
+                Arguments.arguments("llp", "LLP"),
+                Arguments.arguments("Director is from the uk", "Director is from the UK"),
+                Arguments.arguments("a\nb", "A B"),
+                Arguments.arguments("d.r.", "D.R."),
+                Arguments.arguments("a  \t b", "A B"),
+                Arguments.arguments("d.r. jOhN f SmItH of lC123456    pLc (IS anybody ERE); aND\nIS  From the uk in lONdON", "D.R. John F Smith of LC123456 PLC (Is Anybody Ere); And is from the UK in London")
         );
     }
 }
