@@ -21,6 +21,12 @@ public final class TextFormatter {
             Pattern.compile("\\p{L}+\\p{N}+|\\p{N}+\\p{L}+");
     private static final Pattern ABBREVIATION_PATTERN =
             Pattern.compile("(\\p{L}[.])+");
+    private static final Pattern I_PATTERN =
+            Pattern.compile("\\bi\\b");
+    private static final Pattern FORWARD_SLASH_ABBREVIATION_PATTERN =
+            Pattern.compile("^(.?/)(.*)$");
+    private static final Pattern SENTENCE_ENDING_PATTERN =
+            Pattern.compile("[.?!]\\P{L}*$");
 
     private static final Set<String> STOP_WORDS = new HashSet<>(Arrays.asList("A", "AN", "AT",
             "AS", "AND", "ARE", "BUT", "BY", "ERE", "FOR", "FROM", "IN", "INTO", "IS", "OF", "ON",
@@ -78,6 +84,41 @@ public final class TextFormatter {
             builder.append(stateMachine.getMappedToken()).append(" ");
             if (endsWithColon(token)) {
                 stateMachine.colon();
+            }
+            index++;
+        }
+        return builder.toString().trim();
+    }
+
+    public static String formatAsSentence(String text) {
+        if (StringUtils.isEmpty(text)) {
+            return text;
+        }
+        String lowerCaseText = text.toLowerCase(Locale.UK);
+        StringTokenizer tokenizer = new StringTokenizer(lowerCaseText);
+        StringBuilder builder = new StringBuilder();
+
+        int index = 0;
+        boolean endOfSentence = false;
+        while(tokenizer.hasNext()) {
+            String token = tokenizer.next();
+            Matcher iMatcher = I_PATTERN.matcher(token);
+            Matcher forwardSlashAbbrevMatcher = FORWARD_SLASH_ABBREVIATION_PATTERN.matcher(token);
+            Matcher sentenceEndingMatcher = SENTENCE_ENDING_PATTERN.matcher(token);
+            if (iMatcher.find()) {
+                builder.append(token.toUpperCase(Locale.UK));
+            } else if (index == 0 && forwardSlashAbbrevMatcher.matches()) {
+                builder.append(forwardSlashAbbrevMatcher.group(1).toUpperCase(Locale.UK))
+                        .append(WordUtils.capitalizeFully(forwardSlashAbbrevMatcher.group(2)));
+            } else if (index == 0 || endOfSentence) {
+                builder.append(WordUtils.capitalizeFully(token));
+            } else {
+                builder.append(token);
+            }
+            endOfSentence = false;
+            builder.append(" ");
+            if (sentenceEndingMatcher.find()) {
+                endOfSentence = true;
             }
             index++;
         }
