@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -12,6 +13,7 @@ class TextFormatterTest {
 
     @ParameterizedTest(name = "Map {0} to {1}")
     @MethodSource("entityNameFormatting")
+    @DisplayName("Format text as an entity name")
     void testFormatAsEntityName(String input, String expected) {
         // when
         String actual = TextFormatter.formatAsEntityName(input);
