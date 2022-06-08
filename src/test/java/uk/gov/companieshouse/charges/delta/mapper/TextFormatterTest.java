@@ -74,7 +74,8 @@ class TextFormatterTest {
                 Arguments.of("p/office p/office", "P/Office p/office"),
                 Arguments.of("one. two. three.", "One. Two. Three."),
                 Arguments.of("\"i.\" am. error.", "\"I.\" Am. Error."),
-                Arguments.of("\"one.\" two. three.", "\"One.\" Two. Three.")
+                Arguments.of("\"one.\" two. three.", "\"One.\" Two. Three."),
+                Arguments.of("hello, goodbye, etc. greetings", "Hello, goodbye, etc. greetings")
         );
     }
 }

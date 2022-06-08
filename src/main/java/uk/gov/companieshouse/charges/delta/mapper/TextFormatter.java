@@ -27,6 +27,10 @@ public final class TextFormatter {
             Pattern.compile("^(.?/)(.*)$");
     private static final Pattern SENTENCE_ENDING_PATTERN =
             Pattern.compile("[.?!]\\P{L}*$");
+    private static final Pattern WORD_BEGINNING_PATTERN =
+            Pattern.compile("^(\\P{L}*)(\\p{L}+)(.*)$");
+    private static final Pattern GENERAL_ABBREV_PATTERN =
+            Pattern.compile("etc[.]|pp[.]|ph[.]?d[.]|(?:[A-Z][.])(?:[A-Z][.])+|(^[^a-zA-Z]*([a-z][.])+)");
 
     private static final Set<String> STOP_WORDS = new HashSet<>(Arrays.asList("A", "AN", "AT",
             "AS", "AND", "ARE", "BUT", "BY", "ERE", "FOR", "FROM", "IN", "INTO", "IS", "OF", "ON",
@@ -105,11 +109,18 @@ public final class TextFormatter {
             Matcher iMatcher = I_PATTERN.matcher(token);
             Matcher forwardSlashAbbrevMatcher = FORWARD_SLASH_ABBREVIATION_PATTERN.matcher(token);
             Matcher sentenceEndingMatcher = SENTENCE_ENDING_PATTERN.matcher(token);
+            Matcher wordBeginningPattern = WORD_BEGINNING_PATTERN.matcher(token);
+            Matcher generalAbbrevPattern = GENERAL_ABBREV_PATTERN.matcher(token);
             if (iMatcher.find()) {
                 builder.append(token.toUpperCase(Locale.UK));
             } else if (index == 0 && forwardSlashAbbrevMatcher.matches()) {
                 builder.append(forwardSlashAbbrevMatcher.group(1).toUpperCase(Locale.UK))
                         .append(WordUtils.capitalizeFully(forwardSlashAbbrevMatcher.group(2)));
+            } else if (index == 0 && wordBeginningPattern.matches()) {
+                String punct = wordBeginningPattern.group(1);
+                String word = wordBeginningPattern.group(2);
+                String trailing = wordBeginningPattern.group(3);
+                builder.append(punct).append(WordUtils.capitalizeFully(word)).append(trailing);
             } else if (index == 0 || endOfSentence) {
                 builder.append(WordUtils.capitalizeFully(token));
             } else {
@@ -117,7 +128,7 @@ public final class TextFormatter {
             }
             endOfSentence = false;
             builder.append(" ");
-            if (sentenceEndingMatcher.find()) {
+            if (sentenceEndingMatcher.find() && !generalAbbrevPattern.matches()) {
                 endOfSentence = true;
             }
             index++;
