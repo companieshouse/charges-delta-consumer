@@ -24,3 +24,15 @@ api:
   api-url: ${API_URL:localhost}
   charge-id-salt: ${CHARGE_ID_SALT:test1}
   trans-id-salt: ${TRANS_ID_SALT:test2}
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /
+      path-mapping:
+        health: charges-delta-consumer/healthcheck
+  endpoint:
+    health:
+      show-details: never
+      enabled: true
