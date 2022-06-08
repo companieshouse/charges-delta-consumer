@@ -1,24 +1,25 @@
 {
   "external_data": {
     "etag": null,
+    "id": null,
     "charge_code": null,
     "classification": {
       "type": "charge-description",
-      "description": "FLOATING CHARGE"
+      "description": "LEGAL MORTGAGE"
     },
-    "charge_number": 2,
+    "charge_number": 15,
     "status": "fully-satisfied",
     "assets_ceased_released": null,
     "acquired_on": null,
-    "delivered_on": "1989-03-15",
+    "delivered_on": "1992-05-18",
     "resolved_on": null,
     "covering_instrument_date": null,
-    "created_on": "1989-03-01",
-    "satisfied_on": "1998-03-24",
+    "created_on": "1992-05-13",
+    "satisfied_on": "2011-04-20",
     "particulars": {
       "type": "short-particulars",
-      "description": "UNDERTAKING AND ALL PROPERTY AND ASSETS PRESENT AND FUTURE OF THE COMPANY INCLUDING UNCALLED CAPITAL",
-      "contains_floating_charge": true,
+      "description": "THE FREEHOLD PROPERTY K/A 8 CAMBRIDGE ROAD HORSHAM WEST SUSSEX AND THE PROCEEDS  OF SALE THEREOF                        \\nFLOATING CHARGE OVER ALL MOVEABLE PLANT MACHINERY IMPLEMENTS UTENSILS FURNITURE AND EQUIPMENT",
+      "contains_floating_charge": null,
       "contains_fixed_charge": null,
       "floating_charge_covers_all": null,
       "contains_negative_pledge": null,
@@ -26,50 +27,50 @@
     },
     "secured_details": {
       "type": "amount-secured",
-      "description": "ALL SUMS DUE OR TO BECOME DUE"
+      "description": "ALL MONIES DUE OR TO BECOME DUE FROM THE COMPANY TO THE CHARGEE ON ANY ACCOUNT WHATSOEVER"
     },
     "scottish_alterations": {
       "type": null,
       "description": null,
       "has_alterations_to_order": null,
       "has_alterations_to_prohibitions": null,
-      "has_restricting_provisions": true
+      "has_restricting_provisions": null
     },
     "more_than_four_persons_entitled": null,
     "persons_entitled": [
       {
-        "name": "H I D B"
+        "name": "NATIONAL WESTMINSTER BANK PLC"
       }
     ],
     "transactions": [
       {
-        "filing_type": "create-charge",
+        "filing_type": "create-charge-pre-2006-companies-act",
         "transaction_id": null,
-        "delivered_on": "1989-03-15",
+        "delivered_on": "1992-05-18",
         "insolvency_case_number": null,
         "links": {
-          "filing": null,
+          "filing": "/company/00955789/filing-history/MDA2NTc4Mjk1NXRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       },
       {
-        "filing_type": "charge-satisfaction-scotland-pre-2006-companies-act",
+        "filing_type": "charge-satisfaction-pre-april-2013",
         "transaction_id": null,
-        "delivered_on": "1998-03-24",
+        "delivered_on": "2011-04-20",
         "insolvency_case_number": null,
         "links": {
-          "filing": "/company/SC109614/filing-history/MDEyNzEyNjI4NXRyYW5zSWRfc2FsdA",
+          "filing": "/company/00955789/filing-history/MzAzNjEyMDc1NnRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       }
     ],
     "insolvency_cases": null,
     "links": {
-      "self": "/company/SC109614/charges/2xTnBwLDKIAwKOKePuaUtr4Im6Y"
+      "self": "/company/00955789/charges/el5XrVrbXl9ABBU83h0kCfwsx7o"
     }
   },
   "internal_data": {
-    "delta_at": "2021-10-29T14:20:43.36056Z",
+    "delta_at": "2022-06-03T12:02:28.107026Z",
     "updated_by": "test-partition_1-offset_1"
   }
 }

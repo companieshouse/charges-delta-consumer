@@ -7,7 +7,6 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
@@ -28,7 +27,6 @@ import uk.gov.companieshouse.charges.delta.service.ApiClientService;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.getAllServeEvents;
 import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
@@ -104,7 +102,7 @@ public class ChargesConsumerSteps {
         // treating it differently
         //delta_at is being verified above using jsonpath
         JSONAssert.assertEquals(testSupport.loadOutputFile(apiRequestPayloadFile), request,
-                new CustomComparator(JSONCompareMode.LENIENT,
+                new CustomComparator(JSONCompareMode.STRICT_ORDER,
                         new Customization("external_data.etag", (o1, o2) -> true),
                         new Customization("internal_data.delta_at", (o1, o2) -> true)));
 

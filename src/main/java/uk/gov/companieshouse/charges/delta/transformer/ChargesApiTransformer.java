@@ -8,7 +8,10 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.MessageHeaders;
@@ -129,7 +132,12 @@ public class ChargesApiTransformer {
             transactionsApi.setDeliveredOn(LocalDate.parse(charge.getDeliveredOn(),
                     DateTimeFormatter.ofPattern("yyyyMMdd")));
         }
-        chargeApi.addTransactionsItem(transactionsApi);
+        Optional<List<TransactionsApi>> transactionsApiListOptional =
+                Optional.ofNullable(chargeApi.getTransactions());
+        transactionsApiListOptional.ifPresentOrElse(
+                (transactionsApiList) -> transactionsApiList.add(0, transactionsApi),
+                () -> chargeApi.addTransactionsItem(transactionsApi)
+        );
     }
 
     private String getFilingType(Charge charge) {

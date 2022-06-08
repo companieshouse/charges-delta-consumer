@@ -39,6 +39,16 @@
     "persons_entitled": null,
     "transactions": [
       {
+        "filing_type": "create-charge",
+        "transaction_id": null,
+        "delivered_on": [1988,1,18],
+        "insolvency_case_number": null,
+        "links": {
+          "filing": null,
+          "insolvency_case": null
+        }
+      },
+      {
         "filing_type": "liquidation-appointment-of-receiver-scotland",
         "transaction_id": null,
         "delivered_on": [1993,5,28],
@@ -55,16 +65,6 @@
         "insolvency_case_number": null,
         "links": {
           "filing": "/company/SC091922/filing-history/MDA3NDc4MjU2OXRyYW5zSWRfc2FsdA",
-          "insolvency_case": null
-        }
-      },
-      {
-        "filing_type": "create-charge",
-        "transaction_id": null,
-        "delivered_on": [1988,1,18],
-        "insolvency_case_number": null,
-        "links": {
-          "filing": null,
           "insolvency_case": null
         }
       }
