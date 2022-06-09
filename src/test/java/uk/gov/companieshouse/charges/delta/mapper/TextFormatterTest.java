@@ -38,7 +38,7 @@ class TextFormatterTest {
                 Arguments.of(null, null),
                 Arguments.of("", ""),
                 Arguments.of("a", "A"),
-                Arguments.of("à", "À"),
+                Arguments.of("&aelig;", "&AElig;"),
                 Arguments.of("ab", "Ab"),
                 Arguments.of("aB", "Ab"),
                 Arguments.of("bread butter", "Bread Butter"),
@@ -64,7 +64,7 @@ class TextFormatterTest {
                 Arguments.of(null, null),
                 Arguments.of("", ""),
                 Arguments.of("a", "A"),
-                Arguments.of("à", "À"),
+                Arguments.of("&aelig;", "&AElig;"),
                 Arguments.of("ab", "Ab"),
                 Arguments.of("aB", "Ab"),
                 Arguments.of("bread butter", "Bread butter"),
@@ -84,7 +84,7 @@ class TextFormatterTest {
                 Arguments.of("java coffee 4l1f3", "Java coffee 4L1F3"),
                 Arguments.of("llp", "LLP"),
                 Arguments.of("\"llp\"", "\"LLP\""),
-                Arguments.of("p/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc. \n\t but i\tthink (a cat) is 4life! æthelred is ready.", "P/Office the D.R. of an LLP says a cat is ) for christmas etc. but I think (a cat) is 4LIFE! ÆTHELRED is ready.")
+                Arguments.of("p/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc. \n\t but i\tthink (a cat) is 4life! &aelig;thelred is ready.", "P/Office the D.R. of an LLP says a cat is ) for christmas etc. but I think (a cat) is 4LIFE! &AElig;thelred is ready.")
         );
     }
 }

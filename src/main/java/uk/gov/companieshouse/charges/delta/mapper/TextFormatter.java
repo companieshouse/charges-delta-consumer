@@ -10,6 +10,10 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringTokenizer;
 import org.apache.commons.text.WordUtils;
+import org.apache.commons.text.translate.AggregateTranslator;
+import org.apache.commons.text.translate.CharSequenceTranslator;
+import org.apache.commons.text.translate.EntityArrays;
+import org.apache.commons.text.translate.LookupTranslator;
 
 public final class TextFormatter {
 
@@ -33,6 +37,15 @@ public final class TextFormatter {
             Pattern.compile("etc[.]|pp[.]|ph[.]?d[.]");
     private static final Pattern WORD_CAPTURE_PATTERN =
             Pattern.compile("^\\P{L}*(\\p{L}+)\\P{L}*");
+    public static final CharSequenceTranslator ESCAPE_HTML_ENTITIES = new AggregateTranslator(
+            new LookupTranslator(EntityArrays.ISO8859_1_ESCAPE),
+            new LookupTranslator(EntityArrays.HTML40_EXTENDED_ESCAPE)
+    );
+    public static final CharSequenceTranslator UNESCAPE_HTML_ENTITIES = new AggregateTranslator(
+            new LookupTranslator(EntityArrays.ISO8859_1_UNESCAPE),
+            new LookupTranslator(EntityArrays.HTML40_EXTENDED_UNESCAPE)
+    );
+
 
     private static final Set<String> STOP_WORDS = new HashSet<>(Arrays.asList("A", "AN", "AT",
             "AS", "AND", "ARE", "BUT", "BY", "ERE", "FOR", "FROM", "IN", "INTO", "IS", "OF", "ON",
@@ -70,6 +83,7 @@ public final class TextFormatter {
         if (StringUtils.isEmpty(text)) {
             return text;
         }
+        text = UNESCAPE_HTML_ENTITIES.translate(text);
         String result = text.toUpperCase(Locale.UK);
         StringTokenizer tokenizer = new StringTokenizer(result);
         StringBuilder builder = new StringBuilder();
@@ -93,13 +107,14 @@ public final class TextFormatter {
             }
             index++;
         }
-        return builder.toString().trim();
+        return ESCAPE_HTML_ENTITIES.translate(builder.toString().trim());
     }
 
     public static String formatAsSentence(String text) {
         if (StringUtils.isEmpty(text)) {
             return text;
         }
+        text = UNESCAPE_HTML_ENTITIES.translate(text);
         String lowerCaseText = text.toLowerCase(Locale.UK);
         StringTokenizer tokenizer = new StringTokenizer(lowerCaseText);
         StringBuilder builder = new StringBuilder();
@@ -138,7 +153,7 @@ public final class TextFormatter {
             }
             index++;
         }
-        return builder.toString().trim();
+        return ESCAPE_HTML_ENTITIES.translate(builder.toString().trim());
     }
 
     private static boolean isEntity(String token) {
