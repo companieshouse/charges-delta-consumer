@@ -41,6 +41,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ChargesConsumerDeleteSteps {
 
+    private static final String HEALTHCHECK_URI = "/charges-delta-consumer/healthcheck";
+    private static final String HEALTHCHECK_RESPONSE_BODY = "{\"status\":\"UP\"}";
+
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String APPLICATION_JSON = "application/json";
     public static final String TAGS = "tags";
@@ -69,9 +72,9 @@ public class ChargesConsumerDeleteSteps {
     @Given("Charges delta consumer service for delete is running")
     public void charges_delta_consumer_service_is_running() {
 
-        ResponseEntity<String> response = restTemplate.getForEntity("/healthcheck", String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(HEALTHCHECK_URI, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.valueOf(200));
-        assertThat(response.getBody()).isEqualTo("I am healthy");
+        assertThat(response.getBody()).isEqualTo(HEALTHCHECK_RESPONSE_BODY);
     }
 
     @Given("Stubbed Charges Data API delete endpoint will return {string} http response code for {string} and {string}")
