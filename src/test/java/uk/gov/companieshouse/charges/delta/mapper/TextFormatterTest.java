@@ -50,6 +50,7 @@ class TextFormatterTest {
                 Arguments.of("An apple; an orange","An Apple; An Orange"),
                 Arguments.of("An apple; and; an orange","An Apple; And; An Orange"),
                 Arguments.of("java coffee 4l1f3", "Java Coffee 4L1F3"),
+                Arguments.of("java coffee \"4l1f3\"", "Java Coffee \"4L1F3\""),
                 Arguments.of("llp", "LLP"),
                 Arguments.of("Director is from the uk", "Director is from the UK"),
                 Arguments.of("a\nb", "A B"),

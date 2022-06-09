@@ -26,7 +26,7 @@ public final class TextFormatter {
     private static final Pattern ABBREVIATION_PATTERN =
             Pattern.compile("(\\P{L})*(\\p{L}[.])+");
     private static final Pattern I_PATTERN =
-            Pattern.compile("\\bi\\b");
+            Pattern.compile("\\bI\\b");
     private static final Pattern FORWARD_SLASH_ABBREVIATION_PATTERN =
             Pattern.compile("^(.?/)(.*)$");
     private static final Pattern SENTENCE_ENDING_PATTERN =
@@ -34,7 +34,7 @@ public final class TextFormatter {
     private static final Pattern WORD_BEGINNING_PATTERN =
             Pattern.compile("^(\\P{L}*)(\\p{L}+)(.*)$");
     private static final Pattern GENERAL_ABBREV_PATTERN =
-            Pattern.compile("etc[.]|pp[.]|ph[.]?d[.]");
+            Pattern.compile("ETC[.]|PP[.]|PH[.]?D[.]");
     private static final Pattern WORD_CAPTURE_PATTERN =
             Pattern.compile("^\\P{L}*(\\p{L}+)\\P{L}*");
     public static final CharSequenceTranslator ESCAPE_HTML_ENTITIES = new AggregateTranslator(
@@ -115,7 +115,7 @@ public final class TextFormatter {
             return text;
         }
         text = UNESCAPE_HTML_ENTITIES.translate(text);
-        String lowerCaseText = text.toLowerCase(Locale.UK);
+        String lowerCaseText = text.toUpperCase(Locale.UK);
         StringTokenizer tokenizer = new StringTokenizer(lowerCaseText);
         StringBuilder builder = new StringBuilder();
 
@@ -144,7 +144,7 @@ public final class TextFormatter {
             } else if (index == 0 || endOfSentence) {
                 builder.append(WordUtils.capitalizeFully(token));
             } else {
-                builder.append(token);
+                builder.append(token.toLowerCase(Locale.UK));
             }
             endOfSentence = false;
             builder.append(" ");
