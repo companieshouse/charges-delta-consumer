@@ -65,15 +65,15 @@ public final class TextFormatter {
      * <ul>
      * <li>format(a) == format(b) where a is case-insensitively equal to b</li>
      * <li>If the provided string is null or empty, return the provided value as given.</li>
+     * <li>Any words containing both letters and numbers must be uppercase.</li>
+     * <li>Any entity names or country codes must be uppercase.</li>
      * <li>Any words within parentheses must use highlight casing.</li>
      * <li>Any word proceeding a colon must use highlight casing.</li>
      * <li>First and last words must use highlight casing.</li>
-     * <li>Any stop words in Appendix B must be lowercase.</li>
-     * <li>Any words containing both letters and numbers must be uppercase.</li>
-     * <li>Any entity names in Appendix C must be uppercase.</li>
-     * <li>Any country codes in Appendix D must be uppercase.</li>
+     * <li>Any stop words must be lowercase.</li>
      * <li>All other words must use highlight casing.</li>
      * </ul>
+     *
      * @param text The text that will be recased.
      * @return Text recased in accordance to the above rules.
      */
@@ -81,6 +81,27 @@ public final class TextFormatter {
         return format(text, new EntityCaseStateFactory());
     }
 
+    /**
+     * Format a given string as a sentence in accordance to the following rules
+     * ordered by precedence:
+     * <br>
+     * <ul>
+     * <li>format(a) == format(b) where a is case-insensitively equal to b</li>
+     * <li>If the provided string is null or empty, return the provided value as given.</li>
+     * <li>Any words containing both letters and numbers must be uppercase.</li>
+     * <li>Any entity names or country codes must be uppercase.</li>
+     * <li>The first word in a sentence will be converted to title casing.</li>
+     * <li>A string beginning with a forwardslash abbreviation will be cased a/cat => A/Cat.</li>
+     * <li>All single i's will be converted to uppercase.</li>
+     * <li>Words following general abbreviations (e.g. etc.) will be lowercase.</li>
+     * <li>Any word following an unpaired bracket will be lowercase.</li>
+     * <li>All newlines will be converted into an empty space.</li>
+     * <li>Any title abbreviation will be uppercase.</li>
+     * </ul>
+     *
+     * @param text The text that will be recased.
+     * @return Text recased in accordance to the above rules.
+     */
     public static String formatAsSentence(String text) {
         return format(text, new SentenceCaseStateFactory());
     }
@@ -124,11 +145,11 @@ public final class TextFormatter {
         Matcher mixedAlnumMatcher = MIXED_ALNUM_PATTERN.matcher(token);
         Matcher abbreviationMatcher = ABBREVIATION_PATTERN.matcher(token);
         Matcher wordBeginningMatcher = WORD_BEGINNING_PATTERN.matcher(token);
-        Matcher iMatcher = I_PATTERN.matcher(token);
+        Matcher iletterMatcher = I_PATTERN.matcher(token);
         return (wordBeginningMatcher.matches() && ENTITIES.contains(wordBeginningMatcher.group(2)))
                 || mixedAlnumMatcher.find()
                 || abbreviationMatcher.matches()
-                || iMatcher.find();
+                || iletterMatcher.find();
     }
 
     private static boolean isForwardslashAbbr(String token, int index) {
@@ -161,12 +182,19 @@ public final class TextFormatter {
 
     private interface StateFactory {
         FormatterState newRegularTextState(FormatterStateMachine stateMachine);
+
         FormatterState newAfterColonState(FormatterStateMachine stateMachine);
+
         FormatterState newEntityNameState(FormatterStateMachine stateMachine);
+
         FormatterState newParenthesesState(FormatterStateMachine stateMachine);
+
         FormatterState newStopWordState(FormatterStateMachine stateMachine);
+
         FormatterState newForwardslashAbbrState(FormatterStateMachine stateMachine);
+
         FormatterState newEndSentenceState(FormatterStateMachine stateMachine);
+
         FormatterState newStartSentenceState(FormatterStateMachine stateMachine);
     }
 
@@ -480,9 +508,12 @@ public final class TextFormatter {
         public String mapToken(String token) {
             Matcher forwardSlashAbbrevMatcher = FORWARD_SLASH_ABBREVIATION_PATTERN.matcher(token);
             if (forwardSlashAbbrevMatcher.matches()) {
-                return forwardSlashAbbrevMatcher.group(1).toUpperCase(Locale.UK) + WordUtils.capitalizeFully(forwardSlashAbbrevMatcher.group(2));
+                return forwardSlashAbbrevMatcher.group(1)
+                        .toUpperCase(Locale.UK)
+                        + WordUtils.capitalizeFully(forwardSlashAbbrevMatcher.group(2));
             } else {
-                throw new IllegalArgumentException("Tried to map a non-forwardslash abbreviation as a forwardslash abbreviation");
+                throw new IllegalArgumentException("Tried to map a non-forwardslash abbreviation "
+                        + "as a forwardslash abbreviation");
             }
         }
     }
