@@ -75,7 +75,16 @@ class TextFormatterTest {
                 Arguments.of("one. two. three.", "One. Two. Three."),
                 Arguments.of("\"i.\" am. error.", "\"I.\" Am. Error."),
                 Arguments.of("\"one.\" two. three.", "\"One.\" Two. Three."),
-                Arguments.of("hello, goodbye, etc. greetings", "Hello, goodbye, etc. greetings")
+                Arguments.of("hello, goodbye, etc. greetings", "Hello, goodbye, etc. greetings"),
+                Arguments.of("one two ) three", "One two ) three"),
+                Arguments.of("Once\nupon\na\ntime", "Once upon a time"),
+                Arguments.of("d.r. in the house", "D.R. in the house"),
+                Arguments.of("\"d.r. in\" the house", "\"D.R. in\" the house"),
+                Arguments.of("one  \t two", "One two"),
+                Arguments.of("java coffee 4l1f3", "Java coffee 4L1F3"),
+                Arguments.of("llp", "LLP"),
+                Arguments.of("\"llp\"", "\"LLP\""),
+                Arguments.of("p/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc. \n\t but i\tthink (a cat) is 4life! æthelred is ready.", "P/Office the D.R. of an LLP says a cat is ) for christmas etc. but I think (a cat) is 4LIFE! ÆTHELRED is ready.")
         );
     }
 }

@@ -20,7 +20,7 @@ public final class TextFormatter {
     private static final Pattern MIXED_ALNUM_PATTERN =
             Pattern.compile("\\p{L}+\\p{N}+|\\p{N}+\\p{L}+");
     private static final Pattern ABBREVIATION_PATTERN =
-            Pattern.compile("(\\p{L}[.])+");
+            Pattern.compile("(\\P{L})*(\\p{L}[.])+");
     private static final Pattern I_PATTERN =
             Pattern.compile("\\bi\\b");
     private static final Pattern FORWARD_SLASH_ABBREVIATION_PATTERN =
@@ -30,7 +30,9 @@ public final class TextFormatter {
     private static final Pattern WORD_BEGINNING_PATTERN =
             Pattern.compile("^(\\P{L}*)(\\p{L}+)(.*)$");
     private static final Pattern GENERAL_ABBREV_PATTERN =
-            Pattern.compile("etc[.]|pp[.]|ph[.]?d[.]|(?:[A-Z][.])(?:[A-Z][.])+|(^[^a-zA-Z]*([a-z][.])+)");
+            Pattern.compile("etc[.]|pp[.]|ph[.]?d[.]");
+    private static final Pattern WORD_CAPTURE_PATTERN =
+            Pattern.compile("^\\P{L}*(\\p{L}+)\\P{L}*");
 
     private static final Set<String> STOP_WORDS = new HashSet<>(Arrays.asList("A", "AN", "AT",
             "AS", "AND", "ARE", "BUT", "BY", "ERE", "FOR", "FROM", "IN", "INTO", "IS", "OF", "ON",
@@ -106,12 +108,15 @@ public final class TextFormatter {
         boolean endOfSentence = false;
         while(tokenizer.hasNext()) {
             String token = tokenizer.next();
+            Matcher mixedAlphanumericMatcher = MIXED_ALNUM_PATTERN.matcher(token);
             Matcher iMatcher = I_PATTERN.matcher(token);
             Matcher forwardSlashAbbrevMatcher = FORWARD_SLASH_ABBREVIATION_PATTERN.matcher(token);
             Matcher sentenceEndingMatcher = SENTENCE_ENDING_PATTERN.matcher(token);
             Matcher wordBeginningPattern = WORD_BEGINNING_PATTERN.matcher(token);
             Matcher generalAbbrevPattern = GENERAL_ABBREV_PATTERN.matcher(token);
-            if (iMatcher.find()) {
+            Matcher titleAbbrevPattern = ABBREVIATION_PATTERN.matcher(token);
+            Matcher wordCapturePattern = WORD_CAPTURE_PATTERN.matcher(token);
+            if ((wordCapturePattern.matches() && ENTITIES.contains(wordCapturePattern.group(1).toUpperCase(Locale.UK))) || mixedAlphanumericMatcher.find() || iMatcher.find() || titleAbbrevPattern.matches()) {
                 builder.append(token.toUpperCase(Locale.UK));
             } else if (index == 0 && forwardSlashAbbrevMatcher.matches()) {
                 builder.append(forwardSlashAbbrevMatcher.group(1).toUpperCase(Locale.UK))
@@ -128,7 +133,7 @@ public final class TextFormatter {
             }
             endOfSentence = false;
             builder.append(" ");
-            if (sentenceEndingMatcher.find() && !generalAbbrevPattern.matches()) {
+            if (sentenceEndingMatcher.find() && !generalAbbrevPattern.matches() && !titleAbbrevPattern.matches()) {
                 endOfSentence = true;
             }
             index++;
