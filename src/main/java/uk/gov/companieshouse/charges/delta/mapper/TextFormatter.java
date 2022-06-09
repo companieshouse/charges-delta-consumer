@@ -83,12 +83,12 @@ public final class TextFormatter {
         if (StringUtils.isEmpty(text)) {
             return text;
         }
-        text = UNESCAPE_HTML_ENTITIES.translate(text);
-        String result = text.toUpperCase(Locale.UK);
+        String unescapedText = UNESCAPE_HTML_ENTITIES.translate(text);
+        String result = unescapedText.toUpperCase(Locale.UK);
         StringTokenizer tokenizer = new StringTokenizer(result);
         StringBuilder builder = new StringBuilder();
         int index = 0;
-        FormatterStateMachine stateMachine = new FormatterStateMachine();
+        FormatterStateMachine stateMachine = new FormatterStateMachine(new EntityCaseStateFactory());
         while (tokenizer.hasNext()) {
             String token = tokenizer.next();
             stateMachine.setToken(token);
@@ -114,8 +114,8 @@ public final class TextFormatter {
         if (StringUtils.isEmpty(text)) {
             return text;
         }
-        text = UNESCAPE_HTML_ENTITIES.translate(text);
-        String lowerCaseText = text.toUpperCase(Locale.UK);
+        String unescapedText = UNESCAPE_HTML_ENTITIES.translate(text);
+        String lowerCaseText = unescapedText.toUpperCase(Locale.UK);
         StringTokenizer tokenizer = new StringTokenizer(lowerCaseText);
         StringBuilder builder = new StringBuilder();
 
@@ -178,22 +178,65 @@ public final class TextFormatter {
         return colonMatcher.find();
     }
 
+    private interface StateFactory {
+        FormatterState newRegularTextState(FormatterStateMachine stateMachine);
+        FormatterState newAfterColonState(FormatterStateMachine stateMachine);
+        FormatterState newEntityNameState(FormatterStateMachine stateMachine);
+        FormatterState newParenthesesState(FormatterStateMachine stateMachine);
+        FormatterState newStopWordState(FormatterStateMachine stateMachine);
+        FormatterState newForwardslashAbbrState(FormatterStateMachine stateMachine);
+    }
+
+    private static class EntityCaseStateFactory implements StateFactory {
+        @Override
+        public FormatterState newRegularTextState(FormatterStateMachine stateMachine) {
+            return new RegularText(stateMachine);
+        }
+
+        @Override
+        public FormatterState newAfterColonState(FormatterStateMachine stateMachine) {
+            return new AfterColon(stateMachine);
+        }
+
+        @Override
+        public FormatterState newEntityNameState(FormatterStateMachine stateMachine) {
+            return new EntityName(stateMachine);
+        }
+
+        @Override
+        public FormatterState newParenthesesState(FormatterStateMachine stateMachine) {
+            return new Parenthesis(stateMachine);
+        }
+
+        @Override
+        public FormatterState newStopWordState(FormatterStateMachine stateMachine) {
+            return new StopWord(stateMachine);
+        }
+
+        @Override
+        public FormatterState newForwardslashAbbrState(FormatterStateMachine stateMachine) {
+            return new RegularText(stateMachine);
+        }
+    }
+
     private static class FormatterStateMachine {
-        private final RegularText textState;
-        private final AfterColon afterColonState;
-        private final EntityName entityNameState;
-        private final Parenthesis parenthesisState;
-        private final StopWord stopWordState;
+        private final FormatterState textState;
+        private final FormatterState afterColonState;
+        private final FormatterState entityNameState;
+        private final FormatterState parenthesisState;
+        private final FormatterState stopWordState;
+        private final FormatterState forwardslashAbbrState;
 
         private FormatterState currentState;
         private String token;
 
-        public FormatterStateMachine() {
-            this.textState = new RegularText(this);
-            this.afterColonState = new AfterColon(this);
-            this.entityNameState = new EntityName(this);
-            this.parenthesisState = new Parenthesis(this);
-            this.stopWordState = new StopWord(this);
+        public FormatterStateMachine(StateFactory stateFactory) {
+            this.textState = stateFactory.newRegularTextState(this);
+            this.afterColonState = stateFactory.newAfterColonState(this);
+            this.entityNameState = stateFactory.newEntityNameState(this);
+            this.parenthesisState = stateFactory.newParenthesesState(this);
+            this.stopWordState = stateFactory.newStopWordState(this);
+            this.forwardslashAbbrState = stateFactory.newForwardslashAbbrState(this);
             this.currentState = new NoText(this);
         }
 
@@ -237,6 +280,8 @@ public final class TextFormatter {
 
         void stopWord();
 
+        void forwardslashAbbreviation();
+
         String mapToken(String token);
     }
 
@@ -271,6 +316,11 @@ public final class TextFormatter {
         @Override
         public void stopWord() {
             this.stateMachine.currentState = this.stateMachine.stopWordState;
+        }
+
+        @Override
+        public void forwardslashAbbreviation() {
+            this.stateMachine.currentState = this.stateMachine.forwardslashAbbrState;
         }
 
         @Override
@@ -360,6 +410,22 @@ public final class TextFormatter {
         @Override
         public String mapToken(String token) {
             return token.toLowerCase(Locale.UK);
+        }
+    }
+
+    private static class ForwardslashAbbreviation extends AbstractState {
+        public ForwardslashAbbreviation(FormatterStateMachine stateMachine) {
+            super(stateMachine);
+        }
+
+        @Override
+        public String mapToken(String token) {
+            Matcher forwardSlashAbbrevMatcher = FORWARD_SLASH_ABBREVIATION_PATTERN.matcher(token);
+            if (forwardSlashAbbrevMatcher.matches()) {
+                return forwardSlashAbbrevMatcher.group(1).toUpperCase(Locale.UK) + WordUtils.capitalizeFully(forwardSlashAbbrevMatcher.group(2));
+            } else {
+                throw new IllegalArgumentException("Tried to map a non-forwardslash abbreviation as a forwardslash abbreviation");
+            }
         }
     }
 }
