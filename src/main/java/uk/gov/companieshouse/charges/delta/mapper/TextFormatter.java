@@ -35,8 +35,6 @@ public final class TextFormatter {
             Pattern.compile("^(\\P{L}*)(\\p{L}+)(.*)$");
     private static final Pattern GENERAL_ABBREV_PATTERN =
             Pattern.compile("ETC[.]|PP[.]|PH[.]?D[.]");
-    private static final Pattern WORD_CAPTURE_PATTERN =
-            Pattern.compile("^\\P{L}*(\\p{L}+)\\P{L}*");
     public static final CharSequenceTranslator ESCAPE_HTML_ENTITIES = new AggregateTranslator(
             new LookupTranslator(EntityArrays.ISO8859_1_ESCAPE),
             new LookupTranslator(EntityArrays.HTML40_EXTENDED_ESCAPE)
@@ -80,6 +78,14 @@ public final class TextFormatter {
      * @return Text recased in accordance to the above rules.
      */
     public static String formatAsEntityName(String text) {
+        return format(text, new EntityCaseStateFactory());
+    }
+
+    public static String formatAsSentence(String text) {
+        return format(text, new SentenceCaseStateFactory());
+    }
+
+    private static String format(String text, StateFactory stateFactory) {
         if (StringUtils.isEmpty(text)) {
             return text;
         }
@@ -88,12 +94,14 @@ public final class TextFormatter {
         StringTokenizer tokenizer = new StringTokenizer(result);
         StringBuilder builder = new StringBuilder();
         int index = 0;
-        FormatterStateMachine stateMachine = new FormatterStateMachine(new EntityCaseStateFactory());
+        FormatterStateMachine stateMachine = new FormatterStateMachine(stateFactory);
         while (tokenizer.hasNext()) {
             String token = tokenizer.next();
             stateMachine.setToken(token);
             if (isEntity(token)) {
                 stateMachine.entityName();
+            } else if (isForwardslashAbbr(token, index)) {
+                stateMachine.forwardslashAbbr();
             } else if (isOpeningParenthesis(token)) {
                 stateMachine.parenthesis();
             } else if (isStopWord(token, index, tokenizer.hasNext())) {
@@ -102,54 +110,10 @@ public final class TextFormatter {
                 stateMachine.regularText();
             }
             builder.append(stateMachine.getMappedToken()).append(" ");
-            if (endsWithColon(token)) {
+            if (endOfSentence(token)) {
+                stateMachine.endSentence();
+            } else if (endsWithColon(token)) {
                 stateMachine.colon();
-            }
-            index++;
-        }
-        return ESCAPE_HTML_ENTITIES.translate(builder.toString().trim());
-    }
-
-    public static String formatAsSentence(String text) {
-        if (StringUtils.isEmpty(text)) {
-            return text;
-        }
-        String unescapedText = UNESCAPE_HTML_ENTITIES.translate(text);
-        String lowerCaseText = unescapedText.toUpperCase(Locale.UK);
-        StringTokenizer tokenizer = new StringTokenizer(lowerCaseText);
-        StringBuilder builder = new StringBuilder();
-
-        int index = 0;
-        boolean endOfSentence = false;
-        while(tokenizer.hasNext()) {
-            String token = tokenizer.next();
-            Matcher mixedAlphanumericMatcher = MIXED_ALNUM_PATTERN.matcher(token);
-            Matcher iMatcher = I_PATTERN.matcher(token);
-            Matcher forwardSlashAbbrevMatcher = FORWARD_SLASH_ABBREVIATION_PATTERN.matcher(token);
-            Matcher sentenceEndingMatcher = SENTENCE_ENDING_PATTERN.matcher(token);
-            Matcher wordBeginningPattern = WORD_BEGINNING_PATTERN.matcher(token);
-            Matcher generalAbbrevPattern = GENERAL_ABBREV_PATTERN.matcher(token);
-            Matcher titleAbbrevPattern = ABBREVIATION_PATTERN.matcher(token);
-            Matcher wordCapturePattern = WORD_CAPTURE_PATTERN.matcher(token);
-            if ((wordCapturePattern.matches() && ENTITIES.contains(wordCapturePattern.group(1).toUpperCase(Locale.UK))) || mixedAlphanumericMatcher.find() || iMatcher.find() || titleAbbrevPattern.matches()) {
-                builder.append(token.toUpperCase(Locale.UK));
-            } else if (index == 0 && forwardSlashAbbrevMatcher.matches()) {
-                builder.append(forwardSlashAbbrevMatcher.group(1).toUpperCase(Locale.UK))
-                        .append(WordUtils.capitalizeFully(forwardSlashAbbrevMatcher.group(2)));
-            } else if (index == 0 && wordBeginningPattern.matches()) {
-                String punct = wordBeginningPattern.group(1);
-                String word = wordBeginningPattern.group(2);
-                String trailing = wordBeginningPattern.group(3);
-                builder.append(punct).append(WordUtils.capitalizeFully(word)).append(trailing);
-            } else if (index == 0 || endOfSentence) {
-                builder.append(WordUtils.capitalizeFully(token));
-            } else {
-                builder.append(token.toLowerCase(Locale.UK));
-            }
-            endOfSentence = false;
-            builder.append(" ");
-            if (sentenceEndingMatcher.find() && !generalAbbrevPattern.matches() && !titleAbbrevPattern.matches()) {
-                endOfSentence = true;
             }
             index++;
         }
@@ -159,9 +123,17 @@ public final class TextFormatter {
     private static boolean isEntity(String token) {
         Matcher mixedAlnumMatcher = MIXED_ALNUM_PATTERN.matcher(token);
         Matcher abbreviationMatcher = ABBREVIATION_PATTERN.matcher(token);
-        return ENTITIES.contains(token)
+        Matcher wordBeginningMatcher = WORD_BEGINNING_PATTERN.matcher(token);
+        Matcher iMatcher = I_PATTERN.matcher(token);
+        return (wordBeginningMatcher.matches() && ENTITIES.contains(wordBeginningMatcher.group(2)))
                 || mixedAlnumMatcher.find()
-                || abbreviationMatcher.matches();
+                || abbreviationMatcher.matches()
+                || iMatcher.find();
+    }
+
+    private static boolean isForwardslashAbbr(String token, int index) {
+        Matcher forwardSlashAbbrevMatcher = FORWARD_SLASH_ABBREVIATION_PATTERN.matcher(token);
+        return index == 0 && forwardSlashAbbrevMatcher.matches();
     }
 
     private static boolean isOpeningParenthesis(String token) {
@@ -171,6 +143,15 @@ public final class TextFormatter {
 
     private static boolean isStopWord(String token, int index, boolean hasNext) {
         return STOP_WORDS.contains(token) && index > 0 && hasNext;
+    }
+
+    private static boolean endOfSentence(String token) {
+        Matcher sentenceEndingMatcher = SENTENCE_ENDING_PATTERN.matcher(token);
+        Matcher generalAbbrevPattern = GENERAL_ABBREV_PATTERN.matcher(token);
+        Matcher titleAbbrevPattern = ABBREVIATION_PATTERN.matcher(token);
+        return sentenceEndingMatcher.find()
+                && !generalAbbrevPattern.matches()
+                && !titleAbbrevPattern.matches();
     }
 
     private static boolean endsWithColon(String token) {
@@ -185,12 +166,14 @@ public final class TextFormatter {
         FormatterState newParenthesesState(FormatterStateMachine stateMachine);
         FormatterState newStopWordState(FormatterStateMachine stateMachine);
         FormatterState newForwardslashAbbrState(FormatterStateMachine stateMachine);
+        FormatterState newEndSentenceState(FormatterStateMachine stateMachine);
+        FormatterState newStartSentenceState(FormatterStateMachine stateMachine);
     }
 
-    private static class EntityCaseStateFactory implements StateFactory {
+    static class EntityCaseStateFactory implements StateFactory {
         @Override
         public FormatterState newRegularTextState(FormatterStateMachine stateMachine) {
-            return new RegularText(stateMachine);
+            return new RegularEntityText(stateMachine);
         }
 
         @Override
@@ -215,7 +198,59 @@ public final class TextFormatter {
 
         @Override
         public FormatterState newForwardslashAbbrState(FormatterStateMachine stateMachine) {
-            return new RegularText(stateMachine);
+            return new RegularEntityText(stateMachine);
+        }
+
+        @Override
+        public FormatterState newEndSentenceState(FormatterStateMachine stateMachine) {
+            return new RegularEntityText(stateMachine);
+        }
+
+        @Override
+        public FormatterState newStartSentenceState(FormatterStateMachine stateMachine) {
+            return new RegularEntityText(stateMachine);
+        }
+    }
+
+    static class SentenceCaseStateFactory implements StateFactory {
+        @Override
+        public FormatterState newRegularTextState(FormatterStateMachine stateMachine) {
+            return new RegularSentenceText(stateMachine);
+        }
+
+        @Override
+        public FormatterState newAfterColonState(FormatterStateMachine stateMachine) {
+            return new RegularSentenceText(stateMachine);
+        }
+
+        @Override
+        public FormatterState newEntityNameState(FormatterStateMachine stateMachine) {
+            return new EntityName(stateMachine);
+        }
+
+        @Override
+        public FormatterState newParenthesesState(FormatterStateMachine stateMachine) {
+            return new RegularSentenceText(stateMachine);
+        }
+
+        @Override
+        public FormatterState newStopWordState(FormatterStateMachine stateMachine) {
+            return new RegularSentenceText(stateMachine);
+        }
+
+        @Override
+        public FormatterState newForwardslashAbbrState(FormatterStateMachine stateMachine) {
+            return new ForwardslashAbbreviation(stateMachine);
+        }
+
+        @Override
+        public FormatterState newEndSentenceState(FormatterStateMachine stateMachine) {
+            return new EndSentence(stateMachine);
+        }
+
+        @Override
+        public FormatterState newStartSentenceState(FormatterStateMachine stateMachine) {
+            return new StartSentence(stateMachine);
         }
     }
 
@@ -226,6 +261,8 @@ public final class TextFormatter {
         private final FormatterState parenthesisState;
         private final FormatterState stopWordState;
         private final FormatterState forwardslashAbbrState;
+        private final FormatterState endSentenceState;
+        private final FormatterState startSentenceState;
 
         private FormatterState currentState;
         private String token;
@@ -237,7 +274,9 @@ public final class TextFormatter {
             this.parenthesisState = stateFactory.newParenthesesState(this);
             this.stopWordState = stateFactory.newStopWordState(this);
             this.forwardslashAbbrState = stateFactory.newForwardslashAbbrState(this);
-            this.currentState = new NoText(this);
+            this.endSentenceState = stateFactory.newEndSentenceState(this);
+            this.startSentenceState = stateFactory.newStartSentenceState(this);
+            this.currentState = this.endSentenceState;
         }
 
         void regularText() {
@@ -258,6 +297,14 @@ public final class TextFormatter {
 
         void stopWord() {
             this.currentState.stopWord();
+        }
+
+        void forwardslashAbbr() {
+            this.currentState.forwardslashAbbreviation();
+        }
+
+        void endSentence() {
+            this.currentState.endSentence();
         }
 
         void setToken(String token) {
@@ -281,6 +328,8 @@ public final class TextFormatter {
         void stopWord();
 
         void forwardslashAbbreviation();
+
+        void endSentence();
 
         String mapToken(String token);
     }
@@ -324,29 +373,38 @@ public final class TextFormatter {
         }
 
         @Override
+        public void endSentence() {
+            this.stateMachine.currentState = this.stateMachine.endSentenceState;
+        }
+
+        @Override
         public String mapToken(String token) {
             throw new IllegalStateException("Attempted to fetch a token from a nonexistent word");
         }
 
     }
 
-    private static class NoText extends AbstractState {
+    private static class RegularEntityText extends AbstractState {
 
-        public NoText(FormatterStateMachine stateMachine) {
-            super(stateMachine);
-        }
-
-    }
-
-    private static class RegularText extends AbstractState {
-
-        public RegularText(FormatterStateMachine stateMachine) {
+        public RegularEntityText(FormatterStateMachine stateMachine) {
             super(stateMachine);
         }
 
         @Override
         public String mapToken(String token) {
             return WordUtils.capitalizeFully(token);
+        }
+    }
+
+    private static class RegularSentenceText extends AbstractState {
+
+        public RegularSentenceText(FormatterStateMachine stateMachine) {
+            super(stateMachine);
+        }
+
+        @Override
+        public String mapToken(String token) {
+            return token.toLowerCase(Locale.UK);
         }
     }
 
@@ -425,6 +483,40 @@ public final class TextFormatter {
                 return forwardSlashAbbrevMatcher.group(1).toUpperCase(Locale.UK) + WordUtils.capitalizeFully(forwardSlashAbbrevMatcher.group(2));
             } else {
                 throw new IllegalArgumentException("Tried to map a non-forwardslash abbreviation as a forwardslash abbreviation");
+            }
+        }
+    }
+
+    private static class EndSentence extends AbstractState {
+        private final FormatterStateMachine stateMachine;
+
+        public EndSentence(FormatterStateMachine stateMachine) {
+            super(stateMachine);
+            this.stateMachine = stateMachine;
+        }
+
+        @Override
+        public void regularText() {
+            this.stateMachine.currentState = stateMachine.startSentenceState;
+        }
+    }
+
+    private static class StartSentence extends AbstractState {
+
+        public StartSentence(FormatterStateMachine stateMachine) {
+            super(stateMachine);
+        }
+
+        @Override
+        public String mapToken(String token) {
+            Matcher wordBeginningPattern = WORD_BEGINNING_PATTERN.matcher(token);
+            if (wordBeginningPattern.matches()) {
+                String punct = wordBeginningPattern.group(1);
+                String word = wordBeginningPattern.group(2);
+                String trailing = wordBeginningPattern.group(3);
+                return punct + WordUtils.capitalizeFully(word) + trailing;
+            } else {
+                throw new IllegalArgumentException("Tried to map an invalid word");
             }
         }
     }
