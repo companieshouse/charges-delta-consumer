@@ -33,6 +33,17 @@ class TextFormatterTest {
         assertEquals(expected, actual);
     }
 
+    @ParameterizedTest(name = "Map {0} to {1}")
+    @MethodSource("particularsFormatting")
+    @DisplayName("Format text as particulars")
+    void testFormatAsParticulars(String input, String expected) {
+        // when
+        String actual = TextFormatter.formatAsParticulars(input);
+
+        // then
+        assertEquals(expected, actual);
+    }
+
     private static Stream<Arguments> entityNameFormatting() {
         return Stream.of(
                 Arguments.of(null, null),
@@ -64,6 +75,7 @@ class TextFormatterTest {
         return Stream.of(
                 Arguments.of(null, null),
                 Arguments.of("", ""),
+                Arguments.of(".", "."),
                 Arguments.of("a", "A"),
                 Arguments.of("&aelig;", "&AElig;"),
                 Arguments.of("ab", "Ab"),
@@ -85,7 +97,23 @@ class TextFormatterTest {
                 Arguments.of("java coffee 4l1f3", "Java coffee 4L1F3"),
                 Arguments.of("llp", "LLP"),
                 Arguments.of("\"llp\"", "\"LLP\""),
+                Arguments.of("to be. or not to be.", "To be. Or not to be."),
                 Arguments.of("p/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc. \n\t but i\tthink (a cat) is 4life! &aelig;thelred is ready.", "P/Office the D.R. of an LLP says a cat is ) for christmas etc. but I think (a cat) is 4LIFE! &AElig;thelred is ready.")
+        );
+    }
+
+    private static Stream<Arguments> particularsFormatting() {
+        return Stream.of(
+                Arguments.of(null, null),
+                Arguments.of("", ""),
+                Arguments.of("\\n", "."),
+                Arguments.of("  ", "."),
+                Arguments.of("   \\n", "."),
+                Arguments.of("\\n\\n", "."),
+                Arguments.of("\\nHello", "Hello."),
+                Arguments.of("Hello\\n\\nWorld", "Hello. World."),
+                Arguments.of("Hello\\n \\n \\nWorld", "Hello. World."),
+                Arguments.of("\\np/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc.  \\n\\n\t but i\tthink (a cat) is 4life! &aelig;thelred is ready", "P/Office the D.R. of an LLP says a cat is ) for christmas etc.. But I think (a cat) is 4LIFE! &AElig;thelred is ready.")
         );
     }
 }

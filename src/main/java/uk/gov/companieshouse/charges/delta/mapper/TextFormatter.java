@@ -106,6 +106,41 @@ public final class TextFormatter {
         return format(text, new SentenceCaseStateFactory());
     }
 
+    /**
+     * Format a given string as a particulars string in accordance to the following rules
+     * ordered by precedence:
+     * <br>
+     * <ul>
+     * <li>format(a) == format(b) where a is case-insensitively equal to b</li>
+     * <li>The final character will be exactly one full stop.</li>
+     * <li>The string will be formatted
+     * {@link TextFormatter#formatAsSentence(String) as a sentence}.</li>
+     * <li>Escaped newlines will be replaced with full stops.</li>
+     * <li>An escaped newline will be removed from the start of the string if present.</li>
+     * <li>Multiple escaped newlines will be replaced with a single escaped newline.</li>
+     * <li>Spaces before newlines will be removed.</li>
+     * <li>Multiple spaces will be replaced with a single space.</li>
+     * </ul>
+     *
+     * @param text The text that will be recased.
+     * @return Text recased in accordance to the above rules.
+     */
+    public static String formatAsParticulars(String text) {
+        if (StringUtils.isEmpty(text)) {
+            return text;
+        }
+        String result = text.replaceAll("\\h+", " ")
+                .replaceAll("\\h\\\\n", "\\\\n")
+                .replaceAll("(?:\\\\n)+", "\\\\n")
+                .replaceAll("\\A\\\\n", "")
+                .replaceAll("\\\\n+", ". ");
+        result = formatAsSentence(result);
+        if (!result.endsWith(".")) {
+            result += ".";
+        }
+        return result;
+    }
+
     private static String format(String text, StateFactory stateFactory) {
         if (StringUtils.isEmpty(text)) {
             return text;
@@ -530,6 +565,11 @@ public final class TextFormatter {
         public void regularText() {
             this.stateMachine.currentState = stateMachine.startSentenceState;
         }
+
+        @Override
+        public void stopWord() {
+            this.stateMachine.currentState = stateMachine.startSentenceState;
+        }
     }
 
     private static class StartSentence extends AbstractState {
@@ -547,7 +587,7 @@ public final class TextFormatter {
                 String trailing = wordBeginningPattern.group(3);
                 return punct + WordUtils.capitalizeFully(word) + trailing;
             } else {
-                throw new IllegalArgumentException("Tried to map an invalid word");
+                return token;
             }
         }
     }
