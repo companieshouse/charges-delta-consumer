@@ -82,8 +82,8 @@ public class ChargesApiTransformerTest {
             Arguments.of("charges-delta-source-16_case_transactionId.json",
                         "internal-charges-api-expected-16_case_transactionId.json"),
             Arguments.of("charges-delta-source-empty-dates.json", "internal-charges-api-expected-empty-dates.json"),
-            Arguments.of("charges-delta-source-17.json", "internal-charges-api-expected-17.json")
-
+            Arguments.of("charges-delta-source-17.json", "internal-charges-api-expected-17.json"),
+                Arguments.of("charges-delta-source-18.json", "internal-charges-api-expected-18.json")
         );
     }
 
