@@ -1,0 +1,36 @@
+{
+  "charges": [
+    {
+      "company_number": "NI027811",
+      "delta_at": "20220608160614743230",
+      "id": "3000081996",
+      "persons_entitled": [
+        {
+          "person": "F. P. MCCANN LIMITED"
+        }
+      ],
+      "notice_type": "MG01",
+      "trans_id": "3018800815",
+      "trans_desc": "PARTICULARS OF A MORTGAGE OR CHARGE / CHARGE NO: 82",
+      "submission_type": "5",
+      "delivered_on": "20100701",
+      "charge_number": "82",
+      "migrated_from": "CHIPS",
+      "amount_secured": "All monies due or to become due from the company to the chargee",
+      "type": "Legal Mortgage & Charge",
+      "short_particulars": "The freehold property known as or being lands situate at and adjacent to Fortwilliam Road, Tobermore, County Londonderry registered at the Land Registry under folio numbers LY85714 and LY 80544 each County Londonderry",
+      "short_particular_flags": [
+        {
+          "fixed_charge": "no",
+          "contains_floating_charge": "no",
+          "floating_charge_all": "no",
+          "negative_pledge": "no",
+          "bare_trustee": "no"
+        }
+      ],
+      "status": "0",
+      "delivered_on": "20100701",
+      "created_on": "20100611"
+    }
+  ]
+}
