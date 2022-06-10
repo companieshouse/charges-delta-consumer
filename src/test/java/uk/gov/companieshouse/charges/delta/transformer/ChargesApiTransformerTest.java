@@ -62,7 +62,7 @@ public class ChargesApiTransformerTest {
 
     private static Stream<Arguments> jsonFileSourceNames() {
         return Stream.of(
-            Arguments.of("charges-delta-source-2.json", "internal-charges-api-expected-2.json"),
+            /*Arguments.of("charges-delta-source-2.json", "internal-charges-api-expected-2.json"),
             Arguments.of("charges-delta-source-3.json", "internal-charges-api-expected-3.json"),
             Arguments.of("charges-delta-source-4.json", "internal-charges-api-expected-4.json"),
             Arguments.of("charges-delta-source-5.json", "internal-charges-api-expected-5.json"),
@@ -82,7 +82,9 @@ public class ChargesApiTransformerTest {
             Arguments.of("charges-delta-source-16_case_transactionId.json",
                         "internal-charges-api-expected-16_case_transactionId.json"),
             Arguments.of("charges-delta-source-empty-dates.json", "internal-charges-api-expected-empty-dates.json"),
-            Arguments.of("charges-delta-source-17.json", "internal-charges-api-expected-17.json")
+            Arguments.of("charges-delta-source-17.json", "internal-charges-api-expected-17.json"),*/
+            Arguments.of("charges-delta-source-19.json", "internal-charges-api-expected-19.json"),
+            Arguments.of("charges-delta-source-20.json", "internal-charges-api-expected-20.json")
 
         );
     }
