@@ -17,7 +17,7 @@
     "satisfied_on": "2021-09-03",
     "particulars": {
       "type": "brief-description",
-      "description": "17-19 MARKET STREET LEICESTER\\n",
+      "description": "17-19 market street leicester.",
       "contains_floating_charge": true,
       "contains_fixed_charge": true,
       "floating_charge_covers_all": true,
@@ -34,7 +34,7 @@
     "more_than_four_persons_entitled": null,
     "persons_entitled": [
       {
-        "name": "BANK OF BARODA"
+        "name": "Bank of Baroda"
       }
     ],
     "transactions": [

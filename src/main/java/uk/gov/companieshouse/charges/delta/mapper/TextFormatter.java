@@ -30,15 +30,11 @@ public final class TextFormatter {
     private static final Pattern FORWARD_SLASH_ABBREVIATION_PATTERN =
             Pattern.compile("^(.?/)(.*)$");
     private static final Pattern SENTENCE_ENDING_PATTERN =
-            Pattern.compile("[.?!]\\P{L}*$");
+            Pattern.compile("[.?!]\\P{Alnum}*$");
     private static final Pattern WORD_BEGINNING_PATTERN =
             Pattern.compile("^(\\P{L}*)(\\p{L}+)(.*)$");
     private static final Pattern GENERAL_ABBREV_PATTERN =
             Pattern.compile("ETC[.]|PP[.]|PH[.]?D[.]");
-    public static final CharSequenceTranslator ESCAPE_HTML_ENTITIES = new AggregateTranslator(
-            new LookupTranslator(EntityArrays.ISO8859_1_ESCAPE),
-            new LookupTranslator(EntityArrays.HTML40_EXTENDED_ESCAPE)
-    );
     public static final CharSequenceTranslator UNESCAPE_HTML_ENTITIES = new AggregateTranslator(
             new LookupTranslator(EntityArrays.ISO8859_1_UNESCAPE),
             new LookupTranslator(EntityArrays.HTML40_EXTENDED_UNESCAPE)
@@ -173,7 +169,7 @@ public final class TextFormatter {
             }
             index++;
         }
-        return ESCAPE_HTML_ENTITIES.translate(builder.toString().trim());
+        return builder.toString().trim();
     }
 
     private static boolean isEntity(String token) {

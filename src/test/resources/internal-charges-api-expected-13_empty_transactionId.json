@@ -17,7 +17,7 @@
     "satisfied_on": null,
     "particulars": {
       "type": "short-particulars",
-      "description": "THE WHOLE ASSETS OF THE COMPANY         ",
+      "description": "The whole assets of the company.",
       "contains_floating_charge": true,
       "contains_fixed_charge": null,
       "floating_charge_covers_all": null,
@@ -26,7 +26,7 @@
     },
     "secured_details": {
       "type": "amount-secured",
-      "description": "ALL SUMS DUE OR TO BECOME DUE"
+      "description": "All sums due or to become due"
     },
     "scottish_alterations": {
       "type": null,
