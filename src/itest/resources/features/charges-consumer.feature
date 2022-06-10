@@ -23,7 +23,8 @@ Feature: Process Charges Delta information
     | charges-delta-source-13_empty_transactionId.json     | internal-charges-api-expected-13_empty_transactionId.json   |
     | charges-delta-source-empty-dates.json                | internal-charges-api-empty-dates-expected.json              |
     | charges-delta-source-3.json                          | internal-charges-api-expected-3.json                        |
-    
+    | charges-delta-source-19.json                         | internal-charges-api-expected-19.json                       |
+    | charges-delta-source-20.json                         | internal-charges-api-expected-20.json                       |
 
 
 

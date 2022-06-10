@@ -8,9 +8,11 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -138,6 +140,13 @@ public class ChargesApiTransformer {
                 (transactionsApiList) -> transactionsApiList.add(0, transactionsApi),
                 () -> chargeApi.addTransactionsItem(transactionsApi)
         );
+        sortListBasedOnDeliveredOnDate(chargeApi);
+    }
+
+    private void sortListBasedOnDeliveredOnDate(ChargeApi chargeApi) {
+        chargeApi.getTransactions()
+                .sort(Comparator.comparing(TransactionsApi::getDeliveredOn,
+                        Comparator.nullsLast(Comparator.naturalOrder())));
     }
 
     private String getFilingType(Charge charge) {
