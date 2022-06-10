@@ -7,7 +7,6 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,11 +15,9 @@ import uk.gov.companieshouse.charges.delta.exception.NonRetryableErrorException;
 @Component
 public class EncoderUtil {
 
-    private static final String SHA_1 = "SHA-1";
+    private String chargeIdSalt;
 
-    public static String CHARGE_ID_SALT;
-
-    public static String TRANS_ID_SALT;
+    private String transIdSalt;
 
     /**
      * Initialize by passing in salts for chargeId and transId.
@@ -32,8 +29,8 @@ public class EncoderUtil {
     public EncoderUtil(@Value("${api.charge-id-salt}") String chargeIdSalt,
             @Value("${api.trans-id-salt}") String transIdSalt) {
 
-        CHARGE_ID_SALT = chargeIdSalt;
-        TRANS_ID_SALT = transIdSalt;
+        this.chargeIdSalt = chargeIdSalt;
+        this.transIdSalt = transIdSalt;
     }
 
     public String base64Encode(final byte[] plainValue) {
@@ -48,7 +45,7 @@ public class EncoderUtil {
      * @return returns sha1 encoded hex
      */
     public String getSha1Digest(final String plainValue) {
-        return DigestUtils.sha1Hex(plainValue + CHARGE_ID_SALT);
+        return DigestUtils.sha1Hex(plainValue + chargeIdSalt);
     }
 
     /**
@@ -77,7 +74,7 @@ public class EncoderUtil {
             return plain;
         }
         return base64Encode(
-                (trim(plain) + TRANS_ID_SALT).getBytes(StandardCharsets.UTF_8));
+                (trim(plain) + transIdSalt).getBytes(StandardCharsets.UTF_8));
     }
 
 }

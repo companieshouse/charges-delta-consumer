@@ -81,8 +81,7 @@ public interface ChargeApiMapper {
     default void mapToClassificationApi(@MappingTarget ChargeApi chargeApi,
                                         Charge charge) throws NoSuchMethodException,
             InvocationTargetException, IllegalAccessException {
-        ClassificationApi classificationApi = chargeApi.getClassification() == null
-                ? new ClassificationApi() : chargeApi.getClassification();
+        ClassificationApi classificationApi = new ClassificationApi();
 
         stringToClassificationApiEnum(charge.getType(), classificationApi,
                 ClassificationApi.TypeEnum.CHARGE_DESCRIPTION);
@@ -169,8 +168,7 @@ public interface ChargeApiMapper {
     default void mapStatuses(@MappingTarget ChargeApi chargeApi,
                              Charge charge) {
 
-        chargeApi.setStatus(populateStatusEnumMap().get(
-                charge.getStatus() != null ? Integer.parseInt(charge.getStatus()) : null));
+        chargeApi.setStatus(populateStatusEnumMap().get(Integer.parseInt(charge.getStatus())));
     }
 
     /**
