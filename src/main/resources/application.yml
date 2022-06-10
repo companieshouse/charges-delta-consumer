@@ -8,6 +8,8 @@ springfox:
 spring:
   kafka:
     bootstrap-servers: ${DATA_SYNC_KAFKA_BROKER_URL:localhost:9092}
+    listener:
+      concurrency: ${CHARGES_DELTA_LISTENER_CONCURRENCY:1}
 
 charges:
   delta:

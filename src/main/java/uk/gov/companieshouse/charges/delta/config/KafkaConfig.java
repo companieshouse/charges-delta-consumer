@@ -34,16 +34,19 @@ public class KafkaConfig {
     private final ChsDeltaSerializer chsDeltaSerializer;
 
     private final String bootstrapServers;
+    private final Integer listenerConcurrency;
 
     /**
      * Constructor.
      */
     public KafkaConfig(ChsDeltaDeserializer chsDeltaDeserializer,
                        ChsDeltaSerializer chsDeltaSerializer,
-                       @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers) {
+                       @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers,
+                       @Value("${spring.kafka.listener.concurrency}") Integer listenerConcurrency) {
         this.chsDeltaDeserializer = chsDeltaDeserializer;
         this.chsDeltaSerializer = chsDeltaSerializer;
         this.bootstrapServers = bootstrapServers;
+        this.listenerConcurrency = listenerConcurrency;
     }
 
     /**
@@ -66,10 +69,9 @@ public class KafkaConfig {
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ChsDeltaSerializer.class);
         props.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG,
                 RetryableTopicErrorInterceptor.class.getName());
-        DefaultKafkaProducerFactory<String, Object> factory = new DefaultKafkaProducerFactory<>(
-                props, new StringSerializer(), chsDeltaSerializer);
 
-        return factory;
+        return new DefaultKafkaProducerFactory<>(
+                props, new StringSerializer(), chsDeltaSerializer);
     }
 
     @Bean
@@ -85,6 +87,7 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<String, ChsDelta> factory
                 = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(kafkaConsumerFactory());
+        factory.setConcurrency(listenerConcurrency);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
 
         return factory;
