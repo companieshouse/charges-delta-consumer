@@ -4,7 +4,7 @@
     "charge_code": "081242070049",
     "classification": {
       "type": "charge-description",
-      "description": "A REGISTERED CHARGE"
+      "description": "A registered charge"
     },
     "charge_number": 49,
     "status": "part-satisfied",

@@ -76,16 +76,21 @@ public interface ChargeApiMapper {
      */
 
     @AfterMapping
-    default void mapToClassificationApi(@MappingTarget ChargeApi chargeApi,
-                                        Charge charge) throws NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+    default void mapToClassificationApi(@MappingTarget ChargeApi chargeApi, Charge charge) {
         ClassificationApi classificationApi = chargeApi.getClassification() == null
                 ? new ClassificationApi() : chargeApi.getClassification();
 
-        stringToClassificationApiEnum(charge.getType(), classificationApi,
-                ClassificationApi.TypeEnum.CHARGE_DESCRIPTION);
-        stringToClassificationApiEnum(charge.getNatureOfCharge(), classificationApi,
-                ClassificationApi.TypeEnum.NATURE_OF_CHARGE);
+        if (!StringUtils.isEmpty(charge.getType())) {
+            classificationApi.setType(ClassificationApi.TypeEnum.CHARGE_DESCRIPTION);
+            classificationApi.setDescription(TextFormatter.formatAsSentence(charge.getType()));
+        }
+
+        if (!StringUtils.isEmpty(charge.getNatureOfCharge())) {
+            classificationApi.setType(ClassificationApi.TypeEnum.NATURE_OF_CHARGE);
+            classificationApi.setDescription(
+                    TextFormatter.formatAsSentence(charge.getNatureOfCharge()));
+        }
+
         chargeApi.setClassification(classificationApi);
     }
 
@@ -102,21 +107,28 @@ public interface ChargeApiMapper {
             mapShortParticularFlagsToParticularsApi(particularsApi, shortParticularFlags, charge);
         }
 
-        if (!StringUtils.isEmpty(charge.getDescriptionOfPropertyUndertaking())) {
-            particularsApi.setType(ParticularsApi.TypeEnum.CHARGED_PROPERTY_OR_UNDERTAKING_DESCRIPTION);
-            particularsApi.setDescription(TextFormatter.formatAsParticulars(charge.getDescriptionOfPropertyUndertaking()));
+        if (!StringUtils.isEmpty(
+                charge.getDescriptionOfPropertyUndertaking())) {
+            particularsApi.setType(
+                    ParticularsApi.TypeEnum.CHARGED_PROPERTY_OR_UNDERTAKING_DESCRIPTION);
+            particularsApi.setDescription(
+                    TextFormatter.formatAsParticulars(
+                            charge.getDescriptionOfPropertyUndertaking()));
         }
         if (!StringUtils.isEmpty(charge.getDescriptionOfPropertyCharged())) {
             particularsApi.setType(ParticularsApi.TypeEnum.CHARGED_PROPERTY_DESCRIPTION);
-            particularsApi.setDescription(TextFormatter.formatAsParticulars(charge.getDescriptionOfPropertyCharged()));
+            particularsApi.setDescription(
+                    TextFormatter.formatAsParticulars(charge.getDescriptionOfPropertyCharged()));
         }
         if (!StringUtils.isEmpty(charge.getBriefDescription())) {
             particularsApi.setType(ParticularsApi.TypeEnum.BRIEF_DESCRIPTION);
-            particularsApi.setDescription(TextFormatter.formatAsParticulars(charge.getBriefDescription()));
+            particularsApi.setDescription(
+                    TextFormatter.formatAsParticulars(charge.getBriefDescription()));
         }
         if (!StringUtils.isEmpty(charge.getShortParticulars())) {
             particularsApi.setType(ParticularsApi.TypeEnum.SHORT_PARTICULARS);
-            particularsApi.setDescription(TextFormatter.formatAsParticulars(charge.getShortParticulars()));
+            particularsApi.setDescription(
+                    TextFormatter.formatAsParticulars(charge.getShortParticulars()));
         }
 
         chargeApi.setParticulars(isAnyFieldValueNotNull(particularsApi) ? particularsApi : null);
@@ -151,12 +163,14 @@ public interface ChargeApiMapper {
                 ? new SecuredDetailsApi() : chargeApi.getSecuredDetails();
         if (!StringUtils.isEmpty(charge.getObligationsSecured())) {
             securedDetailsApi.setType(SecuredDetailsApi.TypeEnum.OBLIGATIONS_SECURED);
-            securedDetailsApi.setDescription(TextFormatter.formatAsSentence(charge.getObligationsSecured()));
+            securedDetailsApi.setDescription(
+                    TextFormatter.formatAsSentence(charge.getObligationsSecured()));
         }
 
         if (!StringUtils.isEmpty(charge.getAmountSecured())) {
             securedDetailsApi.setType(SecuredDetailsApi.TypeEnum.AMOUNT_SECURED);
-            securedDetailsApi.setDescription(TextFormatter.formatAsSentence(charge.getAmountSecured()));
+            securedDetailsApi.setDescription(
+                    TextFormatter.formatAsSentence(charge.getAmountSecured()));
         }
         chargeApi.setSecuredDetails(securedDetailsApi);
     }

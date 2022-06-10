@@ -4,7 +4,7 @@
     "charge_code": null,
     "classification": {
       "type": "charge-description",
-      "description": "BOND & FLOATING CHARGE"
+      "description": "Bond & floating charge"
     },
     "charge_number": 1,
     "status": "outstanding",

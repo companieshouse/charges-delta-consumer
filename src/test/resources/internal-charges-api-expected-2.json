@@ -63,7 +63,7 @@
     ],
     "status": "outstanding",
     "classification": {
-      "description": "A REGISTERED CHARGE",
+      "description": "A registered charge",
       "type": "charge-description"
     },
     "etag": "cee2625e329e4961e84e6df35f171f3e644a0f90",

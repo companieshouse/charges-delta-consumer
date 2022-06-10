@@ -4,7 +4,7 @@
     "charge_code": "002856300006",
     "classification": {
       "type": "charge-description",
-      "description": "A REGISTERED CHARGE"
+      "description": "A registered charge"
     },
     "charge_number": 6,
     "status": "fully-satisfied",

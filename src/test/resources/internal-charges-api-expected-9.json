@@ -4,7 +4,7 @@
     "charge_code": "086016740008",
     "classification": {
       "type": "charge-description",
-      "description": "A REGISTERED CHARGE"
+      "description": "A registered charge"
     },
     "charge_number": 8,
     "status": "fully-satisfied",

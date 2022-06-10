@@ -4,7 +4,7 @@
     "charge_code": null,
     "classification": {
       "type": "charge-description",
-      "description": "FLOATING CHARGE"
+      "description": "Floating charge"
     },
     "charge_number": 2,
     "status": "fully-satisfied",
