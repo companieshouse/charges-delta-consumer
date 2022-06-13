@@ -10,8 +10,10 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringTokenizer;
 import org.apache.commons.text.WordUtils;
+import org.springframework.stereotype.Component;
 
-final class TextFormatter {
+@Component
+public class TextFormatter {
 
     private static final Pattern STEM_PATTERN =
             Pattern.compile("(\\()(\\p{Alnum}+)");
@@ -42,7 +44,10 @@ final class TextFormatter {
             "CCC", "CYF", "EESV", "EOFG", "EOOS", "GEIE", "GELE", "PAC", "PCCLIMITED", "PCCLTD",
             "PROTECTEDCELLCOMPANY", "CWMNICELLGWARCHODEDIG", "CCGCYFYNGEDIG", "CCGCYF"));
 
-    private TextFormatter() {
+    /**
+     * Create a new {@link TextFormatter} instance.
+     */
+    public TextFormatter() {
     }
 
     /**
@@ -64,7 +69,7 @@ final class TextFormatter {
      * @param text The text that will be recased.
      * @return Text recased in accordance to the above rules.
      */
-    static String formatAsEntityName(String text) {
+    String formatAsEntityName(String text) {
         return format(text, new EntityCaseStateFactory());
     }
 
@@ -89,7 +94,7 @@ final class TextFormatter {
      * @param text The text that will be recased.
      * @return Text recased in accordance to the above rules.
      */
-    static String formatAsSentence(String text) {
+    String formatAsSentence(String text) {
         return format(text, new SentenceCaseStateFactory());
     }
 
@@ -112,7 +117,7 @@ final class TextFormatter {
      * @param text The text that will be recased.
      * @return Text recased in accordance to the above rules.
      */
-    static String formatAsParticulars(String text) {
+    String formatAsParticulars(String text) {
         if (StringUtils.isEmpty(text)) {
             return text;
         }

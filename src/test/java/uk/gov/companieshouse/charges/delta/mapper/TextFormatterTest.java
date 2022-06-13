@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -11,12 +12,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TextFormatterTest {
 
+    private TextFormatter textFormatter;
+
+    @BeforeEach
+    void beforeEach() {
+        textFormatter = new TextFormatter();
+    }
+
     @ParameterizedTest(name = "Map {0} to {1}")
     @MethodSource("entityNameFormatting")
     @DisplayName("Format text as an entity name")
     void testFormatAsEntityName(String input, String expected) {
         // when
-        String actual = TextFormatter.formatAsEntityName(input);
+        String actual = textFormatter.formatAsEntityName(input);
 
         // then
         assertEquals(expected, actual);
@@ -27,7 +35,7 @@ class TextFormatterTest {
     @DisplayName("Format text as a sentence")
     void testFormatAsSentence(String input, String expected) {
         // when
-        String actual = TextFormatter.formatAsSentence(input);
+        String actual = textFormatter.formatAsSentence(input);
 
         // then
         assertEquals(expected, actual);
@@ -38,7 +46,7 @@ class TextFormatterTest {
     @DisplayName("Format text as particulars")
     void testFormatAsParticulars(String input, String expected) {
         // when
-        String actual = TextFormatter.formatAsParticulars(input);
+        String actual = textFormatter.formatAsParticulars(input);
 
         // then
         assertEquals(expected, actual);

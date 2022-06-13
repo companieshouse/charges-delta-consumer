@@ -8,7 +8,6 @@ import uk.gov.companieshouse.api.delta.Person;
 @Mapper(componentModel = "spring")
 public interface PersonsEntitledApiMapper {
 
-    @Mapping(target = "name",
-            expression = "java(TextFormatter.formatAsEntityName(person.getPerson()))")
+    @Mapping(target = "name", source = "person")
     PersonsEntitledApi personToPersonsEntitledApi(Person person);
 }

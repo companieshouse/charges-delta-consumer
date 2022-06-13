@@ -78,19 +78,15 @@ public interface ChargeApiMapper {
      */
 
     @AfterMapping
-    default void mapToClassificationApi(@MappingTarget ChargeApi chargeApi, Charge charge) {
+    default void mapToClassificationApi(@MappingTarget ChargeApi chargeApi,
+                                        Charge charge) throws NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
         ClassificationApi classificationApi = new ClassificationApi();
 
-        if (!StringUtils.isEmpty(charge.getType())) {
-            classificationApi.setType(ClassificationApi.TypeEnum.CHARGE_DESCRIPTION);
-            classificationApi.setDescription(TextFormatter.formatAsSentence(charge.getType()));
-        }
-
-        if (!StringUtils.isEmpty(charge.getNatureOfCharge())) {
-            classificationApi.setType(ClassificationApi.TypeEnum.NATURE_OF_CHARGE);
-            classificationApi.setDescription(
-                    TextFormatter.formatAsSentence(charge.getNatureOfCharge()));
-        }
+        stringToClassificationApiEnum(charge.getType(), classificationApi,
+                ClassificationApi.TypeEnum.CHARGE_DESCRIPTION);
+        stringToClassificationApiEnum(charge.getNatureOfCharge(), classificationApi,
+                ClassificationApi.TypeEnum.NATURE_OF_CHARGE);
         chargeApi.setClassification(classificationApi);
     }
 
@@ -98,7 +94,9 @@ public interface ChargeApiMapper {
      * Maps source Charge to ParticularsApi model.
      */
     @AfterMapping
-    default void mapToParticularsApi(@MappingTarget ChargeApi chargeApi, Charge charge) {
+    default void mapToParticularsApi(@MappingTarget ChargeApi chargeApi,
+                                     Charge charge) throws InvocationTargetException,
+            NoSuchMethodException, IllegalAccessException {
         ParticularsApi particularsApi = chargeApi.getParticulars() == null
                 ? new ParticularsApi() : chargeApi.getParticulars();
         ShortParticularFlags shortParticularFlags = charge.getShortParticularFlags() == null
@@ -107,29 +105,14 @@ public interface ChargeApiMapper {
             mapShortParticularFlagsToParticularsApi(particularsApi, shortParticularFlags, charge);
         }
 
-        if (!StringUtils.isEmpty(
-                charge.getDescriptionOfPropertyUndertaking())) {
-            particularsApi.setType(
-                    ParticularsApi.TypeEnum.CHARGED_PROPERTY_OR_UNDERTAKING_DESCRIPTION);
-            particularsApi.setDescription(
-                    TextFormatter.formatAsParticulars(
-                            charge.getDescriptionOfPropertyUndertaking()));
-        }
-        if (!StringUtils.isEmpty(charge.getDescriptionOfPropertyCharged())) {
-            particularsApi.setType(ParticularsApi.TypeEnum.CHARGED_PROPERTY_DESCRIPTION);
-            particularsApi.setDescription(
-                    TextFormatter.formatAsParticulars(charge.getDescriptionOfPropertyCharged()));
-        }
-        if (!StringUtils.isEmpty(charge.getBriefDescription())) {
-            particularsApi.setType(ParticularsApi.TypeEnum.BRIEF_DESCRIPTION);
-            particularsApi.setDescription(
-                    TextFormatter.formatAsParticulars(charge.getBriefDescription()));
-        }
-        if (!StringUtils.isEmpty(charge.getShortParticulars())) {
-            particularsApi.setType(ParticularsApi.TypeEnum.SHORT_PARTICULARS);
-            particularsApi.setDescription(
-                    TextFormatter.formatAsParticulars(charge.getShortParticulars()));
-        }
+        stringToParticularsApiEnum(charge.getDescriptionOfPropertyUndertaking(), particularsApi,
+                ParticularsApi.TypeEnum.CHARGED_PROPERTY_OR_UNDERTAKING_DESCRIPTION);
+        stringToParticularsApiEnum(charge.getDescriptionOfPropertyCharged(), particularsApi,
+                ParticularsApi.TypeEnum.CHARGED_PROPERTY_DESCRIPTION);
+        stringToParticularsApiEnum(charge.getBriefDescription(), particularsApi,
+                ParticularsApi.TypeEnum.BRIEF_DESCRIPTION);
+        stringToParticularsApiEnum(charge.getShortParticulars(), particularsApi,
+                ParticularsApi.TypeEnum.SHORT_PARTICULARS);
 
         chargeApi.setParticulars(isAnyFieldValueNotNull(particularsApi) ? particularsApi : null);
     }
@@ -158,22 +141,20 @@ public interface ChargeApiMapper {
      * Maps source Charge To SecuredDetailsApi model.
      */
     @AfterMapping
-    default void mapToSecuredDetailsApiApi(@MappingTarget ChargeApi chargeApi, Charge charge) {
+    default void mapToSecuredDetailsApiApi(@MappingTarget ChargeApi chargeApi,
+                                           Charge charge) throws InvocationTargetException,
+            NoSuchMethodException, IllegalAccessException {
         SecuredDetailsApi securedDetailsApi = chargeApi.getSecuredDetails() == null
                 ? new SecuredDetailsApi() : chargeApi.getSecuredDetails();
-        if (!StringUtils.isEmpty(charge.getObligationsSecured())) {
-            securedDetailsApi.setType(SecuredDetailsApi.TypeEnum.OBLIGATIONS_SECURED);
-            securedDetailsApi.setDescription(
-                    TextFormatter.formatAsSentence(charge.getObligationsSecured()));
+        if (!StringUtils.isEmpty(charge.getObligationsSecured())
+                || !StringUtils.isEmpty(charge.getAmountSecured())) {
+            stringToSecuredDetailsApiEnum(charge.getObligationsSecured(), securedDetailsApi,
+                    SecuredDetailsApi.TypeEnum.OBLIGATIONS_SECURED);
+            stringToSecuredDetailsApiEnum(charge.getAmountSecured(), securedDetailsApi,
+                    SecuredDetailsApi.TypeEnum.AMOUNT_SECURED);
             chargeApi.setSecuredDetails(securedDetailsApi);
         }
 
-        if (!StringUtils.isEmpty(charge.getAmountSecured())) {
-            securedDetailsApi.setType(SecuredDetailsApi.TypeEnum.AMOUNT_SECURED);
-            securedDetailsApi.setDescription(
-                    TextFormatter.formatAsSentence(charge.getAmountSecured()));
-            chargeApi.setSecuredDetails(securedDetailsApi);
-        }
     }
 
     /**
@@ -226,6 +207,37 @@ public interface ChargeApiMapper {
             return bool1;
         }
         return bool1 || bool2;
+    }
+
+    /**
+     * Maps property in Charge to enum in ParticularApi model.
+     */
+    private void stringToParticularsApiEnum(String property, ParticularsApi particularsApi,
+                                            ParticularsApi.TypeEnum theEnum)
+            throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        stringToEnum(property, particularsApi, theEnum);
+    }
+
+    /**
+     * Maps property in Charge to enum in ClassificationApi model.
+     */
+    private void stringToClassificationApiEnum(String property,
+                                               ClassificationApi classificationApi,
+                                               ClassificationApi.TypeEnum theEnum)
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        stringToEnum(property, classificationApi, theEnum);
+    }
+
+    /**
+     * Maps property in Charge to enum in SecuredDetailsApi model.
+     */
+    private void stringToSecuredDetailsApiEnum(String property,
+                                               SecuredDetailsApi securedDetailsApi,
+                                               SecuredDetailsApi.TypeEnum theEnum)
+            throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        if (!StringUtils.isEmpty(property)) {
+            stringToEnum(property, securedDetailsApi, theEnum);
+        }
     }
 
     /**
@@ -305,5 +317,19 @@ public interface ChargeApiMapper {
         map.put(7, ChargeApi.StatusEnum.SATISFIED);
 
         return map;
+    }
+
+    /**
+     /**
+     * Generic method that Maps property from an object to description in the target object and
+     * sets the enum in the target object model.
+     */
+    private <T> void stringToEnum(String property, Object obj,
+                                  Enum<?> theEnum) throws NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
+        if (!StringUtils.isEmpty(property)) {
+            obj.getClass().getMethod(SET_TYPE, theEnum.getClass()).invoke(obj, theEnum);
+            obj.getClass().getMethod(SET_DESCRIPTION, String.class).invoke(obj, property);
+        }
     }
 }
