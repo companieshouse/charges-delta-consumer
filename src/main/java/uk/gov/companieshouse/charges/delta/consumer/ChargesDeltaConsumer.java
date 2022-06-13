@@ -61,12 +61,12 @@ public class ChargesDeltaConsumer {
         try {
             if (Boolean.TRUE.equals(message.getPayload().getIsDelete())) {
                 deltaProcessor.processDelete(message);
-                logger.info(format("Charges Delete with contextId: %s is successfully "
+                logger.info(format("Charges Delete message with contextId: %s is successfully "
                                 + "processed in %d milliseconds", contextId,
                         between(startTime, Instant.now()).toMillis()));
             } else {
                 deltaProcessor.processDelta(message);
-                logger.info(format("Charges Delta with contextId: %s is successfully "
+                logger.info(format("Charges Delta message with contextId: %s is successfully "
                                 + "processed in %d milliseconds", contextId,
                         between(startTime, Instant.now()).toMillis()));
             }
