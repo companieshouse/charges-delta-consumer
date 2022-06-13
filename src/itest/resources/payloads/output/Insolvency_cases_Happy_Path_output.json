@@ -27,8 +27,7 @@
     "charge_code": null,
     "insolvency_cases": [
       { 
-      "case_number" : 1,
-      "transaction_id" : 3129317274,
+      "case_number" : "1",
         "links": {
           "case": "/company/04796390/insolvency#case-1"
         }
@@ -41,7 +40,6 @@
     "transactions": [
       {
         "filing_type": "create-charge-pre-2006-companies-act",
-        "transaction_id": null,
         "delivered_on": [2008,5,13],
         "insolvency_case_number": null,
         "links": {
@@ -51,7 +49,6 @@
       },
       {
         "filing_type": "liquidation-appointment-of-receiver",
-        "transaction_id": null,
         "delivered_on": [2015,8,12],
         "insolvency_case_number": 1,
         "links": {
@@ -61,7 +58,6 @@
       },
       {
         "filing_type": "liquidation-cease-to-act-receiver",
-        "transaction_id": null,
         "delivered_on": [2017,1,14],
         "insolvency_case_number": 1,
         "links": {

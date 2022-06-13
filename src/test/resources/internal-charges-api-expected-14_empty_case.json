@@ -10,10 +10,10 @@
     "status": "outstanding",
     "assets_ceased_released": null,
     "acquired_on": null,
-    "delivered_on": [1988,1,18],
+    "delivered_on": "1988-01-18",
     "resolved_on": null,
     "covering_instrument_date": null,
-    "created_on": [1988,1,12],
+    "created_on": "1988-01-12",
     "satisfied_on": null,
     "particulars": {
       "type": "short-particulars",
@@ -41,7 +41,7 @@
       {
         "filing_type": "create-charge",
         "transaction_id": null,
-        "delivered_on": [1988,1,18],
+        "delivered_on": "1988-01-18",
         "insolvency_case_number": null,
         "links": {
           "filing": null,
@@ -51,7 +51,7 @@
       {
         "filing_type": "liquidation-appointment-of-receiver-scotland",
         "transaction_id": null,
-        "delivered_on": [1993,5,28],
+        "delivered_on": "1993-05-28",
         "insolvency_case_number": null,
         "links": {
           "filing": "/company/SC091922/filing-history/MDEwMDUyMjMwMnRyYW5zSWRfc2FsdA",
@@ -61,7 +61,7 @@
       {
         "filing_type": "liquidation-ceasing-to-act-receiver-scotland",
         "transaction_id": null,
-        "delivered_on": [1996,12,13],
+        "delivered_on": "1996-12-13",
         "insolvency_case_number": null,
         "links": {
           "filing": "/company/SC091922/filing-history/MDA3NDc4MjU2OXRyYW5zSWRfc2FsdA",
@@ -71,11 +71,8 @@
     ],
     "insolvency_cases": [
       {
-        "case_number": 1,
-        "transaction_id": null,
-        "links": {
-          "case": "/company/SC091922/insolvency#case-1"
-        }
+        "case_number": null,
+        "links": null
       }
     ],
     "links": {
@@ -84,6 +81,6 @@
   },
   "internal_data": {
     "delta_at": "2022-05-25T16:12:03.320356Z",
-    "updated_by": "charges-delta-0-0"
+    "updated_by": "test-partition_1-offset_1"
   }
 }
