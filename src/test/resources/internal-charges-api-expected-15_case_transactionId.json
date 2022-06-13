@@ -71,8 +71,7 @@
     ],
     "insolvency_cases": [
       {
-        "case_number": 11223344,
-        "transaction_id": 223344,
+        "case_number": "11223344",
         "links": {
           "case": "/company/SC091922/insolvency#case-11223344"
         }

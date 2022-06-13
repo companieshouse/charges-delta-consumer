@@ -28,8 +28,7 @@
     "charge_code": "NI6224000001",
     "insolvency_cases": [
       {
-        "case_number": 2,
-        "transaction_id": 22222,
+        "case_number": "2",
         "links": {
           "case": "/company/NI622400/insolvency#case-2"
         }
@@ -42,7 +41,6 @@
     "transactions": [
       {
         "filing_type": "create-charge-with-deed-with-charles-court-order",
-        "transaction_id": null,
         "delivered_on": "2014-12-16",
         "insolvency_case_number": null,
         "links": {
@@ -52,7 +50,6 @@
       },
       {
         "filing_type": "charge-satisfaction-pre-2006-companies-act",
-        "transaction_id": null,
         "delivered_on": "2016-12-16",
         "insolvency_case_number": 1,
         "links": {

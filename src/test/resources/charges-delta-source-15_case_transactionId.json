@@ -26,8 +26,7 @@
       ],
       "insolvency_cases": [
         {
-          "case": "11223344",
-          "transaction_id": "223344"
+          "case": "11223344"
         }
       ],
       "charge_number": "1",
