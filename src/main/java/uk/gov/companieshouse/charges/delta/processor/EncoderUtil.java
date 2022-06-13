@@ -45,7 +45,7 @@ public class EncoderUtil {
      * @return returns sha1 encoded hex
      */
     public String getSha1Digest(final String plainValue) {
-        return DigestUtils.sha1Hex(plainValue + chargeIdSalt);
+        return DigestUtils.sha1Hex(plainValue + chargeIdSalt); //NOSONAR
     }
 
     /**
