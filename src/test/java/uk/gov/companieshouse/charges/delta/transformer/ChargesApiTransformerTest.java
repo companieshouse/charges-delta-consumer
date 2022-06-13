@@ -80,8 +80,12 @@ public class ChargesApiTransformerTest {
             Arguments.of("charges-delta-source-15_case_transactionId.json",
                         "internal-charges-api-expected-15_case_transactionId.json"),
             Arguments.of("charges-delta-source-16_case_transactionId.json",
-                        "internal-charges-api-expected-16_case_transactionId.json")
-
+                        "internal-charges-api-expected-16_case_transactionId.json"),
+            Arguments.of("charges-delta-source-empty-dates.json", "internal-charges-api-expected-empty-dates.json"),
+            Arguments.of("charges-delta-source-17.json", "internal-charges-api-expected-17.json"),
+            Arguments.of("charges-delta-source-18.json", "internal-charges-api-expected-18.json"),
+            Arguments.of("charges-delta-source-19.json", "internal-charges-api-expected-19.json"),
+            Arguments.of("charges-delta-source-20.json", "internal-charges-api-expected-20.json")
         );
     }
 
@@ -97,9 +101,10 @@ public class ChargesApiTransformerTest {
         InternalChargeApi internalChargeApi = transformer.transform(charge, testSupport.createKafkaHeaders());
 
         String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
+        System.out.println("chargeApiJson = " + chargeApiJson);
         String expectedChargesApiJson = testSupport.loadTestdataFile(expected);
         JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
-            new CustomComparator(JSONCompareMode.LENIENT,
+            new CustomComparator(JSONCompareMode.STRICT_ORDER,
                 new Customization("external_data.etag", (o1, o2) -> true)));
     }
 
@@ -116,7 +121,7 @@ public class ChargesApiTransformerTest {
         String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
         String expectedChargesApiJson = testSupport.loadTestdataFile("internal-charges-api-expected-12.json");
         JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
-                new CustomComparator(JSONCompareMode.LENIENT,
+                new CustomComparator(JSONCompareMode.STRICT_ORDER,
                         new Customization("external_data.etag", (o1, o2) -> true)));
 
     }

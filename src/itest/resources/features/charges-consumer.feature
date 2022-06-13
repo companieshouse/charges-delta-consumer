@@ -21,7 +21,10 @@ Feature: Process Charges Delta information
     | Scottish_Alterations.json                            | Scottish_Alterations_output.json                            |
     | Notice_type_value_with_empty_space_Happy_Path.json   | Additional_notices_Happy_Path_output_correct_body.json      |
     | charges-delta-source-13_empty_transactionId.json     | internal-charges-api-expected-13_empty_transactionId.json   |
-    
+    | charges-delta-source-empty-dates.json                | internal-charges-api-empty-dates-expected.json              |
+    | charges-delta-source-3.json                          | internal-charges-api-expected-3.json                        |
+    | charges-delta-source-19.json                         | internal-charges-api-expected-19.json                       |
+    | charges-delta-source-20.json                         | internal-charges-api-expected-20.json                       |
 
 
 

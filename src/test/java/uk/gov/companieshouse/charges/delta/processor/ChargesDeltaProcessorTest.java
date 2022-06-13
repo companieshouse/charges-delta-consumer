@@ -30,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -223,6 +224,48 @@ public class ChargesDeltaProcessorTest {
         verify(apiClientService).deleteCharge("context_id", "0",
                 "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
         assertThat(response.getStatusCode()).isEqualTo(httpStatus.value());
+    }
+
+    private static Stream<Arguments> jsonDeleteFileSourceNames() {
+        return Stream.of(
+                Arguments.of("charges-delete-delta-source-null_charge-id.json"),
+                Arguments.of("charges-delete-delta-source-empty_charge-id.json")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("jsonDeleteFileSourceNames")
+    @DisplayName("When ChsDeltaDelete with invalid chargeId Expect ErrorResponse")
+    void When_ChsDeltaDelete_with_null_chargeId_Expect_ErrorResponse(String jsonFileName) throws IOException {
+        Message<ChsDelta> mockChsChargesDeleteDeltaMessage = testSupport.createChsDeltaMessage(
+                jsonFileName, true);
+
+        assertThrows( NonRetryableErrorException.class,
+                () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
+
+        verify(apiClientService, times(0)).deleteCharge("context_id", "0",
+                "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
+    }
+
+    private static Stream<Arguments> jsonPutFileSourceNames() {
+        return Stream.of(
+                Arguments.of("charges-delta-source-null-charge-id.json"),
+                Arguments.of("charges-delta-source-empty-charge-id.json")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("jsonPutFileSourceNames")
+    @DisplayName("When ChsDelta with invalid chargeId Expect ErrorResponse")
+    void When_ChsDelta_with_null_chargeId_Expect_ErrorResponse(String jsonFileName) throws IOException {
+        Message<ChsDelta> mockChsChargesDeltaMessage = testSupport.createChsDeltaMessage(
+                jsonFileName, false);
+
+        assertThrows( NonRetryableErrorException.class,
+                () -> deltaProcessor.processDelta(mockChsChargesDeltaMessage));
+
+        verify(apiClientService, times(0)).putCharge("context_id", "NI622400",
+                "yt6cQ-A2DqNpqwAMDWxKX12Axv4", testSupport.mockInternalChargeApi());
     }
 
 }

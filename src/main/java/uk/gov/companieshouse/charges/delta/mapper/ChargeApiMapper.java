@@ -2,6 +2,8 @@ package uk.gov.companieshouse.charges.delta.mapper;
 
 import static java.lang.Boolean.TRUE;
 import static org.apache.commons.lang3.BooleanUtils.toBooleanObject;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.trim;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
@@ -77,8 +79,7 @@ public interface ChargeApiMapper {
 
     @AfterMapping
     default void mapToClassificationApi(@MappingTarget ChargeApi chargeApi, Charge charge) {
-        ClassificationApi classificationApi = chargeApi.getClassification() == null
-                ? new ClassificationApi() : chargeApi.getClassification();
+        ClassificationApi classificationApi = new ClassificationApi();
 
         if (!StringUtils.isEmpty(charge.getType())) {
             classificationApi.setType(ClassificationApi.TypeEnum.CHARGE_DESCRIPTION);
@@ -186,8 +187,7 @@ public interface ChargeApiMapper {
     default void mapStatuses(@MappingTarget ChargeApi chargeApi,
                              Charge charge) {
 
-        chargeApi.setStatus(populateStatusEnumMap().get(
-                charge.getStatus() != null ? Integer.parseInt(charge.getStatus()) : null));
+        chargeApi.setStatus(populateStatusEnumMap().get(Integer.parseInt(charge.getStatus())));
     }
 
     /**
@@ -282,7 +282,7 @@ public interface ChargeApiMapper {
      * Format string dates of format yyyyMMdd to LocalDate.
      */
     private LocalDate parseDate(String sourceDate, String format) {
-        if (sourceDate != null) {
+        if (!isEmpty(trim(sourceDate))) {
             return LocalDate.parse(sourceDate,
                     DateTimeFormatter.ofPattern(format));
         }

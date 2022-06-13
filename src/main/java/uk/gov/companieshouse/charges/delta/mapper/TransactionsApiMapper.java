@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.trim;
 
 import java.time.LocalDate;
@@ -29,7 +30,7 @@ public interface TransactionsApiMapper {
     @AfterMapping
     default void setDates(@MappingTarget TransactionsApi transactionsApi,
             AdditionalNotice additionalNotice) {
-        if (additionalNotice.getDeliveredOn() != null) {
+        if (!isEmpty(trim(additionalNotice.getDeliveredOn()))) {
             transactionsApi.setDeliveredOn(LocalDate.parse(additionalNotice.getDeliveredOn(),
                     DateTimeFormatter.ofPattern("yyyyMMdd")));
         }

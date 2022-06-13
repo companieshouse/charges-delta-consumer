@@ -48,22 +48,22 @@
     ],
     "transactions": [
       {
-        "filing_type": "charge-satisfaction",
-        "transaction_id": null,
-        "delivered_on": "2021-11-19",
-        "insolvency_case_number": null,
-        "links": {
-          "filing": "/company/00285630/filing-history/MzMyMDk3NzM3OXRyYW5zSWRfc2FsdA",
-          "insolvency_case": null
-        }
-      },
-      {
         "filing_type": "liquidation-appointment-of-receiver-limited-liability-partnership",
         "transaction_id": null,
         "delivered_on": "2016-11-01",
         "insolvency_case_number": null,
         "links": {
           "filing": "/company/00285630/filing-history/MzE2MjA1MzI1NXRyYW5zSWRfc2FsdA",
+          "insolvency_case": null
+        }
+      },
+      {
+        "filing_type": "charge-satisfaction",
+        "transaction_id": null,
+        "delivered_on": "2021-11-19",
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/00285630/filing-history/MzMyMDk3NzM3OXRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       }

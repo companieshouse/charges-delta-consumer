@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.charges.delta.transformer;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.trim;
 
 import java.time.LocalDate;
@@ -7,7 +8,12 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Predicate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.MessageHeaders;
@@ -27,29 +33,31 @@ import uk.gov.companieshouse.logging.Logger;
 
 @Component
 public class ChargesApiTransformer {
+
     public static final String COMPANY = "/company/";
     public static final String FILING_HISTORY = "/filing-history/";
     public static final String CHARGES = "/charges/";
     public static final String DEFAULT_FILING_TYPE = "";
     private final ChargeApiMapper chargeApiMapper;
-    private EncoderUtil encoderUtil;
     private final Logger logger;
+    private EncoderUtil encoderUtil;
 
     /**
      * The constructor.
      */
     @Autowired
     public ChargesApiTransformer(ChargeApiMapper chargeApiMapper,
-                                 EncoderUtil encoderUtil,
-                                 Logger logger) {
+            EncoderUtil encoderUtil,
+            Logger logger) {
         this.chargeApiMapper = chargeApiMapper;
         this.encoderUtil = encoderUtil;
         this.logger = logger;
     }
 
     /**
-     * Transforms a Charge object within ChargesDelta object
-     * into an InternalChargeApi using mapstruct.
+     * Transforms a Charge object within ChargesDelta object into an InternalChargeApi using
+     * mapstruct.
+     *
      * @param charge source object
      * @return source object mapped to InternalChargeApi
      */
@@ -76,7 +84,7 @@ public class ChargesApiTransformer {
     }
 
     private void updateChargeApiWithLinks(Charge charge, ChargeApi chargeApi,
-                                          String companyNumber) {
+            String companyNumber) {
         if (chargeApi.getTransactions() != null) {
             for (TransactionsApi transactionsApi : chargeApi.getTransactions()) {
                 if (transactionsApi.getLinks() != null
@@ -85,7 +93,7 @@ public class ChargesApiTransformer {
                     transactionsApi.getLinks()
                             .setFiling(COMPANY + companyNumber + FILING_HISTORY
                                     + encoderUtil.encodeWithoutSha1(
-                                            transactionsApi.getLinks().getFiling()));
+                                    transactionsApi.getLinks().getFiling()));
                 }
             }
         }
@@ -97,7 +105,7 @@ public class ChargesApiTransformer {
     }
 
     private void updateInternalChargeApi(String receivedTopic, String partition, String offset,
-                                         InternalChargeApi internalChargeApi, Charge charge) {
+            InternalChargeApi internalChargeApi, Charge charge) {
         final String updatedBy = String.format("%s-%s-%s", receivedTopic, partition, offset);
         InternalData internalData = new InternalData();
         internalData.setUpdatedBy(updatedBy);
@@ -110,11 +118,11 @@ public class ChargesApiTransformer {
     }
 
     /**
-     * Maps transid, notice_type of Charge to filing within TransactionsLinks and
-     * filing type within TransactionApi.
+     * Maps transid, notice_type of Charge to filing within TransactionsLinks and filing type within
+     * TransactionApi.
      */
     private void mapTransIdAndNoticeType(Charge charge, ChargeApi chargeApi,
-                                          String companyNumber) {
+            String companyNumber) {
         TransactionsApi transactionsApi = new TransactionsApi();
         TransactionsLinks transactionsLinks = new TransactionsLinks();
 
@@ -122,9 +130,23 @@ public class ChargesApiTransformer {
                 ? encode(companyNumber, trim(charge.getTransId())) : null);
         transactionsApi.setLinks(transactionsLinks);
         transactionsApi.setFilingType(getFilingType(charge));
-        transactionsApi.setDeliveredOn(LocalDate.parse(charge.getDeliveredOn(),
-                        DateTimeFormatter.ofPattern("yyyyMMdd")));
-        chargeApi.addTransactionsItem(transactionsApi);
+        if (!isEmpty(trim(charge.getDeliveredOn()))) {
+            transactionsApi.setDeliveredOn(LocalDate.parse(charge.getDeliveredOn(),
+                    DateTimeFormatter.ofPattern("yyyyMMdd")));
+        }
+        Optional<List<TransactionsApi>> transactionsApiListOptional =
+                Optional.ofNullable(chargeApi.getTransactions());
+        transactionsApiListOptional.ifPresentOrElse(
+                (transactionsApiList) -> transactionsApiList.add(0, transactionsApi),
+                () -> chargeApi.addTransactionsItem(transactionsApi)
+        );
+        sortListBasedOnDeliveredOnDate(chargeApi);
+    }
+
+    private void sortListBasedOnDeliveredOnDate(ChargeApi chargeApi) {
+        chargeApi.getTransactions()
+                .sort(Comparator.comparing(TransactionsApi::getDeliveredOn,
+                        Comparator.nullsLast(Comparator.naturalOrder())));
     }
 
     private String getFilingType(Charge charge) {

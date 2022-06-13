@@ -7,7 +7,6 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
@@ -28,7 +27,6 @@ import uk.gov.companieshouse.charges.delta.service.ApiClientService;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.getAllServeEvents;
 import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
@@ -42,6 +40,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 public class ChargesConsumerSteps {
+
+    private static final String HEALTHCHECK_URI = "/charges-delta-consumer/healthcheck";
+    private static final String HEALTHCHECK_RESPONSE_BODY = "{\"status\":\"UP\"}";
 
     @Autowired
     public KafkaTemplate<String, Object> kafkaTemplate;
@@ -62,9 +63,9 @@ public class ChargesConsumerSteps {
     @Given("Charges delta consumer service is running")
     public void charges_delta_consumer_service_is_running() {
 
-        ResponseEntity<String> response = restTemplate.getForEntity("/healthcheck", String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(HEALTHCHECK_URI, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.valueOf(200));
-        assertThat(response.getBody()).isEqualTo("I am healthy");
+        assertThat(response.getBody()).isEqualTo(HEALTHCHECK_RESPONSE_BODY);
     }
 
     @When("a message with payload {string} is published to topic")
@@ -104,7 +105,7 @@ public class ChargesConsumerSteps {
         // treating it differently
         //delta_at is being verified above using jsonpath
         JSONAssert.assertEquals(testSupport.loadOutputFile(apiRequestPayloadFile), request,
-                new CustomComparator(JSONCompareMode.LENIENT,
+                new CustomComparator(JSONCompareMode.STRICT_ORDER,
                         new Customization("external_data.etag", (o1, o2) -> true),
                         new Customization("internal_data.delta_at", (o1, o2) -> true)));
 

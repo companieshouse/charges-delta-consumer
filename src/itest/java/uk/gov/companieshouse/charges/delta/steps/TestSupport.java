@@ -37,6 +37,17 @@ public class TestSupport {
                 .build();
     }
 
+    public ChsDelta createChsDeltaMessage(String chargesDeltaData, boolean isDelete){
+
+        return ChsDelta.newBuilder()
+                .setData(chargesDeltaData)
+                .setIsDelete(isDelete)
+                .setContextId("context_id")
+                .setAttempt(1)
+                .build();
+    }
+
+
     public ChsDelta createChsDeltaMessageNulPayload(){
         String messageText = loadInputFile("created_on_Happy_Path.json").replace("\"charge_number\": \"1\"", "XXXXXXX");
         return ChsDelta.newBuilder()

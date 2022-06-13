@@ -7,7 +7,10 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
@@ -92,9 +95,14 @@ public class ChargesDeltaProcessor {
                                    InternalChargeApi internalChargeApi,
                                    final Map<String, Object> logMap) {
         final String companyNumber = charge.getCompanyNumber();
+        Optional<String> chargeIdOptional = Optional.ofNullable(charge.getId())
+                .filter(Predicate.not(String::isEmpty));
 
         //pass in the chargeId and encode it with base64 after doing a SHA1 hash
-        final String chargeId = encoderUtil.encodeWithSha1(charge.getId());
+        final String chargeId = encoderUtil.encodeWithSha1(
+                chargeIdOptional.orElseThrow(
+                        () -> new NonRetryableErrorException("Charge Id is empty!")));
+
         logMap.put("company_number", companyNumber);
         logMap.put("charge_id", chargeId);
         logger.infoContext(
@@ -145,10 +153,12 @@ public class ChargesDeltaProcessor {
         logger.trace(String.format("ChargesDeleteDelta extracted from Kafka message: %s",
                 chargesDeleteDelta));
 
-        String chargeId = chargesDeleteDelta.getChargesId();
+        Optional<String> chargeIdOptional = Optional.ofNullable(chargesDeleteDelta.getChargesId())
+                .filter(Predicate.not(String::isEmpty));
 
         //pass in the chargeId and encode it with base64 after doing a SHA1 hash
-        chargeId = encoderUtil.encodeWithSha1(chargeId);
+        final String chargeId = encoderUtil.encodeWithSha1(chargeIdOptional.orElseThrow(
+                () -> new NonRetryableErrorException("Charge Id is empty!")));
 
         logMap.put("chargeId", chargeId);
 

@@ -42,20 +42,24 @@ public class ChargesDeltaConsumer {
     @KafkaListener(topics = "${charges.delta.topic}",
             groupId = "${charges.delta.group-id}",
             containerFactory = "listenerContainerFactory")
-    public void receiveMainMessages(Message<ChsDelta> chsDeltaMessage,
-                                    @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
-        logger.info(String.format("A new message read from %s topic with payload:%s "
-                + "and headers:%s ", topic, chsDeltaMessage.getPayload(),
-                chsDeltaMessage.getHeaders()));
+    public void receiveMainMessages(Message<ChsDelta> message,
+                                    @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                                    @Header(KafkaHeaders.RECEIVED_PARTITION_ID) String partition,
+                                    @Header(KafkaHeaders.OFFSET) String offset) {
+        ChsDelta chsDelta = message.getPayload();
+        logger.info(String.format("A new message successfully picked up from topic: %s, "
+                        + "partition: %s and offset: %s with contextId: %s",
+                topic, partition, offset, chsDelta.getContextId()));
+
         try {
-            if (Boolean.TRUE.equals(chsDeltaMessage.getPayload().getIsDelete())) {
-                deltaProcessor.processDelete(chsDeltaMessage);
+            if (Boolean.TRUE.equals(message.getPayload().getIsDelete())) {
+                deltaProcessor.processDelete(message);
             } else {
-                deltaProcessor.processDelta(chsDeltaMessage);
+                deltaProcessor.processDelta(message);
             }
         } catch (Exception exception) {
             logger.error(String.format("Exception occurred while processing the topic: %s "
-                    + "with message: %s", topic, chsDeltaMessage), exception);
+                    + "with contextId: %s", topic, chsDelta.getContextId()), exception);
             throw exception;
         }
     }

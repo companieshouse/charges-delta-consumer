@@ -43,22 +43,22 @@
     ],
     "transactions": [
       {
-        "filing_type": "charge-satisfaction-scotland-pre-2006-companies-act",
-        "transaction_id": null,
-        "delivered_on": "1998-03-24",
-        "insolvency_case_number": null,
-        "links": {
-          "filing": "/company/SC109614/filing-history/MDEyNzEyNjI4NXRyYW5zSWRfc2FsdA",
-          "insolvency_case": null
-        }
-      },
-      {
         "filing_type": "create-charge",
         "transaction_id": null,
         "delivered_on": "1989-03-15",
         "insolvency_case_number": null,
         "links": {
           "filing": null,
+          "insolvency_case": null
+        }
+      },
+      {
+        "filing_type": "charge-satisfaction-scotland-pre-2006-companies-act",
+        "transaction_id": null,
+        "delivered_on": "1998-03-24",
+        "insolvency_case_number": null,
+        "links": {
+          "filing": "/company/SC109614/filing-history/MDEyNzEyNjI4NXRyYW5zSWRfc2FsdA",
           "insolvency_case": null
         }
       }
