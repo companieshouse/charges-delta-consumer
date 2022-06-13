@@ -35,6 +35,7 @@ import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
 import uk.gov.companieshouse.charges.delta.service.ApiClientService;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -100,7 +101,7 @@ public class ChargesConsumerDeleteSteps {
 
         kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson, true));
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        countDownLatch.await(5, TimeUnit.SECONDS);
+        assertFalse(countDownLatch.await(1, TimeUnit.SECONDS));
     }
 
     @Then("delete message should be moved to topic {string}")
