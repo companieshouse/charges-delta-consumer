@@ -84,15 +84,15 @@ public interface ChargeApiMapper {
         if (!StringUtils.isEmpty(charge.getType())) {
             classificationApi.setType(ClassificationApi.TypeEnum.CHARGE_DESCRIPTION);
             classificationApi.setDescription(TextFormatter.formatAsSentence(charge.getType()));
+            chargeApi.setClassification(classificationApi);
         }
 
         if (!StringUtils.isEmpty(charge.getNatureOfCharge())) {
             classificationApi.setType(ClassificationApi.TypeEnum.NATURE_OF_CHARGE);
             classificationApi.setDescription(
                     TextFormatter.formatAsSentence(charge.getNatureOfCharge()));
+            chargeApi.setClassification(classificationApi);
         }
-
-        chargeApi.setClassification(classificationApi);
     }
 
     /**
@@ -166,14 +166,15 @@ public interface ChargeApiMapper {
             securedDetailsApi.setType(SecuredDetailsApi.TypeEnum.OBLIGATIONS_SECURED);
             securedDetailsApi.setDescription(
                     TextFormatter.formatAsSentence(charge.getObligationsSecured()));
+            chargeApi.setSecuredDetails(securedDetailsApi);
         }
 
         if (!StringUtils.isEmpty(charge.getAmountSecured())) {
             securedDetailsApi.setType(SecuredDetailsApi.TypeEnum.AMOUNT_SECURED);
             securedDetailsApi.setDescription(
                     TextFormatter.formatAsSentence(charge.getAmountSecured()));
+            chargeApi.setSecuredDetails(securedDetailsApi);
         }
-        chargeApi.setSecuredDetails(securedDetailsApi);
     }
 
     /**
@@ -226,37 +227,6 @@ public interface ChargeApiMapper {
             return bool1;
         }
         return bool1 || bool2;
-    }
-
-    /**
-     * Maps property in Charge to enum in ParticularApi model.
-     */
-    private void stringToParticularsApiEnum(String property, ParticularsApi particularsApi,
-                                            ParticularsApi.TypeEnum theEnum)
-            throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        stringToEnum(property, particularsApi, theEnum);
-    }
-
-    /**
-     * Maps property in Charge to enum in ClassificationApi model.
-     */
-    private void stringToClassificationApiEnum(String property,
-                                               ClassificationApi classificationApi,
-                                               ClassificationApi.TypeEnum theEnum)
-            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        stringToEnum(property, classificationApi, theEnum);
-    }
-
-    /**
-     * Maps property in Charge to enum in SecuredDetailsApi model.
-     */
-    private void stringToSecuredDetailsApiEnum(String property,
-                                               SecuredDetailsApi securedDetailsApi,
-                                               SecuredDetailsApi.TypeEnum theEnum)
-            throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        if (!StringUtils.isEmpty(property)) {
-            stringToEnum(property, securedDetailsApi, theEnum);
-        }
     }
 
     /**
@@ -336,19 +306,5 @@ public interface ChargeApiMapper {
         map.put(7, ChargeApi.StatusEnum.SATISFIED);
 
         return map;
-    }
-
-    /**
-     /**
-     * Generic method that Maps property from an object to description in the target object and
-     * sets the enum in the target object model.
-     */
-    private <T> void stringToEnum(String property, Object obj,
-                                  Enum<?> theEnum) throws NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
-        if (!StringUtils.isEmpty(property)) {
-            obj.getClass().getMethod(SET_TYPE, theEnum.getClass()).invoke(obj, theEnum);
-            obj.getClass().getMethod(SET_DESCRIPTION, String.class).invoke(obj, property);
-        }
     }
 }

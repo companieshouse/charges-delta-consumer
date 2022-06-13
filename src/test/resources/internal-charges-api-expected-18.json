@@ -5,7 +5,7 @@
     "charge_code": null,
     "classification": {
       "type": "charge-description",
-      "description": "Legal Mortgage & Charge"
+      "description": "Legal mortgage & charge"
     },
     "charge_number": 82,
     "status": "outstanding",
@@ -18,7 +18,7 @@
     "satisfied_on": null,
     "particulars": {
       "type": "short-particulars",
-      "description": "The freehold property known as or being lands situate at and adjacent to Fortwilliam Road, Tobermore, County Londonderry registered at the Land Registry under folio numbers LY85714 and LY 80544 each County Londonderry",
+      "description": "The freehold property known as or being lands situate at and adjacent to fortwilliam road, tobermore, county londonderry registered at the land registry under folio numbers LY85714 and ly 80544 each county londonderry.",
       "contains_floating_charge": null,
       "contains_fixed_charge": null,
       "floating_charge_covers_all": null,
@@ -39,7 +39,7 @@
     "more_than_four_persons_entitled": null,
     "persons_entitled": [
       {
-        "name": "F. P. MCCANN LIMITED"
+        "name": "F. P. Mccann Limited"
       }
     ],
     "transactions": [

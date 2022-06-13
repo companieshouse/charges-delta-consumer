@@ -5,7 +5,7 @@
     "charge_code": null,
     "classification": {
       "type": "charge-description",
-      "description": "LEGAL MORTGAGE"
+      "description": "Legal mortgage"
     },
     "charge_number": 15,
     "status": "fully-satisfied",
@@ -18,7 +18,7 @@
     "satisfied_on": "2011-04-20",
     "particulars": {
       "type": "short-particulars",
-      "description": "THE FREEHOLD PROPERTY K/A 8 CAMBRIDGE ROAD HORSHAM WEST SUSSEX AND THE PROCEEDS  OF SALE THEREOF                        \\nFLOATING CHARGE OVER ALL MOVEABLE PLANT MACHINERY IMPLEMENTS UTENSILS FURNITURE AND EQUIPMENT",
+      "description": "The freehold property k/a 8 cambridge road horsham west sussex and the proceeds of sale thereof. Floating charge over all moveable plant machinery implements utensils furniture and equipment.",
       "contains_floating_charge": null,
       "contains_fixed_charge": null,
       "floating_charge_covers_all": null,
@@ -27,7 +27,7 @@
     },
     "secured_details": {
       "type": "amount-secured",
-      "description": "ALL MONIES DUE OR TO BECOME DUE FROM THE COMPANY TO THE CHARGEE ON ANY ACCOUNT WHATSOEVER"
+      "description": "All monies due or to become due from the company to the chargee on any account whatsoever"
     },
     "scottish_alterations": {
       "type": null,
@@ -39,7 +39,7 @@
     "more_than_four_persons_entitled": null,
     "persons_entitled": [
       {
-        "name": "NATIONAL WESTMINSTER BANK PLC"
+        "name": "National Westminster Bank PLC"
       }
     ],
     "transactions": [
