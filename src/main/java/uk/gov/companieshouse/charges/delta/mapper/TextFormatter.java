@@ -15,7 +15,7 @@ import org.apache.commons.text.translate.CharSequenceTranslator;
 import org.apache.commons.text.translate.EntityArrays;
 import org.apache.commons.text.translate.LookupTranslator;
 
-public final class TextFormatter {
+final class TextFormatter {
 
     private static final Pattern STEM_PATTERN =
             Pattern.compile("(\\()(\\p{Alnum}+)");
@@ -35,11 +35,10 @@ public final class TextFormatter {
             Pattern.compile("^(\\P{L}*)(\\p{L}+)(.*)$");
     private static final Pattern GENERAL_ABBREV_PATTERN =
             Pattern.compile("ETC[.]|PP[.]|PH[.]?D[.]");
-    public static final CharSequenceTranslator UNESCAPE_HTML_ENTITIES = new AggregateTranslator(
+    private static final CharSequenceTranslator UNESCAPE_HTML_ENTITIES = new AggregateTranslator(
             new LookupTranslator(EntityArrays.ISO8859_1_UNESCAPE),
             new LookupTranslator(EntityArrays.HTML40_EXTENDED_UNESCAPE)
     );
-
 
     private static final Set<String> STOP_WORDS = new HashSet<>(Arrays.asList("A", "AN", "AT",
             "AS", "AND", "ARE", "BUT", "BY", "ERE", "FOR", "FROM", "IN", "INTO", "IS", "OF", "ON",
@@ -73,7 +72,7 @@ public final class TextFormatter {
      * @param text The text that will be recased.
      * @return Text recased in accordance to the above rules.
      */
-    public static String formatAsEntityName(String text) {
+    static String formatAsEntityName(String text) {
         return format(text, new EntityCaseStateFactory());
     }
 
@@ -98,7 +97,7 @@ public final class TextFormatter {
      * @param text The text that will be recased.
      * @return Text recased in accordance to the above rules.
      */
-    public static String formatAsSentence(String text) {
+    static String formatAsSentence(String text) {
         return format(text, new SentenceCaseStateFactory());
     }
 
@@ -121,7 +120,7 @@ public final class TextFormatter {
      * @param text The text that will be recased.
      * @return Text recased in accordance to the above rules.
      */
-    public static String formatAsParticulars(String text) {
+    static String formatAsParticulars(String text) {
         if (StringUtils.isEmpty(text)) {
             return text;
         }
@@ -229,7 +228,7 @@ public final class TextFormatter {
         FormatterState newStartSentenceState(FormatterStateMachine stateMachine);
     }
 
-    static class EntityCaseStateFactory implements StateFactory {
+    private static class EntityCaseStateFactory implements StateFactory {
         @Override
         public FormatterState newRegularTextState(FormatterStateMachine stateMachine) {
             return new RegularEntityText(stateMachine);
@@ -271,7 +270,7 @@ public final class TextFormatter {
         }
     }
 
-    static class SentenceCaseStateFactory implements StateFactory {
+    private static class SentenceCaseStateFactory implements StateFactory {
         @Override
         public FormatterState newRegularTextState(FormatterStateMachine stateMachine) {
             return new RegularSentenceText(stateMachine);
@@ -326,7 +325,7 @@ public final class TextFormatter {
         private FormatterState currentState;
         private String token;
 
-        public FormatterStateMachine(StateFactory stateFactory) {
+        FormatterStateMachine(StateFactory stateFactory) {
             this.textState = stateFactory.newRegularTextState(this);
             this.afterColonState = stateFactory.newAfterColonState(this);
             this.entityNameState = stateFactory.newEntityNameState(this);
@@ -550,6 +549,7 @@ public final class TextFormatter {
     }
 
     private static class EndSentence extends AbstractState {
+
         private final FormatterStateMachine stateMachine;
 
         public EndSentence(FormatterStateMachine stateMachine) {
