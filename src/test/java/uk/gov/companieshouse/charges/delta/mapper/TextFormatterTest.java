@@ -49,7 +49,6 @@ class TextFormatterTest {
                 Arguments.of(null, null),
                 Arguments.of("", ""),
                 Arguments.of("a", "A"),
-                Arguments.of("&aelig;", "Æ"),
                 Arguments.of("æ", "Æ"),
                 Arguments.of("ab", "Ab"),
                 Arguments.of("aB", "Ab"),
@@ -78,7 +77,6 @@ class TextFormatterTest {
                 Arguments.of("", ""),
                 Arguments.of(".", "."),
                 Arguments.of("a", "A"),
-                Arguments.of("&aelig;", "Æ"),
                 Arguments.of("æ", "Æ"),
                 Arguments.of("ab", "Ab"),
                 Arguments.of("aB", "Ab"),
@@ -100,7 +98,7 @@ class TextFormatterTest {
                 Arguments.of("llp", "LLP"),
                 Arguments.of("\"llp\"", "\"LLP\""),
                 Arguments.of("to be. or not to be.", "To be. Or not to be."),
-                Arguments.of("&pound;220,000.00                              AND ALL OTHER MONIES DUE OR TO BECOME DUE", "£220,000.00 and all other monies due or to become due"),
+                Arguments.of("£220,000.00                              AND ALL OTHER MONIES DUE OR TO BECOME DUE", "£220,000.00 and all other monies due or to become due"),
                 Arguments.of("p/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc. \n\t but i\tthink (a cat) is 4life! æthelred is ready.", "P/Office the D.R. of an LLP says a cat is ) for christmas etc. but I think (a cat) is 4LIFE! Æthelred is ready.")
         );
     }

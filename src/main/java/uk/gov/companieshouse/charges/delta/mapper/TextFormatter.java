@@ -10,10 +10,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringTokenizer;
 import org.apache.commons.text.WordUtils;
-import org.apache.commons.text.translate.AggregateTranslator;
-import org.apache.commons.text.translate.CharSequenceTranslator;
-import org.apache.commons.text.translate.EntityArrays;
-import org.apache.commons.text.translate.LookupTranslator;
 
 final class TextFormatter {
 
@@ -35,10 +31,6 @@ final class TextFormatter {
             Pattern.compile("^(\\P{L}*)(\\p{L}+)(.*)$");
     private static final Pattern GENERAL_ABBREV_PATTERN =
             Pattern.compile("ETC[.]|PP[.]|PH[.]?D[.]");
-    private static final CharSequenceTranslator UNESCAPE_HTML_ENTITIES = new AggregateTranslator(
-            new LookupTranslator(EntityArrays.ISO8859_1_UNESCAPE),
-            new LookupTranslator(EntityArrays.HTML40_EXTENDED_UNESCAPE)
-    );
 
     private static final Set<String> STOP_WORDS = new HashSet<>(Arrays.asList("A", "AN", "AT",
             "AS", "AND", "ARE", "BUT", "BY", "ERE", "FOR", "FROM", "IN", "INTO", "IS", "OF", "ON",
@@ -140,8 +132,7 @@ final class TextFormatter {
         if (StringUtils.isEmpty(text)) {
             return text;
         }
-        String unescapedText = UNESCAPE_HTML_ENTITIES.translate(text);
-        String result = unescapedText.toUpperCase(Locale.UK);
+        String result = text.toUpperCase(Locale.UK);
         StringTokenizer tokenizer = new StringTokenizer(result);
         StringBuilder builder = new StringBuilder();
         int index = 0;
