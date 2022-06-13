@@ -84,15 +84,14 @@ public interface ChargeApiMapper {
         if (!StringUtils.isEmpty(charge.getType())) {
             classificationApi.setType(ClassificationApi.TypeEnum.CHARGE_DESCRIPTION);
             classificationApi.setDescription(TextFormatter.formatAsSentence(charge.getType()));
-            chargeApi.setClassification(classificationApi);
         }
 
         if (!StringUtils.isEmpty(charge.getNatureOfCharge())) {
             classificationApi.setType(ClassificationApi.TypeEnum.NATURE_OF_CHARGE);
             classificationApi.setDescription(
                     TextFormatter.formatAsSentence(charge.getNatureOfCharge()));
-            chargeApi.setClassification(classificationApi);
         }
+        chargeApi.setClassification(classificationApi);
     }
 
     /**

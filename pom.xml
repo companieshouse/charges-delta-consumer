@@ -32,6 +32,7 @@
         <jib-maven-plugin.version>3.1.1</jib-maven-plugin.version>
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
         <wiremock.standalone.version>2.32.0</wiremock.standalone.version>
+        <commons-text.version>1.9</commons-text.version>
 
         <!-- Tests -->
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
@@ -130,7 +131,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>1.9</version>
+            <version>${commons-text.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
