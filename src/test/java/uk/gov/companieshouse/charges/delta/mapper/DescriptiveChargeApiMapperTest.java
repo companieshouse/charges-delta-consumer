@@ -4,7 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.companieshouse.api.charges.*;
+import uk.gov.companieshouse.api.charges.ChargeApi;
+import uk.gov.companieshouse.api.charges.ClassificationApi;
+import uk.gov.companieshouse.api.charges.ParticularsApi;
+import uk.gov.companieshouse.api.charges.PersonsEntitledApi;
+import uk.gov.companieshouse.api.charges.SecuredDetailsApi;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.logging.Logger;
 
@@ -13,7 +17,9 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class DescriptiveChargeApiMapperTest {
