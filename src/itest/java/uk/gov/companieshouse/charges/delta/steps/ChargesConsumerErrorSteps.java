@@ -28,6 +28,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.common.Metadata.metadata;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,10 +44,8 @@ public class ChargesConsumerErrorSteps {
     private WireMockServer wireMockServer;
     private String companyNumber;
     private String chargeId;
-    @Autowired
-    private ApiClientService apiClientService;
-    @Autowired
-    private EncoderUtil encoderUtil;
+    private final CountDownLatch countDownLatch = new CountDownLatch(1);
+    
     @Autowired
     private TestSupport testSupport;
     @Autowired
@@ -91,8 +90,8 @@ public class ChargesConsumerErrorSteps {
     public void aNonAvroFormatMessageIsSentToTheKafkaTopicChargesDeltaTopic()
         throws InterruptedException {
         kafkaTemplate.send(topic, "Not an AVRO message");
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        countDownLatch.await(5, TimeUnit.SECONDS);
+        
+        assertFalse(countDownLatch.await(1, TimeUnit.SECONDS));
     }
 
 
@@ -100,8 +99,8 @@ public class ChargesConsumerErrorSteps {
     public void aValidAvroMessageInWithAnInvalidJsonPayloadIsSentToTheKafkaTopic()
         throws InterruptedException {
         kafkaTemplate.send(topic, testSupport.createChsDeltaMessageNulPayload());
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        countDownLatch.await(5, TimeUnit.SECONDS);
+        
+        assertFalse(countDownLatch.await(1, TimeUnit.SECONDS));
     }
 
     @When("a message with payload {string} is published to charges topic")
@@ -109,8 +108,8 @@ public class ChargesConsumerErrorSteps {
         String chargesDeltaDataJson = testSupport.loadInputFile(dataFile);
 
         kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson));
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        countDownLatch.await(5, TimeUnit.SECONDS);
+        
+        assertFalse(countDownLatch.await(1, TimeUnit.SECONDS));
     }
 
     @When("a message with payload without charges is published to charges topic")
@@ -118,8 +117,8 @@ public class ChargesConsumerErrorSteps {
         String chargesDeltaDataJson = "{\"charges\": null}";
         ChsDelta deltaMessage = testSupport.createChsDeltaMessage(chargesDeltaDataJson);
         kafkaTemplate.send(topic, deltaMessage);
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        countDownLatch.await(5, TimeUnit.SECONDS);
+        
+        assertFalse(countDownLatch.await(1, TimeUnit.SECONDS));
     }
 
     @Then("the message should be moved to topic {string}")

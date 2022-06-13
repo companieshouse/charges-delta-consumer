@@ -82,7 +82,7 @@ public class ChargesConsumerSteps {
         kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson));
         CountDownLatch countDownLatch = new CountDownLatch(1);
         // Returned vale is true if countdown reached zero false if timed out - we should be timing out!
-        assertFalse(countDownLatch.await(5, TimeUnit.SECONDS));
+        assertFalse(countDownLatch.await(1, TimeUnit.SECONDS));
     }
 
     @Then("the Consumer should process and send a request with payload {string} "
