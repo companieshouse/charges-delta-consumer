@@ -42,8 +42,7 @@
       ],
       "insolvency_cases": [
         {
-          "case": "2",
-          "transaction_id": "22222"
+          "case": "2"
         }
       ],
       "amount_secured": "£220,000.00                              AND ALL OTHER MONIES DUE OR TO BECOME DUE",

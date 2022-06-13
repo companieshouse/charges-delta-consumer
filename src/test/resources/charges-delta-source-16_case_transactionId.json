@@ -26,12 +26,10 @@
       ],
       "insolvency_cases": [
         {
-          "case": "11223344",
-          "transaction_id": "223344"
+          "case": "11223344"
         },
         {
-          "case": "445566",
-          "transaction_id": "889900"
+          "case": "445566"
         }
       ],
       "charge_number": "1",

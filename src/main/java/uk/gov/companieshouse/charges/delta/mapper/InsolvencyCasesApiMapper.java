@@ -14,7 +14,6 @@ import uk.gov.companieshouse.api.delta.InsolvencyCase;
 public interface InsolvencyCasesApiMapper {
 
     @Mapping(target = "caseNumber", ignore = true)
-    @Mapping(target = "transactionId", ignore = true)
     @Mapping(target = "links", ignore = true)
 
     InsolvencyCasesApi insolvencyCaseToInsolvencyCasesApi(
@@ -27,20 +26,7 @@ public interface InsolvencyCasesApiMapper {
     default void setProperties(@MappingTarget InsolvencyCasesApi insolvencyCasesApi,
                                   InsolvencyCase insolvencyCase, @Context String companyNumber) {
         setCaseNumber(insolvencyCasesApi, insolvencyCase);
-        setTransactionId(insolvencyCasesApi, insolvencyCase);
         setInsolvencyCaseLink(insolvencyCasesApi, companyNumber);
-    }
-
-    /**
-     * sets transaction id.
-     */
-    private InsolvencyCasesApi setTransactionId(InsolvencyCasesApi insolvencyCasesApi,
-                                                InsolvencyCase insolvencyCase) {
-        if (NumberUtils.isParsable(insolvencyCase.getTransactionId())) {
-            insolvencyCasesApi.setTransactionId(
-                    Long.parseLong(insolvencyCase.getTransactionId()));
-        }
-        return insolvencyCasesApi;
     }
 
     /**
@@ -49,7 +35,7 @@ public interface InsolvencyCasesApiMapper {
     private InsolvencyCasesApi setCaseNumber(InsolvencyCasesApi insolvencyCasesApi,
                                              InsolvencyCase insolvencyCase) {
         if (NumberUtils.isParsable(insolvencyCase.getCase())) {
-            insolvencyCasesApi.setCaseNumber(Integer.parseInt(insolvencyCase.getCase()));
+            insolvencyCasesApi.setCaseNumber(insolvencyCase.getCase());
         }
         return insolvencyCasesApi;
     }

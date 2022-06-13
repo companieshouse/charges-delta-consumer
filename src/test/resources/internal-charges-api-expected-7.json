@@ -40,7 +40,6 @@
     "transactions": [
       {
         "filing_type": "debenture-without-deed",
-        "transaction_id": null,
         "delivered_on": "2019-10-17",
         "insolvency_case_number": null,
         "links": {
