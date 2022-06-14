@@ -69,8 +69,11 @@ public class ChargesDeltaProcessor {
 
         // Assuming we always get only one charge item inside charges delta
         Charge charge = chargesDelta.getCharges().get(0);
-
         InternalChargeApi internalChargeApi = transformer.transform(charge, headers);
+
+        logger.info(String.format("Charge message with contextId: %s "
+                + "transformed to InternalChargeApi "
+                + ": %s", logContext, internalChargeApi));
 
         ApiResponse<Void> apiResponse = updateChargesData(logContext, charge,
                 internalChargeApi, logMap);
@@ -136,7 +139,9 @@ public class ChargesDeltaProcessor {
             logger.errorContext(logContext, message, null, logMap);
             throw new RetryableErrorException(message);
         } else {
-            logger.trace("Got success response from PUT endpoint of charges-data-api");
+            logger.info(String.format("Successfully invoked charges-data-api "
+                            + "PUT endpoint for message with contextId: %s",
+                    logContext));
         }
     }
 
@@ -210,7 +215,9 @@ public class ChargesDeltaProcessor {
             throw new RetryableErrorException(
                     String.format("Unsuccessful DELETE API response, %s", msg));
         } else {
-            logger.trace("Got success response from DELETE charge request");
+            logger.info(String.format("Successfully invoked charges-data-api "
+                            + "DELETE endpoint for message with contextId: %s",
+                    logContext));
         }
     }
 
