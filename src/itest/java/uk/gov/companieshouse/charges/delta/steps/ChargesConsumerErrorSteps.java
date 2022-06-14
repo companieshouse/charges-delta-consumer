@@ -91,7 +91,7 @@ public class ChargesConsumerErrorSteps {
         throws InterruptedException {
         kafkaTemplate.send(topic, "Not an AVRO message");
         
-        assertFalse(countDownLatch.await(1, TimeUnit.SECONDS));
+        assertFalse(countDownLatch.await(2, TimeUnit.SECONDS));
     }
 
 
@@ -100,7 +100,7 @@ public class ChargesConsumerErrorSteps {
         throws InterruptedException {
         kafkaTemplate.send(topic, testSupport.createChsDeltaMessageNulPayload());
         
-        assertFalse(countDownLatch.await(1, TimeUnit.SECONDS));
+        assertFalse(countDownLatch.await(2, TimeUnit.SECONDS));
     }
 
     @When("a message with payload {string} is published to charges topic")
@@ -109,7 +109,7 @@ public class ChargesConsumerErrorSteps {
 
         kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson));
         
-        assertFalse(countDownLatch.await(1, TimeUnit.SECONDS));
+        assertFalse(countDownLatch.await(2, TimeUnit.SECONDS));
     }
 
     @When("a message with payload without charges is published to charges topic")
@@ -118,7 +118,7 @@ public class ChargesConsumerErrorSteps {
         ChsDelta deltaMessage = testSupport.createChsDeltaMessage(chargesDeltaDataJson);
         kafkaTemplate.send(topic, deltaMessage);
         
-        assertFalse(countDownLatch.await(1, TimeUnit.SECONDS));
+        assertFalse(countDownLatch.await(2, TimeUnit.SECONDS));
     }
 
     @Then("the message should be moved to topic {string}")
