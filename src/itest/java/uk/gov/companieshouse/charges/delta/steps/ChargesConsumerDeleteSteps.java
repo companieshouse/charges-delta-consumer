@@ -101,7 +101,7 @@ public class ChargesConsumerDeleteSteps {
 
         kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson, true));
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        assertFalse(countDownLatch.await(1, TimeUnit.SECONDS));
+        assertFalse(countDownLatch.await(2, TimeUnit.SECONDS));
     }
 
     @Then("delete message should be moved to topic {string}")
