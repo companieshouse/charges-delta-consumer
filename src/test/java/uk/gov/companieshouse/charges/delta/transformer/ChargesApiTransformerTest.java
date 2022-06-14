@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
 import org.skyscreamer.jsonassert.Customization;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -39,11 +38,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ChargesApiTransformerTest {
 
     @Autowired
-    private ChargeApiMapper chargeApiMapper;
+    private ChargeApiMapper descriptiveChargeApiMapper;
     @Autowired
     private EncoderUtil encoderUtil;
-
-    @Mock
+    @Autowired
     private Logger logger;
 
     private ChargesApiTransformer transformer;
@@ -52,7 +50,7 @@ public class ChargesApiTransformerTest {
 
     @BeforeEach
     public void setup() {
-        transformer = new ChargesApiTransformer(chargeApiMapper, encoderUtil, logger);
+        transformer = new ChargesApiTransformer(descriptiveChargeApiMapper, encoderUtil, logger);
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.setDateFormat(new SimpleDateFormat("yyyyMMdd"));

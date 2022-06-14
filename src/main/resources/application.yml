@@ -18,6 +18,9 @@ charges:
     retry-attempts: ${CHARGES_DELTA_ATTEMPTS:4}
     backoff-delay: ${CHARGES_DELTA_BACKOFF_DELAY:100}
 
+mapper:
+  descriptive-mappings-enabled: ${DESCRIPTIVE_MAPPINGS_ENABLED:false}
+
 logger:
   namespace: charges-delta-consumer
 

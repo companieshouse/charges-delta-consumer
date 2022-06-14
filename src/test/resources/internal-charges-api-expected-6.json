@@ -4,7 +4,7 @@
     "charge_code": null,
     "classification": {
       "type": "charge-description",
-      "description": "FLOATING CHARGE"
+      "description": "Floating charge"
     },
     "charge_number": 2,
     "status": "fully-satisfied",
@@ -17,7 +17,7 @@
     "satisfied_on": "1998-03-24",
     "particulars": {
       "type": "short-particulars",
-      "description": "UNDERTAKING AND ALL PROPERTY AND ASSETS PRESENT AND FUTURE OF THE COMPANY INCLUDING UNCALLED CAPITAL",
+      "description": "Undertaking and all property and assets present and future of the company including uncalled capital.",
       "contains_floating_charge": true,
       "contains_fixed_charge": null,
       "floating_charge_covers_all": null,
@@ -26,7 +26,7 @@
     },
     "secured_details": {
       "type": "amount-secured",
-      "description": "ALL SUMS DUE OR TO BECOME DUE"
+      "description": "All sums due or to become due"
     },
     "scottish_alterations": {
       "type": null,

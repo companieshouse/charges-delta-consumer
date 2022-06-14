@@ -12,7 +12,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -46,10 +45,10 @@ public class ChargesApiTransformer {
      * The constructor.
      */
     @Autowired
-    public ChargesApiTransformer(ChargeApiMapper chargeApiMapper,
+    public ChargesApiTransformer(ChargeApiMapper descriptiveChargeApiMapper,
             EncoderUtil encoderUtil,
             Logger logger) {
-        this.chargeApiMapper = chargeApiMapper;
+        this.chargeApiMapper = descriptiveChargeApiMapper;
         this.encoderUtil = encoderUtil;
         this.logger = logger;
     }
