@@ -53,7 +53,7 @@
         "filing_type": "charge-satisfaction-pre-2006-companies-act",
         "transaction_id": null,
         "delivered_on": null,
-        "insolvency_case_number": 1,
+        "insolvency_case_number": "1",
         "links": {
           "filing": "/company/NI622400/filing-history/MzM4Nzc3OHRyYW5zSWRfc2FsdA",
           "insolvency_case": null
