@@ -50,6 +50,7 @@ Feature: Process Charges Delete Delta information with happy and error condition
     Examples:
       | response | deltaMessage                       | companyNumber | chargeId                    | responseCode | targetTopic                                | retries |
       | 503      | charges-delete-delta-source-1.json | 0             | NLVXY861zxOTr3NExemI3q4Nq4Y | 503          | charges-delta-charges-delta-consumer-error | 4       |
+      | 404      | charges-delete-delta-source-1.json | 0             | NLVXY861zxOTr3NExemI3q4Nq4Y | 404          | charges-delta-charges-delta-consumer-error | 4       |
 
   Scenario Outline: Consume a valid delete message, but fails while processing before calling Charges Data API delete endpoint
 

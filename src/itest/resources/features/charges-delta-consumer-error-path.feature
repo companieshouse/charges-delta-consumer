@@ -43,8 +43,9 @@ Feature: Process Charges Delta information with error conditions
     And Charges Data API endpoint is retried "<retries>"
 
     Examples:
-      | response    | targetTopic                                  | deltaMessage                     | companyNumber | chargeId                    | retries |
-      | 503         | charges-delta-charges-delta-consumer-error   | satisfied_on_Happy_Path.json     | OC342023      | TnYWNS5p1GdMPVGvNXIx63D5Uc8 | 3       |
+      | response | targetTopic                                | deltaMessage                 | companyNumber | chargeId                    | retries |
+      | 503      | charges-delta-charges-delta-consumer-error | satisfied_on_Happy_Path.json | OC342023      | TnYWNS5p1GdMPVGvNXIx63D5Uc8 | 3       |
+      | 404      | charges-delta-charges-delta-consumer-error | satisfied_on_Happy_Path.json | OC342023      | TnYWNS5p1GdMPVGvNXIx63D5Uc8 | 3       |
 
   Scenario Outline: Consume a valid message with null charges in payload
     Given Charges delta consumer service is running

@@ -97,44 +97,18 @@ public class ChargesDeltaProcessorTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @Test
-    @DisplayName("Bad request when calling put charges, throws non retryable error")
-    void When_PutChargesBadRequest_NonRetryableError() throws IOException {
+    @ParameterizedTest
+    @MethodSource("provideExceptionParameters")
+    @DisplayName("When calling PUT charge and an error occurs then throw the appropriate exception based on the error type")
+    void When_Put_Exception_Then_Throw_Appropriate_Exception(HttpStatus httpStatus,
+                                                              Class<Throwable> exception) throws IOException {
         Message<ChsDelta> chsDeltaMessage = testSupport.createChsDeltaMessage("charges-delta-source-1.json", false);
-        final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), null, null);
+        final ApiResponse<Void> response = new ApiResponse<>(httpStatus.value(), null, null);
 
         when(transformer.transform(any(), any())).thenReturn(testSupport.mockInternalChargeApi());
         doReturn(response).when(apiClientService).putCharge(any(), any(), any(), any());
 
-        assertThrows(NonRetryableErrorException.class, () -> deltaProcessor.processDelta(chsDeltaMessage));
-        verify(apiClientService).putCharge("context_id", "01099198",
-                "6DrQgDD109T7kBnVwtx5HrEX9B0", testSupport.mockInternalChargeApi());
-    }
-
-    @Test
-    @DisplayName("Getting another 4xx when calling put charges, throws retryable error")
-    void When_PutChargesUnauthorized_RetryableError() throws IOException {
-        Message<ChsDelta> chsDeltaMessage = testSupport.createChsDeltaMessage("charges-delta-source-1.json", false);
-        final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), null, null);
-
-        when(transformer.transform(any(), any())).thenReturn(testSupport.mockInternalChargeApi());
-        doReturn(response).when(apiClientService).putCharge(any(), any(), any(), any());
-
-        assertThrows(RetryableErrorException.class, () -> deltaProcessor.processDelta(chsDeltaMessage));
-        verify(apiClientService).putCharge("context_id", "01099198",
-                "6DrQgDD109T7kBnVwtx5HrEX9B0", testSupport.mockInternalChargeApi());
-    }
-
-    @Test
-    @DisplayName("Getting internal server error when calling put charges API, throws retryable error")
-    void When_PutChargesApiInternalServerError_RetryableError() throws IOException {
-        Message<ChsDelta> chsDeltaMessage = testSupport.createChsDeltaMessage("charges-delta-source-1.json", false);
-        final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), null, null);
-
-        when(transformer.transform(any(), any())).thenReturn(testSupport.mockInternalChargeApi());
-        doReturn(response).when(apiClientService).putCharge(any(), any(), any(), any());
-
-        assertThrows(RetryableErrorException.class, () -> deltaProcessor.processDelta(chsDeltaMessage));
+        assertThrows(exception, () -> deltaProcessor.processDelta(chsDeltaMessage));
         verify(apiClientService).putCharge("context_id", "01099198",
                 "6DrQgDD109T7kBnVwtx5HrEX9B0", testSupport.mockInternalChargeApi());
     }
@@ -193,7 +167,7 @@ public class ChargesDeltaProcessorTest {
         doReturn(response).when(apiClientService).deleteCharge(eq("context_id"), eq("0"),
                 eq("yt6cQ-A2DqNpqwAMDWxKX12Axv4"));
 
-        assertThrows(NonRetryableErrorException.class, () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
+        assertThrows(RetryableErrorException.class, () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
         verify(apiClientService).deleteCharge("context_id", "0",
                 "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -202,7 +176,7 @@ public class ChargesDeltaProcessorTest {
     private static Stream<Arguments> provideExceptionParameters() {
         return Stream.of(
                 Arguments.of(HttpStatus.BAD_REQUEST, NonRetryableErrorException.class),
-                Arguments.of(HttpStatus.NOT_FOUND, NonRetryableErrorException.class),
+                Arguments.of(HttpStatus.NOT_FOUND, RetryableErrorException.class),
                 Arguments.of(HttpStatus.UNAUTHORIZED, RetryableErrorException.class),
                 Arguments.of(HttpStatus.INTERNAL_SERVER_ERROR, RetryableErrorException.class)
         );

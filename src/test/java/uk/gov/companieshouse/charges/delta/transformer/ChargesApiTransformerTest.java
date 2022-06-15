@@ -97,7 +97,7 @@ public class ChargesApiTransformerTest {
         InternalChargeApi internalChargeApi = transformer.transform(charge, testSupport.createKafkaHeaders());
 
         String chargeApiJson = objectMapper.writeValueAsString(internalChargeApi);
-        System.out.println("chargeApiJson = " + chargeApiJson);
+
         String expectedChargesApiJson = testSupport.loadTestdataFile(expected);
         JSONAssert.assertEquals(expectedChargesApiJson, chargeApiJson,
             new CustomComparator(JSONCompareMode.STRICT_ORDER,
