@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8082
 
 springfox:
   documentation:
@@ -14,7 +14,7 @@ charges:
     group-id: charges-delta-consumer
     topic: charges-delta
     retry-attempts: 4
-    backoff-delay: 100
+    backoff-delay: 10
 
 logger:
   namespace: charges-delta-consumer

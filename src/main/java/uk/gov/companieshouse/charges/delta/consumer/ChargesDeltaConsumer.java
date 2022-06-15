@@ -71,9 +71,8 @@ public class ChargesDeltaConsumer {
                         between(startTime, Instant.now()).toMillis()));
             }
         } catch (Exception exception) {
-            logger.error(format("Exception occurred while processing the topic: %s "
-                            + "with contextId: %s, exception thrown: %s",
-                    topic, contextId, exception), exception);
+            logger.errorContext(contextId, format("Exception occurred while processing "
+                    + "message on the topic: %s", topic), exception, null);
             throw exception;
         }
     }
