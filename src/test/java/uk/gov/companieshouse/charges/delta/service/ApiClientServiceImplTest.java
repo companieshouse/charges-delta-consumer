@@ -129,7 +129,7 @@ class ApiClientServiceImplTest {
     }
 
     @ParameterizedTest
-    @MethodSource("provideExceptionParameters2")
+    @MethodSource("provideExceptionParameters")
     @DisplayName("When calling DELETE charge and an error occurs then throw the appropriate exception based on the error type")
     void When_PutCharge_Exception_Then_Throw_Appropriate_Exception(HttpStatus httpStatus,
             ApiErrorResponseException exceptionFromApi)
@@ -183,7 +183,7 @@ class ApiClientServiceImplTest {
 
     }
 
-    private static Stream<Arguments> provideExceptionParameters2() {
+    private static Stream<Arguments> provideExceptionParameters() {
         return Stream.of(
                 Arguments.of(HttpStatus.BAD_REQUEST, buildApiErrorResponseException(HttpStatus.BAD_REQUEST)),
                 Arguments.of(HttpStatus.NOT_FOUND, buildApiErrorResponseException(HttpStatus.NOT_FOUND)),
@@ -194,7 +194,7 @@ class ApiClientServiceImplTest {
     }
 
     @ParameterizedTest
-    @MethodSource("provideExceptionParameters2")
+    @MethodSource("provideExceptionParameters")
     @DisplayName("When calling DELETE charge and an error occurs then throw the appropriate exception based on the error type")
     void When_Delete_Exception_Then_Throw_Appropriate_Exception(HttpStatus httpStatus,
             ApiErrorResponseException exceptionFromApi)
