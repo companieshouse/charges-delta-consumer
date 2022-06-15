@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8082
 
 springfox:
   documentation:
@@ -8,13 +8,15 @@ springfox:
 spring:
   kafka:
     bootstrap-servers: ${DATA_SYNC_KAFKA_BROKER_URL:localhost:9092}
+    listener:
+      concurrency: 1
 
 charges:
   delta:
     group-id: charges-delta-consumer
     topic: charges-delta
     retry-attempts: 4
-    backoff-delay: 100
+    backoff-delay: 10
 
 logger:
   namespace: charges-delta-consumer

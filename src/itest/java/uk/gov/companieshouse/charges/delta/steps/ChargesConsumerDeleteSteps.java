@@ -1,26 +1,15 @@
 package uk.gov.companieshouse.charges.delta.steps;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.admin.model.GetServeEventsResult;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-import static com.github.tomakehurst.wiremock.common.Metadata.metadata;
-
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.admin.model.GetServeEventsResult;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.header.Header;
@@ -31,9 +20,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
-import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
-import uk.gov.companieshouse.charges.delta.service.ApiClientService;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static com.github.tomakehurst.wiremock.common.Metadata.metadata;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,26 +44,23 @@ public class ChargesConsumerDeleteSteps {
     public static final String APPLICATION_JSON = "application/json";
     public static final String TAGS = "tags";
     public static final String STUBBED_FOR_DELETE_TEST = "stubbed_for_delete_test";
+    public static final String RETRY_TOPIC_ATTEMPTS = "retry_topic-attempts";
+    public static final String DELETE_URL = "/company/%s/charges/%s";
+
     @Autowired
     public KafkaTemplate<String, Object> kafkaTemplate;
     @Autowired
     protected TestRestTemplate restTemplate;
     @Value("${charges.delta.topic}")
     private String topic;
-    private WireMockServer wireMockServer;
-    private String companyNumber;
-    private String chargeId;
-    @Autowired
-    private ApiClientService apiClientService;
-    @Autowired
-    private EncoderUtil encoderUtil;
     @Autowired
     private TestSupport testSupport;
     @Autowired
     public KafkaConsumer<String, Object> kafkaConsumer;
 
-    public static final String RETRY_TOPIC_ATTEMPTS = "retry_topic-attempts";
-    public String DELETE_URL = "/company/%s/charges/%s";
+    private WireMockServer wireMockServer;
+    private String companyNumber;
+    private String chargeId;
 
     @Given("Charges delta consumer service for delete is running")
     public void charges_delta_consumer_service_is_running() {
@@ -100,13 +92,15 @@ public class ChargesConsumerDeleteSteps {
         String chargesDeltaDataJson = testSupport.loadInputFile(dataFile);
 
         kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson, true));
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        assertFalse(countDownLatch.await(2, TimeUnit.SECONDS));
+        kafkaTemplate.flush();
+
+        TimeUnit.SECONDS.sleep(1);
     }
 
     @Then("delete message should be moved to topic {string}")
     public void the_message_should_be_moved_to_topic(String destinatonTopic) {
-        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer, destinatonTopic);
+        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer,
+                destinatonTopic, 5000L);
         assertNotNull(singleRecord);
     }
 
@@ -148,7 +142,8 @@ public class ChargesConsumerDeleteSteps {
 
     @Then("delete message should be retried {string} on retry topic and moved to {string}")
     public void theMessageShouldBeRetried(String requiredRetries, String retryTopic) {
-        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer, retryTopic);
+        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer,
+                retryTopic, 5000L);
 
         assertThat(singleRecord.value()).isNotNull();
         List<Header> retryList = StreamSupport.stream(singleRecord.headers().spliterator(), false)

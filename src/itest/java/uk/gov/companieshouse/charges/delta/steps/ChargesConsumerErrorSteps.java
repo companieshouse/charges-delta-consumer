@@ -1,15 +1,15 @@
 package uk.gov.companieshouse.charges.delta.steps;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.admin.model.GetServeEventsResult;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.header.Header;
@@ -18,8 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
-import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
-import uk.gov.companieshouse.charges.delta.service.ApiClientService;
 import uk.gov.companieshouse.delta.ChsDelta;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -41,11 +39,11 @@ public class ChargesConsumerErrorSteps {
     protected TestRestTemplate restTemplate;
     @Value("${charges.delta.topic}")
     private String topic;
+
     private WireMockServer wireMockServer;
     private String companyNumber;
     private String chargeId;
-    private final CountDownLatch countDownLatch = new CountDownLatch(1);
-    
+
     @Autowired
     private TestSupport testSupport;
     @Autowired
@@ -85,45 +83,38 @@ public class ChargesConsumerErrorSteps {
         );
     }
 
-
     @When("A non-avro format message is sent to the Kafka topic")
     public void aNonAvroFormatMessageIsSentToTheKafkaTopicChargesDeltaTopic()
         throws InterruptedException {
         kafkaTemplate.send(topic, "Not an AVRO message");
-        
-        assertFalse(countDownLatch.await(2, TimeUnit.SECONDS));
+        kafkaTemplate.flush();
+        TimeUnit.SECONDS.sleep(1);
     }
-
 
     @When("A valid avro message in with an invalid json payload is sent to the Kafka topic")
     public void aValidAvroMessageInWithAnInvalidJsonPayloadIsSentToTheKafkaTopic()
         throws InterruptedException {
-        kafkaTemplate.send(topic, testSupport.createChsDeltaMessageNulPayload());
-        
-        assertFalse(countDownLatch.await(2, TimeUnit.SECONDS));
+        sendKafkaMessage(testSupport.createChsDeltaMessageNulPayload());
     }
 
     @When("a message with payload {string} is published to charges topic")
     public void messagePublishedToChargesTopic(String dataFile) throws InterruptedException {
         String chargesDeltaDataJson = testSupport.loadInputFile(dataFile);
 
-        kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson));
-        
-        assertFalse(countDownLatch.await(2, TimeUnit.SECONDS));
+        sendKafkaMessage(testSupport.createChsDeltaMessage(chargesDeltaDataJson));
     }
 
     @When("a message with payload without charges is published to charges topic")
     public void messagePayloadWithourChargesPublishedToChargesTopic() throws InterruptedException {
         String chargesDeltaDataJson = "{\"charges\": null}";
         ChsDelta deltaMessage = testSupport.createChsDeltaMessage(chargesDeltaDataJson);
-        kafkaTemplate.send(topic, deltaMessage);
-        
-        assertFalse(countDownLatch.await(2, TimeUnit.SECONDS));
+        sendKafkaMessage(deltaMessage);
     }
 
     @Then("the message should be moved to topic {string}")
     public void the_message_should_be_moved_to_topic(String destinatonTopic) {
-        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer, destinatonTopic);
+        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer,
+                destinatonTopic, 5000L);
         assertNotNull(singleRecord);
     }
 
@@ -149,7 +140,8 @@ public class ChargesConsumerErrorSteps {
 
     @Then("the message should be retried {string} on retry topic {string}")
     public void theMessageShouldBeRetried(String requiredRetries, String retryTopic) {
-        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer, retryTopic);
+        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer,
+                retryTopic, 5000L);
 
         assertThat(singleRecord.value()).isNotNull();
         List<Header> retryList = StreamSupport.stream(singleRecord.headers().spliterator(), false)
@@ -157,5 +149,11 @@ public class ChargesConsumerErrorSteps {
             .collect(Collectors.toList());
 
         assertThat(retryList.size()).isEqualTo(Integer.parseInt(requiredRetries) + 1);
+    }
+
+    private void sendKafkaMessage(ChsDelta deltaMessage) throws InterruptedException {
+        kafkaTemplate.send(topic, deltaMessage);
+        kafkaTemplate.flush();
+        TimeUnit.SECONDS.sleep(1);
     }
 }
