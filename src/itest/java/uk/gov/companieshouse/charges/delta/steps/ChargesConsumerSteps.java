@@ -7,7 +7,6 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.Customization;
@@ -80,9 +79,8 @@ public class ChargesConsumerSteps {
         chargeId = encoderUtil.encodeWithSha1(chargeId);
         stubChargeDataApi("a_message_is_published_to_topic");
         kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson));
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        // Returned vale is true if countdown reached zero false if timed out - we should be timing out!
-        assertFalse(countDownLatch.await(2, TimeUnit.SECONDS));
+        kafkaTemplate.flush();
+        TimeUnit.SECONDS.sleep(1);
     }
 
     @Then("the Consumer should process and send a request with payload {string} "
@@ -107,6 +105,7 @@ public class ChargesConsumerSteps {
         JSONAssert.assertEquals(testSupport.loadOutputFile(apiRequestPayloadFile), request,
                 new CustomComparator(JSONCompareMode.STRICT_ORDER,
                         new Customization("external_data.etag", (o1, o2) -> true),
+                        new Customization("internal_data.updated_by", (o1, o2) -> true),
                         new Customization("internal_data.delta_at", (o1, o2) -> true)));
 
         removeEventsByStubMetadata(matchingJsonPath("$.tags[0]",
