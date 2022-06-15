@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.charges.delta.service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -88,8 +89,6 @@ public class ApiClientServiceImpl implements ApiClientService {
 
     private ApiResponse<Void> execute(String log, Map<String, Object> logMap,
                                       Executor<ApiResponse<Void>> executor) {
-        Set<Integer> httpStatuses = Set.of(HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.NOT_FOUND.value());
         try {
             return executor.execute();
         } catch (URIValidationException ex) {
@@ -99,8 +98,8 @@ public class ApiClientServiceImpl implements ApiClientService {
             String message = "Private API Error Response exception";
             logMap.put("status", ex.getStatusCode());
             logger.errorContext(log, message, ex, logMap);
-            if (httpStatuses.contains(ex.getStatusCode())) {
-                throw new NonRetryableErrorException("SDK Exception", ex);
+            if (ex.getStatusCode() != 0) {
+                return new ApiResponse<>(ex.getStatusCode(), Collections.emptyMap());
             }
             throw new RetryableErrorException(message, ex);
         } catch (Exception ex) {

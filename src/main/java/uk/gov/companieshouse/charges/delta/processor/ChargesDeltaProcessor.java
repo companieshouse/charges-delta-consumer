@@ -199,7 +199,7 @@ public class ChargesDeltaProcessor {
         String msg = "Response from DELETE charge request";
         Set<HttpStatus> nonRetryableStatuses =
                 Collections.unmodifiableSet(EnumSet.of(
-                        HttpStatus.BAD_REQUEST, HttpStatus.NOT_FOUND));
+                        HttpStatus.BAD_REQUEST));
 
         if (nonRetryableStatuses.contains(httpStatus)) {
             throw new NonRetryableErrorException(
