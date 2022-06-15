@@ -47,7 +47,7 @@ notice_type: MG08,  filing_type: create-issue-of-secured-debentures-pre-april-20
 notice_type: MG08s,  filing_type: create-issue-of-secured-debentures-scotland-pre-april-2013
 notice_type: LLMG08,  filing_type: create-issue-of-secured-debentures-limited-liability-partnership-pre-april-2013
 notice_type: LLMG08s,  filing_type: create-issue-of-secured-debentures-limited-liability-partnership-scotland-pre-april-2013
-notice_type: MG010s,  filing_type: create-floating-charge-scotland
+notice_type: MG10s,  filing_type: create-floating-charge-scotland
 notice_type: RM01,  filing_type: liquidation-appointment-of-receiver
 notice_type: LLRM01,  filing_type: liquidation-appointment-of-receiver-limited-liability-partnership
 notice_type: RM02,  filing_type: liquidation-cease-to-act-receiver
