@@ -43,10 +43,7 @@
         "filing_type": "create-charge-with-deed-with-charles-court-order",
         "delivered_on": "2014-12-16",
         "insolvency_case_number": null,
-        "links": {
-          "filing": "/company/NI622400/filing-history/MzExMzg5MjgyM3RyYW5zSWRfc2FsdA",
-          "insolvency_case": null
-        }
+        "links": null
       },
       {
         "filing_type": "charge-satisfaction-pre-2006-companies-act",
@@ -54,7 +51,7 @@
         "insolvency_case_number": "1",
         "links": {
           "filing": "/company/NI622400/filing-history/MzM4Nzc3OHRyYW5zSWRfc2FsdA",
-          "insolvency_case": null
+          "insolvency_case": "/company/NI622400/insolvency#case-1"
         }
       }
     ],

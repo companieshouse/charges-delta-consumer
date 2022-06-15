@@ -32,10 +32,7 @@
         "transaction_id": null,
         "delivered_on": [2019,10,17],
         "insolvency_case_number": null,
-        "links": {
-          "filing": "/company/08124207/filing-history/MzI0NzA2NDA2M3RyYW5zSWRfc2FsdA",
-          "insolvency_case": null
-        }
+        "links": null
       },
       {
         "filing_type": "charge-part-both",
