@@ -20,7 +20,7 @@ public class TextFormatter {
     private static final Pattern COLON_PATTERN =
             Pattern.compile("[;:]$");
     private static final Pattern MIXED_ALNUM_PATTERN =
-            Pattern.compile("\\p{L}+\\p{N}+|\\p{N}+\\p{L}+");
+            Pattern.compile("\\p{L}\\p{N}|\\p{N}\\p{L}");
     private static final Pattern ABBREVIATION_PATTERN =
             Pattern.compile("(\\P{L})*(\\p{L}[.])+");
     private static final Pattern I_PATTERN =
