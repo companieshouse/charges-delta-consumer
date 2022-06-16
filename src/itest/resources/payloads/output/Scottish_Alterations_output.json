@@ -8,15 +8,12 @@
     "charge_number": 2,
     "particulars": {
       "type": "short-particulars",
-      "description": "UNDERTAKING AND ALL PROPERTY AND ASSETS PRESENT AND FUTURE OF THE COMPANY INCLUDING UNCALLED CAPITAL",
+      "description": "Undertaking and all property and assets present and future of the company including uncalled capital.",
       "contains_floating_charge": true,
       "contains_fixed_charge": null,
       "floating_charge_covers_all": null,
       "contains_negative_pledge": null,
       "chargor_acting_as_bare_trustee": null
-    },
-    "links": {
-      "self": "/company/SC109614/charges/REU4N0IyMTI5MUQ0NDFGODVDQzdDNzQ3MjFBMzg5N0EyNjIzQ0YxMw"
     },
     "charge_code": null,
     "transactions": [
@@ -68,11 +65,11 @@
     ],
     "classification": {
       "type": "charge-description",
-      "description": "FLOATING CHARGE"
+      "description": "Floating charge"
     },
     "secured_details": {
       "type": "amount-secured",
-      "description": "ALL SUMS DUE OR TO BECOME DUE"
+      "description": "All sums due or to become due"
     },
     "scottish_alterations": {
       "type": null,

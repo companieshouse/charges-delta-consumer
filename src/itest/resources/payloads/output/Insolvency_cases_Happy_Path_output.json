@@ -2,7 +2,7 @@
   "external_data": {
     "persons_entitled": [
       {
-        "name": "CLYDESDALE BANK PLC"
+        "name": "Clydesdale Bank PLC"
       }
     ],
     "charge_number": 17,
@@ -75,7 +75,7 @@
     ],
     "status": "outstanding",
     "classification": {
-      "description": "Legal Mortgage",
+      "description": "Legal mortgage",
       "type": "charge-description"
     },
    
