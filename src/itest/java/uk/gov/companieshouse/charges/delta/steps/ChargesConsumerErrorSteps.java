@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import uk.gov.companieshouse.charges.delta.common.TestConstants;
 import uk.gov.companieshouse.charges.delta.config.DelegatingLatch;
 import uk.gov.companieshouse.delta.ChsDelta;
 
@@ -159,7 +160,7 @@ public class ChargesConsumerErrorSteps {
     }
 
     private void sendKafkaMessage(Object deltaMessage) throws InterruptedException, ExecutionException, TimeoutException {
-        kafkaTemplate.send(topic, deltaMessage).get(30, TimeUnit.SECONDS);
-        delegatingLatch.getLatch().await();
+        kafkaTemplate.send(topic, deltaMessage).get(TestConstants.DEFAULT_WAIT_TIMEOUT, TimeUnit.SECONDS);
+        delegatingLatch.getLatch().await(TestConstants.DEFAULT_WAIT_TIMEOUT, TimeUnit.SECONDS);
     }
 }

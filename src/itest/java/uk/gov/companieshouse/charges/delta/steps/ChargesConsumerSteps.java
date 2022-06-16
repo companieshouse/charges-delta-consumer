@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
+import uk.gov.companieshouse.charges.delta.common.TestConstants;
 import uk.gov.companieshouse.charges.delta.config.DelegatingLatch;
 import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
 import uk.gov.companieshouse.charges.delta.service.ApiClientService;
@@ -84,8 +85,8 @@ public class ChargesConsumerSteps {
         chargeId = chargesDeltaData.getCharges().get(0).getId();
         chargeId = encoderUtil.encodeWithSha1(chargeId);
         stubChargeDataApi("a_message_is_published_to_topic");
-        kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson)).get(30, TimeUnit.SECONDS);
-        delegatingLatch.getLatch().await();
+        kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson)).get(TestConstants.DEFAULT_WAIT_TIMEOUT, TimeUnit.SECONDS);
+        delegatingLatch.getLatch().await(TestConstants.DEFAULT_WAIT_TIMEOUT, TimeUnit.SECONDS);
     }
 
     @Then("the Consumer should process and send a request with payload {string} "

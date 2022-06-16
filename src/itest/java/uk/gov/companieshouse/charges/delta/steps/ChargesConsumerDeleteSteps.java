@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import uk.gov.companieshouse.charges.delta.common.TestConstants;
 import uk.gov.companieshouse.charges.delta.config.DelegatingLatch;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -96,8 +97,8 @@ public class ChargesConsumerDeleteSteps {
     @When("delete message with payload {string} is published to charges topic")
     public void messagePublishedToChargesTopic(String dataFile) throws InterruptedException, ExecutionException, TimeoutException {
         String chargesDeltaDataJson = testSupport.loadInputFile(dataFile);
-        kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson, true)).get(30, TimeUnit.SECONDS);
-        delegatingLatch.getLatch().await();
+        kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson, true)).get(TestConstants.DEFAULT_WAIT_TIMEOUT, TimeUnit.SECONDS);
+        delegatingLatch.getLatch().await(TestConstants.DEFAULT_WAIT_TIMEOUT, TimeUnit.SECONDS);
     }
 
     @Then("delete message should be moved to topic {string}")
