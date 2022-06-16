@@ -2,7 +2,7 @@
   "external_data": {
     "persons_entitled": [
       {
-        "name": "LYELL TRADING LIMITED"
+        "name": "Lyell Trading Limited"
       }
     ],
     "charge_number": 49,
@@ -10,7 +10,7 @@
       "floating_charge_covers_all": true,
       "type": "brief-description",
       "contains_floating_charge": true,
-      "description": "THE FREEHOLD LAND KNOWN AS MILLENNIUM HOUSE, 60 VICTORIA STREET, LIVERPOOL AND REGISTERED WITH HM LAND REGISTRY UNDER TITLE NUMBER MS303172\\n",
+      "description": "The freehold land known as millennium house, 60 victoria street, liverpool and registered with hm land registry under title number MS303172.",
       "contains_fixed_charge": true,
       "contains_negative_pledge": true,
       "chargor_acting_as_bare_trustee": null
@@ -67,7 +67,7 @@
     ],
     "status": "part-satisfied",
     "classification": {
-      "description": "A REGISTERED CHARGE",
+      "description": "A registered charge",
       "type": "charge-description"
     },
     "delivered_on": [2019,10,17],

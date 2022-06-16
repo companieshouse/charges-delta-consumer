@@ -1,12 +1,8 @@
 {
   "external_data": {
-    "persons_entitled": null,
     "charge_number": 1,
     "particulars": null,
     "charge_code": null,
-    "links": {
-      "self": "/company/05288218/charges/MTQ2MzBGQjVEREY4QTFGMzQ4MTQ1QkVBRTAyRUM5NTVDM0E3RjQzOQ"
-    },
     "transactions": [
       {
         "filing_type": "create-charge-series-debentures-pre-2006-companies-act",
@@ -32,7 +28,7 @@
     "persons_entitled": null,
     "classification": {
       "type": "charge-description",
-      "description": "A REGISTERED CHARGE"
+      "description": "A registered charge"
     },
     "scottish_alterations": {
       "type": null,

@@ -2,7 +2,7 @@
   "external_data": {
     "persons_entitled": [
       {
-        "name": "BRIDGING FINANCE LIMITED"
+        "name": "Bridging Finance Limited"
       }
     ],
     "charge_number": 3,
@@ -10,7 +10,7 @@
       "floating_charge_covers_all": true,
       "type": "brief-description",
       "contains_floating_charge": true,
-      "description": "SUNNYHILL ROSE LANE MYNYDD ISA MOLD T/NO CYM343806\\n",
+      "description": "Sunnyhill rose lane mynydd isa mold t/no CYM343806.",
       "contains_fixed_charge": true,
       "contains_negative_pledge": true,
       "chargor_acting_as_bare_trustee": null
@@ -48,7 +48,7 @@
     ],
     "status": "fully-satisfied",
     "classification": {
-      "description": "A REGISTERED CHARGE",
+      "description": "A registered charge",
       "type": "charge-description"
     },
    

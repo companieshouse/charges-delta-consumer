@@ -2,7 +2,7 @@
   "external_data": {
     "persons_entitled": [
       {
-        "name": "THE GOVERNOR AND COMPANY OF THE BANK OF IRELAND"
+        "name": "The Governor and Company of the Bank of Ireland"
       }
     ],
     "charge_number": 1,
@@ -10,13 +10,13 @@
       "floating_charge_covers_all": true,
       "type": "brief-description",
       "contains_floating_charge": true,
-      "description": "LAND KNOWN AS UNIT 3 MARSHES TRADE CENTRE,GREENBANK INDUSTRIAL ESTATE, NEWRY BEING ALL OF THE LANDS COMPRISED IN FOLIO DN198519L COUNTY DOWN.",
+      "description": "Land known as unit 3 marshes trade centre,greenbank industrial estate, newry being all of the lands comprised in folio DN198519L county down.",
       "contains_fixed_charge": true,
       "contains_negative_pledge": true
     },
     "secured_details": {
       "type": "amount-secured",
-      "description": "£220,000.00                              AND ALL OTHER MONIES DUE OR TO BECOME DUE"
+      "description": "£220,000.00 and all other monies due or to become due"
     },
     "scottish_alterations": {
       "type": null,
@@ -58,11 +58,10 @@
     ],
     "status": "outstanding",
     "classification": {
-      "description": "A REGISTERED CHARGE",
+      "description": "A registered charge",
       "type": "charge-description"
     },
     "etag": "cee2625e329e4961e84e6df35f171f3e644a0f90",
-    "delivered_on": [2017,12,16],
     "assets_ceased_released": "property-ceased-to-belong",
     "acquired_on": [1982,6,10],
     "delivered_on": [2014,12,16],
