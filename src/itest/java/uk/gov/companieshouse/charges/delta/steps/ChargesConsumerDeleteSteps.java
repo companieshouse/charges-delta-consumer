@@ -1,7 +1,10 @@
 package uk.gov.companieshouse.charges.delta.steps;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -20,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import uk.gov.companieshouse.charges.delta.config.DelegatingLatch;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
@@ -30,7 +34,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.common.Metadata.metadata;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -57,6 +60,8 @@ public class ChargesConsumerDeleteSteps {
     private TestSupport testSupport;
     @Autowired
     public KafkaConsumer<String, Object> kafkaConsumer;
+    @Autowired
+    private DelegatingLatch delegatingLatch;
 
     private WireMockServer wireMockServer;
     private String companyNumber;
@@ -68,6 +73,7 @@ public class ChargesConsumerDeleteSteps {
         ResponseEntity<String> response = restTemplate.getForEntity(HEALTHCHECK_URI, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.valueOf(200));
         assertThat(response.getBody()).isEqualTo(HEALTHCHECK_RESPONSE_BODY);
+        this.delegatingLatch.setLatch(new CountDownLatch(1));
     }
 
     @Given("Stubbed Charges Data API delete endpoint will return {string} http response code for {string} and {string}")
@@ -88,13 +94,10 @@ public class ChargesConsumerDeleteSteps {
     }
 
     @When("delete message with payload {string} is published to charges topic")
-    public void messagePublishedToChargesTopic(String dataFile) throws InterruptedException {
+    public void messagePublishedToChargesTopic(String dataFile) throws InterruptedException, ExecutionException, TimeoutException {
         String chargesDeltaDataJson = testSupport.loadInputFile(dataFile);
-
-        kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson, true));
-        kafkaTemplate.flush();
-
-        TimeUnit.SECONDS.sleep(1);
+        kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson, true)).get(30, TimeUnit.SECONDS);
+        delegatingLatch.getLatch().await();
     }
 
     @Then("delete message should be moved to topic {string}")

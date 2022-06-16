@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -26,6 +27,7 @@ import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
+import uk.gov.companieshouse.charges.delta.consumer.ChargesDeltaConsumerAspect;
 import uk.gov.companieshouse.charges.delta.exception.RetryableTopicErrorInterceptor;
 import uk.gov.companieshouse.charges.delta.serialization.ChsDeltaSerializer;
 import uk.gov.companieshouse.charges.delta.steps.TestSupport;
@@ -107,6 +109,16 @@ public class KafkaTestContainerConfig {
     @Bean
     public TestSupport testSupportBean(){
         return new TestSupport(kafkaTemplate());
+    }
+
+    @Bean
+    public DelegatingLatch delegatingLatch() {
+        return new DelegatingLatch(new CountDownLatch(1));
+    }
+
+    @Bean
+    public ChargesDeltaConsumerAspect chargesDeltaConsumerAspect() {
+        return new ChargesDeltaConsumerAspect();
     }
 
     @Bean
