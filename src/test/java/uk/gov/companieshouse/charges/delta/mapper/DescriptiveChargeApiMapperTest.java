@@ -52,10 +52,10 @@ public class DescriptiveChargeApiMapperTest {
     private PersonsEntitledApi personsEntitledApi;
 
     @Test
-    void testChargeToChargeApiMapsFields() throws InvocationTargetException,
+    void testChargeToChargeApiMapsFieldsWithFlagEnabled() throws InvocationTargetException,
             NoSuchMethodException, IllegalAccessException {
         // given
-        DescriptiveChargeApiMapper mapper = new DescriptiveChargeApiMapper(delegate, textFormatter);
+        DescriptiveChargeApiMapper mapper = new DescriptiveChargeApiMapper(delegate, textFormatter, true, logger);
         when(delegate.chargeToChargeApi(any(), any())).thenReturn(chargeApi);
         when(chargeApi.getClassification()).thenReturn(classificationApi);
         when(classificationApi.getDescription()).thenReturn("classification");
@@ -75,5 +75,21 @@ public class DescriptiveChargeApiMapperTest {
         verify(textFormatter).formatAsParticulars("particulars");
         verify(textFormatter).formatAsSentence("secured_details");
         verify(textFormatter).formatAsEntityName("name");
+        verify(logger).debug("Descriptive mappings enabled; transforming descriptive fields...");
+    }
+
+    @Test
+    void testChargeToChargeApiMapsFieldsWithFlagDisabled() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        // given
+        DescriptiveChargeApiMapper mapper = new DescriptiveChargeApiMapper(delegate, textFormatter, false, logger);
+        when(delegate.chargeToChargeApi(any(), any())).thenReturn(chargeApi);
+
+        // when
+        ChargeApi result = mapper.chargeToChargeApi(charge, "12345678");
+
+        // then
+        assertSame(chargeApi, result);
+        verifyNoInteractions(textFormatter);
+        verify(logger).debug("Descriptive mappings disabled; not transforming descriptive fields...");
     }
 }
