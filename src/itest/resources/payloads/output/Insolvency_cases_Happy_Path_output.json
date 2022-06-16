@@ -42,10 +42,7 @@
         "filing_type": "create-charge-pre-2006-companies-act",
         "delivered_on": [2008,5,13],
         "insolvency_case_number": null,
-        "links": {
-          "filing": "/company/04796390/filing-history/MjAwNTQ2ODczNnRyYW5zSWRfc2FsdA",
-          "insolvency_case": null
-        }
+        "links": null
       },
       {
         "filing_type": "liquidation-appointment-of-receiver",
@@ -53,7 +50,7 @@
         "insolvency_case_number": "1",
         "links": {
           "filing": "/company/04796390/filing-history/MzEyOTMxNzI3NHRyYW5zSWRfc2FsdA",
-          "insolvency_case": null
+          "insolvency_case": "/company/04796390/insolvency#case-1"
         }
       },
       {
@@ -62,7 +59,7 @@
         "insolvency_case_number": "1",
         "links": {
           "filing": "/company/04796390/filing-history/MzE2NzIzODEzM3RyYW5zSWRfc2FsdA",
-          "insolvency_case": null
+          "insolvency_case": "/company/04796390/insolvency#case-1"
         }
       },
       {
@@ -72,7 +69,7 @@
         "insolvency_case_number": "1",
         "links": {
           "filing": "/company/04796390/filing-history/MzE2NzIzODI3MnRyYW5zSWRfc2FsdA",
-          "insolvency_case": null
+          "insolvency_case": "/company/04796390/insolvency#case-1"
         }
       }
     ],

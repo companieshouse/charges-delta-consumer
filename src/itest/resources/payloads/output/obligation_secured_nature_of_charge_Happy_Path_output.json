@@ -37,10 +37,7 @@
         "transaction_id": null,
         "delivered_on": [2019,3,18],
         "insolvency_case_number": null,
-        "links": {
-          "filing": "/company/10286237/filing-history/MzIyOTk0NzQyMnRyYW5zSWRfc2FsdA",
-          "insolvency_case": null
-        }
+        "links": null
       }
     ],
     "status": "outstanding",

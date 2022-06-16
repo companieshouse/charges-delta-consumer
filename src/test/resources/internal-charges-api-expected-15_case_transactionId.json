@@ -42,11 +42,7 @@
         "filing_type": "create-charge",
         "transaction_id": null,
         "delivered_on": "1988-01-18",
-        "insolvency_case_number": null,
-        "links": {
-          "filing": null,
-          "insolvency_case": null
-        }
+        "insolvency_case_number": null
       },
       {
         "filing_type": "liquidation-appointment-of-receiver-scotland",
