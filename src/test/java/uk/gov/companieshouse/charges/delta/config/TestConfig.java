@@ -23,8 +23,8 @@ public class TestConfig {
     }
 
     @Bean
-    public ChargeApiMapper descriptiveChargeApiMapper(ChargeApiMapper chargeApiMapper, TextFormatter textFormatter, Logger logger) {
-        return new DescriptiveChargeApiMapper(chargeApiMapper, textFormatter, true, logger);
+    public ChargeApiMapper descriptiveChargeApiMapper(ChargeApiMapper chargeApiMapper, TextFormatter textFormatter) {
+        return new DescriptiveChargeApiMapper(chargeApiMapper, textFormatter);
     }
 
     @Bean

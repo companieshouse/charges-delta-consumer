@@ -2,13 +2,13 @@
   "external_data": {
     "persons_entitled": [
       {
-        "name": "NATIONAL WESTMINSTER BANK PLC"
+        "name": "National Westminster Bank PLC"
       }
     ],
     "charge_number": 817,
     "particulars": {
       "type": "brief-description",
-      "description": "UNIT 7 CALLYWITH GATE INDUSTRIAL ESTATE, LAUNCESTON ROAD, BODMIN, PL31 2RQ\\n",
+      "description": "Unit 7 callywith gate industrial estate, launceston road, bodmin, PL31 2RQ.",
       "contains_floating_charge": true,
       "contains_fixed_charge": null,
       "floating_charge_covers_all": null,
@@ -16,19 +16,13 @@
       "chargor_acting_as_bare_trustee": null
     },
     "charge_code": "012033960817",
-    "links": {
-      "self": "/company/01203396/charges/NUFERkZEQUU4MTU5MDQ4NUFCMEFDNDIzQjQ5QURBRDcxMzA2NjgwNg"
-    },
     "transactions": [
       {
         "filing_type": "acquire-charge-with-deed",
         "transaction_id": null,
         "delivered_on": [2017,3,16],
         "insolvency_case_number": null,
-        "links": {
-          "filing": "/company/01203396/filing-history/MzE3MTI3MTc1MXRyYW5zSWRfc2FsdA",
-          "insolvency_case": null
-        }
+        "links": null
       },
       {
         "filing_type": "charge-satisfaction",
@@ -75,7 +69,7 @@
     ],
     "classification": {
       "type": "charge-description",
-      "description": "A REGISTERED CHARGE"
+      "description": "A registered charge"
     },
     "scottish_alterations": {
       "type": null,

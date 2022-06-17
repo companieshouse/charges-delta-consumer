@@ -2,7 +2,7 @@
   "external_data": {
     "persons_entitled": [
       {
-        "name": "WENDY KERR"
+        "name": "Wendy Kerr"
       }
     ],
     "charge_number": 1,
@@ -10,14 +10,14 @@
       "floating_charge_covers_all": null,
       "type": "charged-property-or-undertaking-description",
       "contains_floating_charge": null,
-      "description": "OVER USED CAR STOCK",
+      "description": "Over used car stock.",
       "contains_fixed_charge": null,
       "contains_negative_pledge": null,
       "chargor_acting_as_bare_trustee": null
     },
     "secured_details": {
       "type": "obligations-secured",
-      "description": "£225,000 DUE OR TO BECOME DUE"
+      "description": "£225,000 due or to become due"
     },
     "scottish_alterations": {
       "type": null,
@@ -37,15 +37,12 @@
         "transaction_id": null,
         "delivered_on": [2019,3,18],
         "insolvency_case_number": null,
-        "links": {
-          "filing": "/company/10286237/filing-history/MzIyOTk0NzQyMnRyYW5zSWRfc2FsdA",
-          "insolvency_case": null
-        }
+        "links": null
       }
     ],
     "status": "outstanding",
     "classification": {
-      "description": "Floating Charge",
+      "description": "Floating charge",
       "type": "nature-of-charge"
     },
     "delivered_on": [2019,3,18],
