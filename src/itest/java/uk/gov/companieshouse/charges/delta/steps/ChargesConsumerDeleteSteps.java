@@ -74,7 +74,6 @@ public class ChargesConsumerDeleteSteps {
         ResponseEntity<String> response = restTemplate.getForEntity(HEALTHCHECK_URI, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.valueOf(200));
         assertThat(response.getBody()).isEqualTo(HEALTHCHECK_RESPONSE_BODY);
-        this.delegatingLatch.setLatch(new CountDownLatch(1));
     }
 
     @Given("Stubbed Charges Data API delete endpoint will return {string} http response code for {string} and {string}")

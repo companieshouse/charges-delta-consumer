@@ -71,7 +71,6 @@ public class ChargesConsumerSteps {
         ResponseEntity<String> response = restTemplate.getForEntity(HEALTHCHECK_URI, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.valueOf(200));
         assertThat(response.getBody()).isEqualTo(HEALTHCHECK_RESPONSE_BODY);
-        this.delegatingLatch.setLatch(new CountDownLatch(1));
     }
 
     @When("a message with payload {string} is published to topic")
