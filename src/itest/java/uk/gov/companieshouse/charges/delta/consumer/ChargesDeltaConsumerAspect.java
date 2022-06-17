@@ -19,7 +19,7 @@ public class ChargesDeltaConsumerAspect {
     }
 
     @AfterThrowing("execution(* org.apache.kafka.common.serialization.Deserializer.deserialize(..))")
-    public void deserialize() {
+    void deserialize() {
         delegatingLatch.getLatch().countDown();
     }
 }
