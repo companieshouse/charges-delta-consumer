@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -602,14 +602,14 @@ public class TextFormatter {
     }
 
     private static class Abbreviation extends AbstractState {
-        private final Function<String, String> firstMatchRemappingFunction;
-        private final Function<String, String> headRemappingFunction;
-        private final Function<String, String> tailRemappingFunction;
+        private final UnaryOperator<String> firstMatchRemappingFunction;
+        private final UnaryOperator<String> headRemappingFunction;
+        private final UnaryOperator<String> tailRemappingFunction;
 
         public Abbreviation(FormatterStateMachine stateMachine,
-                            Function<String, String> firstMatchRemappingFunction,
-                            Function<String, String> headRemappingFunction,
-                            Function<String, String> tailRemappingFunction) {
+                            UnaryOperator<String> firstMatchRemappingFunction,
+                            UnaryOperator<String> headRemappingFunction,
+                            UnaryOperator<String> tailRemappingFunction) {
             super(stateMachine);
             this.firstMatchRemappingFunction = firstMatchRemappingFunction;
             this.headRemappingFunction = headRemappingFunction;
@@ -623,19 +623,17 @@ public class TextFormatter {
             int start;
             int end;
             int prevEnd = 0;
-            boolean first = true;
+            UnaryOperator<String> remappingFunction = firstMatchRemappingFunction;
             while(partialAbbreviation.find()) {
                 start = partialAbbreviation.start();
                 end = partialAbbreviation.end();
-                if(start > 0 && first) {
-                    result.append(firstMatchRemappingFunction.apply(token.substring(prevEnd, start)));
-                } else if (start > 0) {
-                    result.append(tailRemappingFunction.apply(token.substring(prevEnd, start)));
+                if (start > 0) {
+                    result.append(remappingFunction.apply(token.substring(prevEnd, start)));
                 }
                 result.append(headRemappingFunction.apply(
                         token.substring(partialAbbreviation.start(), partialAbbreviation.end())));
                 prevEnd = end;
-                first = false;
+                remappingFunction = tailRemappingFunction;
             }
             result.append(tailRemappingFunction.apply(token.substring(prevEnd)));
             return result.toString();
