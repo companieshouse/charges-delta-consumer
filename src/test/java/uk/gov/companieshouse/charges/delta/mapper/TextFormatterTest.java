@@ -86,6 +86,8 @@ class TextFormatterTest {
                 Arguments.of("b.sci.", "B.Sci."),
                 Arguments.of("a.b.c.d.sci.", "A.B.C.D.Sci."),
                 Arguments.of("sci.d.c.b.a.", "Sci.D.C.B.A."),
+                Arguments.of("the word is sci.d.c.b.a.", "The Word is Sci.D.C.B.A."),
+                Arguments.of("the word is s.ci.d.c.b.a.", "The Word is S.CI.D.C.B.A."),
                 Arguments.of("b.a.!b.\"sc.m?.a.?m.sc.", "B.A.!B.\"SC.M?.A.?M.SC."),
                 Arguments.of("d.r. jOhN f SmItH of lC123456    pLc (IS anybody ERE); aND\nIS  From the uk in lONdON", "D.R. John F Smith of LC123456 PLC (Is Anybody Ere); And is from the UK in London")
         );
@@ -125,6 +127,9 @@ class TextFormatterTest {
                 Arguments.of("b.sc.", "B.SC."),
                 Arguments.of("b.sci.", "B.sci."),
                 Arguments.of("a.b.c.d.sci.", "A.B.C.D.sci."),
+                Arguments.of("sci.d.c.b.a.", "Sci.D.C.B.A."),
+                Arguments.of("the word is sci.d.c.b.a.", "The word is sci.D.C.B.A."),
+                Arguments.of("the word is s.ci.d.c.b.a.", "The word is S.CI.D.C.B.A."),
                 Arguments.of("b.a.!b.\"sc.m?.a.?m.sc.", "B.A.!B.\"SC.M?.A.?M.SC."),
                 Arguments.of("to be. or not to be.", "To be. Or not to be."),
                 Arguments.of("£220,000.00                              AND ALL OTHER MONIES DUE OR TO BECOME DUE", "£220,000.00 and all other monies due or to become due"),

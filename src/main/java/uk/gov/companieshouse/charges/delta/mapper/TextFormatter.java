@@ -230,6 +230,8 @@ public class TextFormatter {
         FormatterState newEndSentenceState(FormatterStateMachine stateMachine);
 
         FormatterState newStartSentenceState(FormatterStateMachine stateMachine);
+
+        FormatterState newStartSentenceAbbrState(FormatterStateMachine stateMachine);
     }
 
     private static class EntityCaseStateFactory implements StateFactory {
@@ -265,7 +267,7 @@ public class TextFormatter {
 
         @Override
         public FormatterState newAbbreviationState(FormatterStateMachine stateMachine) {
-            return new Abbreviation(stateMachine,
+            return new Abbreviation(stateMachine, WordUtils::capitalizeFully,
                     token -> token.toUpperCase(Locale.UK), WordUtils::capitalizeFully);
         }
 
@@ -277,6 +279,11 @@ public class TextFormatter {
         @Override
         public FormatterState newStartSentenceState(FormatterStateMachine stateMachine) {
             return new RegularEntityText(stateMachine);
+        }
+
+        @Override
+        public FormatterState newStartSentenceAbbrState(FormatterStateMachine stateMachine) {
+            return this.newAbbreviationState(stateMachine);
         }
     }
 
@@ -313,7 +320,8 @@ public class TextFormatter {
 
         @Override
         public FormatterState newAbbreviationState(FormatterStateMachine stateMachine) {
-            return new Abbreviation(stateMachine, token -> token.toUpperCase(Locale.UK),
+            return new Abbreviation(stateMachine, token -> token.toLowerCase(Locale.UK),
+                    token -> token.toUpperCase(Locale.UK),
                     token -> token.toLowerCase(Locale.UK));
         }
 
@@ -325,6 +333,15 @@ public class TextFormatter {
         @Override
         public FormatterState newStartSentenceState(FormatterStateMachine stateMachine) {
             return new StartSentence(stateMachine);
+        }
+
+        @Override
+        public FormatterState newStartSentenceAbbrState(FormatterStateMachine stateMachine) {
+            return new Abbreviation(stateMachine,
+                    WordUtils::capitalizeFully,
+                    token -> token.toUpperCase(Locale.UK),
+                    token -> token.toLowerCase(Locale.UK));
+
         }
     }
 
@@ -338,6 +355,7 @@ public class TextFormatter {
         private final FormatterState abbreviationState;
         private final FormatterState endSentenceState;
         private final FormatterState startSentenceState;
+        private final FormatterState startSentenceAbbrState;
 
         private FormatterState currentState;
         private String token;
@@ -352,6 +370,7 @@ public class TextFormatter {
             this.abbreviationState = stateFactory.newAbbreviationState(this);
             this.endSentenceState = stateFactory.newEndSentenceState(this);
             this.startSentenceState = stateFactory.newStartSentenceState(this);
+            this.startSentenceAbbrState = stateFactory.newStartSentenceAbbrState(this);
             this.currentState = this.endSentenceState;
         }
 
@@ -583,13 +602,16 @@ public class TextFormatter {
     }
 
     private static class Abbreviation extends AbstractState {
+        private final Function<String, String> firstMatchRemappingFunction;
         private final Function<String, String> headRemappingFunction;
         private final Function<String, String> tailRemappingFunction;
 
         public Abbreviation(FormatterStateMachine stateMachine,
+                            Function<String, String> firstMatchRemappingFunction,
                             Function<String, String> headRemappingFunction,
                             Function<String, String> tailRemappingFunction) {
             super(stateMachine);
+            this.firstMatchRemappingFunction = firstMatchRemappingFunction;
             this.headRemappingFunction = headRemappingFunction;
             this.tailRemappingFunction = tailRemappingFunction;
         }
@@ -601,15 +623,19 @@ public class TextFormatter {
             int start;
             int end;
             int prevEnd = 0;
+            boolean first = true;
             while(partialAbbreviation.find()) {
                 start = partialAbbreviation.start();
                 end = partialAbbreviation.end();
-                if (start > 0) {
+                if(start > 0 && first) {
+                    result.append(firstMatchRemappingFunction.apply(token.substring(prevEnd, start)));
+                } else if (start > 0) {
                     result.append(tailRemappingFunction.apply(token.substring(prevEnd, start)));
                 }
                 result.append(headRemappingFunction.apply(
                         token.substring(partialAbbreviation.start(), partialAbbreviation.end())));
                 prevEnd = end;
+                first = false;
             }
             result.append(tailRemappingFunction.apply(token.substring(prevEnd)));
             return result.toString();
@@ -623,6 +649,11 @@ public class TextFormatter {
         public EndSentence(FormatterStateMachine stateMachine) {
             super(stateMachine);
             this.stateMachine = stateMachine;
+        }
+
+        @Override
+        public void abbreviation() {
+            this.stateMachine.currentState = stateMachine.startSentenceAbbrState;
         }
 
         @Override
