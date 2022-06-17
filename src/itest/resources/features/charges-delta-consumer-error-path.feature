@@ -49,6 +49,7 @@ Feature: Process Charges Delta information with error conditions
 
   Scenario Outline: Consume a valid message with null charges in payload
     Given Charges delta consumer service is running
+    And messages will be retried a maximum of <retries> times if a retryable error occurs
     And Stubbed Charges Data API endpoint will return "<response>" http response code for "<companyNumber>" and "<chargeId>"
     When a message with payload without charges is published to charges topic
     Then the message should be retried "<retries>" on retry topic "<targetTopic>"
