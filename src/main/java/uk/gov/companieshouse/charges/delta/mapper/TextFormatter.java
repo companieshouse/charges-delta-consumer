@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class TextFormatter {
 
     private static final Pattern STEM_PATTERN =
-            Pattern.compile("(\\()(\\p{Alnum}+)");
+            Pattern.compile("(\\P{Alnum}*\\()(\\p{Alnum}+\\P{Alnum}*)");
     private static final Pattern COLON_PATTERN =
             Pattern.compile("[;:]$");
     private static final Pattern MIXED_ALNUM_PATTERN =
@@ -546,7 +546,7 @@ public class TextFormatter {
         @Override
         public String mapToken(String token) {
             Matcher tokenMatcher = STEM_PATTERN.matcher(token);
-            if (tokenMatcher.matches()) {
+            if (tokenMatcher.find()) {
                 String punctuation = tokenMatcher.group(1);
                 token = tokenMatcher.group(2);
                 return punctuation + WordUtils.capitalizeFully(token);
