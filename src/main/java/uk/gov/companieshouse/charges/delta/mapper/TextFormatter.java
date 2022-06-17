@@ -600,11 +600,11 @@ public class TextFormatter {
             StringBuilder result = new StringBuilder();
             int start;
             int end;
-            int prevEnd = -1;
+            int prevEnd = 0;
             while(partialAbbreviation.find()) {
                 start = partialAbbreviation.start();
                 end = partialAbbreviation.end();
-                if (prevEnd != -1) {
+                if (start > 0) {
                     result.append(tailRemappingFunction.apply(token.substring(prevEnd, start)));
                 }
                 result.append(headRemappingFunction.apply(

@@ -19,7 +19,7 @@ class TextFormatterTest {
         textFormatter = new TextFormatter();
     }
 
-    @ParameterizedTest(name = "Map {0} to {1}")
+    @ParameterizedTest(name = "Map [{0}] to [{1}]")
     @MethodSource("entityNameFormatting")
     @DisplayName("Format text as an entity name")
     void testFormatAsEntityName(String input, String expected) {
@@ -30,7 +30,7 @@ class TextFormatterTest {
         assertEquals(expected, actual);
     }
 
-    @ParameterizedTest(name = "Map {0} to {1}")
+    @ParameterizedTest(name = "Map [{0}] to [{1}]")
     @MethodSource("sentenceFormatting")
     @DisplayName("Format text as a sentence")
     void testFormatAsSentence(String input, String expected) {
@@ -41,7 +41,7 @@ class TextFormatterTest {
         assertEquals(expected, actual);
     }
 
-    @ParameterizedTest(name = "Map {0} to {1}")
+    @ParameterizedTest(name = "Map [{0}] to [{1}]")
     @MethodSource("particularsFormatting")
     @DisplayName("Format text as particulars")
     void testFormatAsParticulars(String input, String expected) {
@@ -85,6 +85,7 @@ class TextFormatterTest {
                 Arguments.of("b.sc.", "B.SC."),
                 Arguments.of("b.sci.", "B.Sci."),
                 Arguments.of("a.b.c.d.sci.", "A.B.C.D.Sci."),
+                Arguments.of("sci.d.c.b.a.", "Sci.D.C.B.A."),
                 Arguments.of("b.a.!b.\"sc.m?.a.?m.sc.", "B.A.!B.\"SC.M?.A.?M.SC."),
                 Arguments.of("d.r. jOhN f SmItH of lC123456    pLc (IS anybody ERE); aND\nIS  From the uk in lONdON", "D.R. John F Smith of LC123456 PLC (Is Anybody Ere); And is from the UK in London")
         );
