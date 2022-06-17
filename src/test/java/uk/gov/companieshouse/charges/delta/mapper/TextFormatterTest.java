@@ -79,7 +79,8 @@ class TextFormatterTest {
                 Arguments.of("d.r john smith b.sc of london", "D.R John Smith B.SC of London"),
                 Arguments.of("b.sc.", "B.SC."),
                 Arguments.of("b.sci.", "B.Sci."),
-                Arguments.of("b.a.!b.\"sc.m?.a.?m.sc.", "B.A.!B.\"SC.m?.A.?M.SC."),
+                Arguments.of("a.b.c.d.sci.", "A.B.C.D.Sci."),
+                Arguments.of("b.a.!b.\"sc.m?.a.?m.sc.", "B.A.!B.\"SC.M?.A.?M.SC."),
                 Arguments.of("d.r. jOhN f SmItH of lC123456    pLc (IS anybody ERE); aND\nIS  From the uk in lONdON", "D.R. John F Smith of LC123456 PLC (Is Anybody Ere); And is from the UK in London")
         );
     }
@@ -113,13 +114,17 @@ class TextFormatterTest {
                 Arguments.of("d.r.", "D.R."),
                 Arguments.of("b.sc", "B.SC"),
                 Arguments.of("d.r john smith b.sc of london", "D.R john smith B.SC of london"),
-                Arguments.of("d.r john smith b.sci of london", "D.R john smith B.Sci of london"), // TODO: expected: D.r john smith B.sci of london
+                Arguments.of("d.r john smith b.sci of london", "D.R john smith B.sci of london"),
+                Arguments.of("d.r john smith b.sci.b.sci.b.sci. of london", "D.R john smith B.sci.B.sci.B.sci. Of london"),
                 Arguments.of("b.sc.", "B.SC."),
-                Arguments.of("b.sci.", "B.Sci."),
+                Arguments.of("b.sci.", "B.sci."),
+                Arguments.of("a.b.c.d.sci.", "A.B.C.D.sci."),
                 Arguments.of("b.a.!b.\"sc.m?.a.?m.sc.", "B.A.!B.\"SC.M?.A.?M.SC."),
                 Arguments.of("to be. or not to be.", "To be. Or not to be."),
                 Arguments.of("£220,000.00                              AND ALL OTHER MONIES DUE OR TO BECOME DUE", "£220,000.00 and all other monies due or to become due"),
                 Arguments.of("john smith b.sc. is here", "John smith B.SC. is here"),
+                Arguments.of("i am mr. john smith ba.sci of london", "I am mr. John smith ba.sci of london"),
+                Arguments.of("i am mr. john smith b.sci of london", "I am mr. John smith B.sci of london"),
                 Arguments.of("p/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc. \n\t but i\tthink (a cat) is 4life! æthelred is ready.", "P/Office the D.R. of an LLP says a cat is ) for christmas etc. but I think (a cat) is 4LIFE! Æthelred is ready.")
         );
     }

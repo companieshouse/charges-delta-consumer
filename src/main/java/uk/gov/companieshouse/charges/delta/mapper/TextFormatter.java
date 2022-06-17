@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,12 +22,10 @@ public class TextFormatter {
             Pattern.compile("[;:]$");
     private static final Pattern MIXED_ALNUM_PATTERN =
             Pattern.compile("\\p{L}\\p{N}|\\p{N}\\p{L}");
-    private static final Pattern PARTIAL_ABBREVIATION_PATTERN =
-            Pattern.compile("(\\P{L}*)(\\p{L}+[.])+?(\\p{L}+[.]?)");
-    private static final Pattern PARTIAL_ABBREVIATION_EXTRACTOR =
-            Pattern.compile("(\\P{L}*)(\\p{L}+[\\P{L}]?)(\\P{L}*)");
+    private static final Pattern PARTIAL_ABBREVIATION =
+            Pattern.compile("\\b(\\p{L}[.])");
     private static final Pattern FULL_ABBREVIATION_PATTERN =
-            Pattern.compile("^(\\P{L}*)(\\p{L}{1,2}[.])+?(\\p{L}{1,2}[.]?)(\\P{L}*)$");
+            Pattern.compile("(?!^.*?\\p{L}{3}.*?$)(?=^.*?\\p{L}[.]\\p{L}.*?$)^.*$");
     private static final Pattern I_PATTERN =
             Pattern.compile("\\bI\\b");
     private static final Pattern FORWARD_SLASH_ABBREVIATION_PATTERN =
@@ -49,12 +48,6 @@ public class TextFormatter {
             "L.P", "LP", "EEIG", "OEIC", "ICVC", "AEIE", "C.B.C", "C.C.C", "CBC", "CBCN", "CBP",
             "CCC", "CYF", "EESV", "EOFG", "EOOS", "GEIE", "GELE", "PAC", "PCCLIMITED", "PCCLTD",
             "PROTECTEDCELLCOMPANY", "CWMNICELLGWARCHODEDIG", "CCGCYFYNGEDIG", "CCGCYF"));
-
-    /**
-     * Create a new {@link TextFormatter} instance.
-     */
-    public TextFormatter() {
-    }
 
     /**
      * Format a given string as an entity name in accordance to the following rules
@@ -192,7 +185,7 @@ public class TextFormatter {
     }
 
     private static boolean isPartialAbbreviation(String token) {
-        Matcher abbreviationMatcher = PARTIAL_ABBREVIATION_PATTERN.matcher(token);
+        Matcher abbreviationMatcher = PARTIAL_ABBREVIATION.matcher(token);
         return abbreviationMatcher.find();
     }
 
@@ -272,7 +265,8 @@ public class TextFormatter {
 
         @Override
         public FormatterState newAbbreviationState(FormatterStateMachine stateMachine) {
-            return new Abbreviation(stateMachine);
+            return new Abbreviation(stateMachine,
+                    token -> token.toUpperCase(Locale.UK), WordUtils::capitalizeFully);
         }
 
         @Override
@@ -319,7 +313,8 @@ public class TextFormatter {
 
         @Override
         public FormatterState newAbbreviationState(FormatterStateMachine stateMachine) {
-            return new Abbreviation(stateMachine);
+            return new Abbreviation(stateMachine, token -> token.toUpperCase(Locale.UK),
+                    token -> token.toLowerCase(Locale.UK));
         }
 
         @Override
@@ -588,19 +583,35 @@ public class TextFormatter {
     }
 
     private static class Abbreviation extends AbstractState {
-        public Abbreviation(FormatterStateMachine stateMachine) {
+        private final Function<String, String> headRemappingFunction;
+        private final Function<String, String> tailRemappingFunction;
+
+        public Abbreviation(FormatterStateMachine stateMachine,
+                            Function<String, String> headRemappingFunction,
+                            Function<String, String> tailRemappingFunction) {
             super(stateMachine);
+            this.headRemappingFunction = headRemappingFunction;
+            this.tailRemappingFunction = tailRemappingFunction;
         }
 
         @Override
         public String mapToken(String token) {
-            Matcher partialAbbreviation = PARTIAL_ABBREVIATION_EXTRACTOR.matcher(token);
+            Matcher partialAbbreviation = PARTIAL_ABBREVIATION.matcher(token);
             StringBuilder result = new StringBuilder();
+            int start;
+            int end;
+            int prevEnd = -1;
             while(partialAbbreviation.find()) {
-                result.append(partialAbbreviation.group(1))
-                        .append(WordUtils.capitalizeFully(partialAbbreviation.group(2)))
-                        .append(partialAbbreviation.group(3));
+                start = partialAbbreviation.start();
+                end = partialAbbreviation.end();
+                if (prevEnd != -1) {
+                    result.append(tailRemappingFunction.apply(token.substring(prevEnd, start)));
+                }
+                result.append(headRemappingFunction.apply(
+                        token.substring(partialAbbreviation.start(), partialAbbreviation.end())));
+                prevEnd = end;
             }
+            result.append(tailRemappingFunction.apply(token.substring(prevEnd)));
             return result.toString();
         }
     }
