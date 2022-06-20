@@ -108,6 +108,7 @@ class TextFormatterTest {
                 Arguments.of("i think therefore i am", "I think therefore I am"),
                 Arguments.of("\"i am?\"", "\"I am?\""),
                 Arguments.of("p/office p/office", "P/Office p/office"),
+                Arguments.of("p/!office p/office", "P/!office p/office"),
                 Arguments.of("one. two. three.", "One. Two. Three."),
                 Arguments.of("\"i.\" am. error.", "\"I.\" Am. Error."),
                 Arguments.of("\"one.\" two. three.", "\"One.\" Two. Three."),
