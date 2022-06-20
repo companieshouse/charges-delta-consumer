@@ -27,45 +27,34 @@ public class TextFormatter {
 
     private static final Pattern STEM_PATTERN = Pattern.compile(
             "(\\p{L}[\\p{L}']*)", Pattern.CASE_INSENSITIVE);
-    private static final Pattern FIRST_WORD = Pattern.compile("^(\\p{L}[\\p{L}']*)",
-            Pattern.DOTALL);
+    private static final Pattern FIRST_WORD = Pattern.compile("^(\\p{L}[\\p{L}']*)");
     private static final Pattern MATCHES_ENTITY = Pattern.compile(
-            "(\\b(?i:" + String.join("|", ENTITIES) + ")\\b)",
-            Pattern.DOTALL);
-    private static final Pattern LAST_WORD = Pattern.compile("(\\p{L}[\\p{L}']*)$",
-            Pattern.DOTALL);
-    private static final Pattern OPENING_PARENTHESIS = Pattern.compile("[(](\\p{L}[\\p{L}']*)",
-            Pattern.DOTALL);
-    private static final Pattern CLOSING_PARENTHESIS = Pattern.compile("(\\p{L}[\\p{L}']*)[)]",
-            Pattern.DOTALL);
-    private static final Pattern COLON = Pattern.compile("([:;]\\s+)(\\p{L}[\\p{L}']*)",
-            Pattern.DOTALL);
-    private static final Pattern NEWLINE = Pattern.compile("\\n",
-            Pattern.DOTALL);
-    private static final Pattern MULTIPLE_SPACES = Pattern.compile("\\s+",
-            Pattern.DOTALL);
-    private static final Pattern ABBREVIATIONS = Pattern.compile("\\b(\\p{L})[.]",
-            Pattern.DOTALL);
-    private static final Pattern MIXED_ALPHANUMERIC = Pattern.compile("(\\w+\\d+\\w*|\\d+\\w+)",
-            Pattern.DOTALL);
-    private static final Pattern TOKENISATION_PATTERN = Pattern.compile("(\\S+(\\s+|$))",
-            Pattern.DOTALL);
+            "(\\b(?i:" + String.join("|", ENTITIES) + ")\\b)");
+    private static final Pattern LAST_WORD = Pattern.compile("(\\p{L}[\\p{L}']*)$");
+    private static final Pattern OPENING_PARENTHESIS = Pattern.compile("[(](\\p{L}[\\p{L}']*)");
+    private static final Pattern CLOSING_PARENTHESIS = Pattern.compile("(\\p{L}[\\p{L}']*)[)]");
+    private static final Pattern COLON = Pattern.compile("([:;]\\s+)(\\p{L}[\\p{L}']*)");
+    private static final Pattern NEWLINE = Pattern.compile("\\n");
+    private static final Pattern MULTIPLE_SPACES = Pattern.compile("\\s+");
+    private static final Pattern ABBREVIATIONS = Pattern.compile("\\b(\\p{L})[.]");
+    private static final Pattern MIXED_ALPHANUMERIC = Pattern.compile("(\\w+\\d+\\w*|\\d+\\w+)");
+    private static final Pattern TOKENISATION_PATTERN = Pattern.compile("(\\S+(\\s+|$))");
     private static final Pattern POSSESSIVE_PATTERN = Pattern.compile(
             "^([^a-z]*)I[^a-z]*?((?:[.]|[!?]+)?)[^a-z]*$",
-            Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+            Pattern.CASE_INSENSITIVE);
     private static final Pattern FORWARDSLASH_ABBREVIATION = Pattern.compile("^(.?/)(.*)",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     private static final Pattern FIRST_LETTER = Pattern.compile("([a-z])",
-            Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+            Pattern.CASE_INSENSITIVE);
     private static final Pattern GENERAL_ABBREVIATION = Pattern.compile(
             String.join("|",
                     "^(etc[.]|pp[.]|ph[.]?d[.]|",
                     "(?:[A-Z][.])(?:[A-Z][.])+|",
                     "(^[^a-zA-Z]*([a-z][.])+))[^a-z]*\\s"),
-            Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+            Pattern.CASE_INSENSITIVE);
     private static final Pattern END_OF_SENTENCE_PATTERN = Pattern.compile(
             "[a-z][^a-z]*(?:[.]|[!?]+)([^a-z]*)\\s",
-            Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+            Pattern.CASE_INSENSITIVE);
 
     /**
      * Format a given string as an entity name in accordance to the following rules
