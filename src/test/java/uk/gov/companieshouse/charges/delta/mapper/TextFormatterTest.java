@@ -65,13 +65,13 @@ class TextFormatterTest {
                 Arguments.of("bread and butter", "Bread and Butter"),
                 Arguments.of("and or the", "And or The"),
                 Arguments.of("King (of in the) Hill", "King (Of in The) Hill"),
-                Arguments.of("King (.of in the) Hill", "King (.Of in The) Hill"),
+                Arguments.of("King (.of in the) Hill", "King (.Of in The) Hill"), // existing algorithm transforms text to King (.of in The) Hill
                 Arguments.of("King .(of in the) Hill", "King .(Of in The) Hill"),
-                Arguments.of("King .(.of in the.). Hill", "King .(.Of in The.). Hill"),
+                Arguments.of("King .(.of in the.). Hill", "King .(.Of in The.). Hill"), // existing algorithm transforms text to King .(.of in the.). Hill
                 Arguments.of("King (is king of the) Hill", "King (Is King of The) Hill"),
                 Arguments.of("King (of. in the) Hill", "King (Of. in The) Hill"),
                 Arguments.of("An apple; an orange","An Apple; An Orange"),
-                Arguments.of("An apple; \"an orange","An Apple; \"An Orange"),
+                Arguments.of("An apple; \"an orange","An Apple; \"An Orange"), // existing algorithm transforms text to An Apple; "an Orange
                 Arguments.of("An apple; and; an orange","An Apple; And; An Orange"),
                 Arguments.of("java coffee 4l1f3", "Java Coffee 4L1F3"),
                 Arguments.of("java coffee \"4l1f3\"", "Java Coffee \"4L1F3\""),
@@ -116,7 +116,7 @@ class TextFormatterTest {
                 Arguments.of("i think therefore i am", "I think therefore I am"),
                 Arguments.of("\"i am?\"", "\"I am?\""),
                 Arguments.of("p/office p/office", "P/Office p/office"),
-                Arguments.of("p/!office p/office", "P/!office p/office"),
+                Arguments.of("p/!office p/office", "P/!Office p/office"), // existing algorithm transforms text to P/!Office p/office
                 Arguments.of("one. two. three.", "One. Two. Three."),
                 Arguments.of("\"i.\" am. error.", "\"I.\" Am. Error."),
                 Arguments.of("\"one.\" two. three.", "\"One.\" Two. Three."),

@@ -29,7 +29,7 @@ public class TextFormatter {
     private static final Pattern I_PATTERN =
             Pattern.compile("\\bI\\b");
     private static final Pattern FORWARD_SLASH_ABBREVIATION_PATTERN =
-            Pattern.compile("^(.?/)(.*)$");
+            Pattern.compile("^(.?/)(\\P{L}*)(.+)$");
     private static final Pattern SENTENCE_ENDING_PATTERN =
             Pattern.compile("[.?!]\\P{Alnum}*$");
     private static final Pattern WORD_BEGINNING_PATTERN =
@@ -599,7 +599,8 @@ public class TextFormatter {
             if (forwardSlashAbbrevMatcher.matches()) {
                 return forwardSlashAbbrevMatcher.group(1)
                         .toUpperCase(Locale.UK)
-                        + WordUtils.capitalizeFully(forwardSlashAbbrevMatcher.group(2));
+                        + forwardSlashAbbrevMatcher.group(2)
+                        + WordUtils.capitalizeFully(forwardSlashAbbrevMatcher.group(3));
             } else {
                 throw new IllegalArgumentException("Tried to map a non-forwardslash abbreviation "
                         + "as a forwardslash abbreviation");
