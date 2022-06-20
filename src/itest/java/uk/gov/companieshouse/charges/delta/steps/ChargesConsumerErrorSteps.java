@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.charges.delta.steps;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -21,8 +22,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import uk.gov.companieshouse.api.delta.Charge;
+import uk.gov.companieshouse.api.delta.ChargesDelta;
 import uk.gov.companieshouse.charges.delta.common.TestConstants;
 import uk.gov.companieshouse.charges.delta.config.DelegatingLatch;
+import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
 import uk.gov.companieshouse.delta.ChsDelta;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -54,8 +58,19 @@ public class ChargesConsumerErrorSteps {
     public KafkaConsumer<String, Object> kafkaConsumer;
     @Autowired
     private DelegatingLatch delegatingLatch;
+    @Autowired
+    private EncoderUtil encoderUtil;
 
     public static final String RETRY_TOPIC_ATTEMPTS = "retry_topic-attempts";
+
+    @Given("payload, companyNumber and chargeId are set from test data file {string}")
+    public void stubChargeDataApi(String filename) throws IOException {
+        String chargesDeltaDataJson = testSupport.loadInputFile(filename);
+        ChargesDelta chargesDeltaData = testSupport.createChargesDelta(chargesDeltaDataJson);
+        Charge charge = chargesDeltaData.getCharges().get(0);
+        companyNumber = charge.getCompanyNumber();
+        chargeId = charge.getId();
+    }
 
     @Given("Stubbed Charges Data API endpoint will return {string} http response code")
     public void stubChargesDataApiEndpointForResponse(String statusValue){
@@ -63,7 +78,7 @@ public class ChargesConsumerErrorSteps {
         wireMockServer = testSupport.setupWiremock();
 
         stubFor(
-            put(urlEqualTo("/company/" + companyNumber + "/charge/" + chargeId + "/internal"))
+            put(urlEqualTo("/company/" + companyNumber + "/charge/" + encoderUtil.encodeWithSha1(chargeId) + "/internal"))
                 .willReturn(aResponse()
                     .withStatus(requiredStatusValue)
                     .withHeader("Content-Type", "application/json"))
@@ -163,4 +178,5 @@ public class ChargesConsumerErrorSteps {
         kafkaTemplate.send(topic, deltaMessage).get(TestConstants.DEFAULT_WAIT_TIMEOUT, TimeUnit.SECONDS);
         delegatingLatch.getLatch().await(TestConstants.DEFAULT_WAIT_TIMEOUT, TimeUnit.SECONDS);
     }
+
 }

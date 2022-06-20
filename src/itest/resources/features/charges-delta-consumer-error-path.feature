@@ -70,3 +70,30 @@ Feature: Process Charges Delta information with error conditions
       | response | targetTopic                                  | deltaMessage                              | companyNumber | chargeId                    |
       | 200      | charges-delta-charges-delta-consumer-invalid | charges-delta-source-null-charge-id.json  | NI622400      | TnYWNS5p1GdMPVGvNXIx63D5Uc8 |
       | 200      | charges-delta-charges-delta-consumer-invalid | charges-delta-source-empty-charge-id.json | NI622400      | TnYWNS5p1GdMPVGvNXIx63D5Uc8 |
+
+
+  Scenario Outline: Consume the message and process it and call charges data api getting 404 response and retried
+
+    Given Charges delta consumer service is running
+    And payload, companyNumber and chargeId are set from test data file "<deltaMessage>"
+    And Stubbed Charges Data API endpoint will return "<endpointResult>" http response code
+    When a message with payload "<deltaMessage>" is published to charges topic
+    Then the message should be retried "<retry>" on retry topic "<targetTopic>"
+
+
+    Examples:
+      | deltaMessage                     | retry  | endpointResult   | targetTopic                                 |
+      | charges-delta-source-2.json      | 3      | 404              | charges-delta-charges-delta-consumer-error  |
+
+
+  Scenario Outline: Consume the message and process it and call charges data api getting 410 response moved to invalid
+
+    Given Charges delta consumer service is running
+    And payload, companyNumber and chargeId are set from test data file "<deltaMessage>"
+    And Stubbed Charges Data API endpoint will return "<endpointResult>" http response code
+    When a message with payload "<deltaMessage>" is published to charges topic
+    And the message should be moved to topic "<targetTopic>"
+
+    Examples:
+      | deltaMessage                   | endpointResult   | targetTopic                                  |
+      | charges-delta-source-2.json    | 410              | charges-delta-charges-delta-consumer-invalid |
