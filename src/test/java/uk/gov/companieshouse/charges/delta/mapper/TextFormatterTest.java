@@ -94,6 +94,8 @@ class TextFormatterTest {
                 Arguments.of("the presenter is from harrow-on-the-hill", "The Presenter is from Harrow-On-The-Hill"),
                 Arguments.of("the presenter is from \"harrow\"-\"on-the\"-\"hill!!!", "The Presenter is from \"Harrow\"-\"On-The\"-\"Hill!!!"),
                 Arguments.of("don't tell me.", "Don't Tell Me."),
+                Arguments.of("c,om,mas", "C,Om,Mas"),
+                Arguments.of("the trees, the branches and the leaves", "The Trees, the Branches and the Leaves"),
                 Arguments.of("d.r. jOhN f SmItH of lC123456    pLc (IS anybody ERE); aND\nIS  From the uk in lONdON", "D.R. John F Smith of LC123456 PLC (Is Anybody Ere); And is from the UK in London")
         );
     }
@@ -147,6 +149,8 @@ class TextFormatterTest {
                 Arguments.of("the presenter is from harrow-on-the-hill", "The presenter is from harrow-on-the-hill"),
                 Arguments.of("the presenter is from \"harrow\"-\"on-the\"-\"hill!!!", "The presenter is from \"harrow\"-\"on-the\"-\"hill!!!"),
                 Arguments.of("don't tell me.", "Don't tell me."),
+                Arguments.of("c,om,mas", "C,om,mas"),
+                Arguments.of("the trees, the branches and the leaves", "The trees, the branches and the leaves"),
                 Arguments.of("p/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc. \n\t but i\tthink (a cat) is 4life! æthelred is ready.", "P/Office the D.R. of an LLP says a cat is ) for christmas etc. but I think (a cat) is 4LIFE! Æthelred is ready.")
         );
     }
