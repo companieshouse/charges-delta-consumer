@@ -25,7 +25,7 @@ import org.springframework.kafka.test.utils.KafkaTestUtils;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
 import uk.gov.companieshouse.charges.delta.common.TestConstants;
-import uk.gov.companieshouse.charges.delta.config.DelegatingLatch;
+import uk.gov.companieshouse.charges.delta.consumer.ResettableCountDownLatch;
 import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
 import uk.gov.companieshouse.delta.ChsDelta;
 
@@ -57,7 +57,7 @@ public class ChargesConsumerErrorSteps {
     @Autowired
     public KafkaConsumer<String, Object> kafkaConsumer;
     @Autowired
-    private DelegatingLatch delegatingLatch;
+    private ResettableCountDownLatch resettableCountDownLatch;
     @Autowired
     private EncoderUtil encoderUtil;
 
@@ -102,11 +102,6 @@ public class ChargesConsumerErrorSteps {
                 .withMetadata(metadata()
                     .list("tags", "stubbed_for_error_test"))
         );
-    }
-
-    @Given("messages will be retried a maximum of {int} times if a retryable error occurs")
-    public void setupDelegatingLatch(int retries) {
-        this.delegatingLatch.setLatch(new CountDownLatch(retries + 1));
     }
 
     @When("A non-avro format message is sent to the Kafka topic")
@@ -176,7 +171,6 @@ public class ChargesConsumerErrorSteps {
 
     private void sendKafkaMessage(Object deltaMessage) throws InterruptedException, ExecutionException, TimeoutException {
         kafkaTemplate.send(topic, deltaMessage).get(TestConstants.DEFAULT_WAIT_TIMEOUT, TimeUnit.SECONDS);
-        delegatingLatch.getLatch().await(TestConstants.DEFAULT_WAIT_TIMEOUT, TimeUnit.SECONDS);
+        assertThat(resettableCountDownLatch.getCountDownLatch().await(5, TimeUnit.SECONDS)).isTrue();
     }
-
 }
