@@ -87,6 +87,7 @@ class TextFormatterTest {
                 Arguments.of("a.b.c.d.sci.", "A.B.C.D.Sci."),
                 Arguments.of("sci.d.c.b.a.", "Sci.D.C.B.A."),
                 Arguments.of("the word is sci.d.c.b.a.", "The Word is Sci.D.C.B.A."),
+                Arguments.of("the word is; sci.d.c.b.a.", "The Word is; Sci.D.C.B.A."), // stop words surrounded with punctuation must not be capitalised
                 Arguments.of("the word is s.ci.d.c.b.a.", "The Word is S.CI.D.C.B.A."),
                 Arguments.of("b.a.!b.\"sc.m?.a.?m.sc.", "B.A.!B.\"SC.M?.A.?M.SC."),
                 Arguments.of("d.r. jOhN f SmItH of lC123456    pLc (IS anybody ERE); aND\nIS  From the uk in lONdON", "D.R. John F Smith of LC123456 PLC (Is Anybody Ere); And is from the UK in London")

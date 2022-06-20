@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TextFormatter {
 
-    private static final Pattern STEM_PATTERN =
+    private static final Pattern PARENTHESIS_PATTERN =
             Pattern.compile("(\\P{Alnum}*\\()(\\p{Alnum}+\\P{Alnum}*)");
     private static final Pattern COLON_PATTERN =
             Pattern.compile("[;:]$");
@@ -190,7 +190,7 @@ public class TextFormatter {
     }
 
     private static boolean isOpeningParenthesis(String token) {
-        Matcher tokenMatcher = STEM_PATTERN.matcher(token);
+        Matcher tokenMatcher = PARENTHESIS_PATTERN.matcher(token);
         return tokenMatcher.find();
     }
 
@@ -559,7 +559,7 @@ public class TextFormatter {
 
         @Override
         public String mapToken(String token) {
-            Matcher tokenMatcher = STEM_PATTERN.matcher(token);
+            Matcher tokenMatcher = PARENTHESIS_PATTERN.matcher(token);
             if (tokenMatcher.find()) {
                 String punctuation = tokenMatcher.group(1);
                 token = tokenMatcher.group(2);
