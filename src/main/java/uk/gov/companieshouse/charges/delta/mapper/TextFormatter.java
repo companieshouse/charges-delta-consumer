@@ -1,5 +1,10 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringTokenizer;
+import org.apache.commons.text.WordUtils;
+import org.springframework.stereotype.Component;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
@@ -7,11 +12,6 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringTokenizer;
-import org.apache.commons.text.WordUtils;
-import org.springframework.stereotype.Component;
 
 @Component
 public class TextFormatter {
@@ -38,6 +38,8 @@ public class TextFormatter {
             Pattern.compile("ETC[.]|PP[.]|PH[.]?D[.]");
     private static final Pattern ENTITY_SUB_PATTERN =
             Pattern.compile("(\\P{L}+)|(\\p{L}+)");
+    private static final Pattern STOP_WORD_PATTERN =
+            Pattern.compile("(?!^.*?[()].*$)^(\\P{L}*)(\\p{L}+)(.*)$");
 
     private static final Set<String> STOP_WORDS = new HashSet<>(Arrays.asList("A", "AN", "AT",
             "AS", "AND", "ARE", "BUT", "BY", "ERE", "FOR", "FROM", "IN", "INTO", "IS", "OF", "ON",
@@ -195,7 +197,11 @@ public class TextFormatter {
     }
 
     private static boolean isStopWord(String token, int index, boolean hasNext) {
-        return STOP_WORDS.contains(token) && index > 0 && hasNext;
+        Matcher stopWordMatcher = STOP_WORD_PATTERN.matcher(token);
+        return index > 0
+                && hasNext
+                && stopWordMatcher.matches()
+                && STOP_WORDS.contains(stopWordMatcher.group(2));
     }
 
     private static boolean endOfSentence(String token) {
