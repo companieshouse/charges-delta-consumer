@@ -1,10 +1,5 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringTokenizer;
-import org.apache.commons.text.WordUtils;
-import org.springframework.stereotype.Component;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
@@ -12,6 +7,11 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringTokenizer;
+import org.apache.commons.text.WordUtils;
+import org.springframework.stereotype.Component;
 
 @Component
 public class TextFormatter {
@@ -506,7 +506,7 @@ public class TextFormatter {
         public String mapToken(String token) {
             Matcher entityMatcher = ENTITY_SUB_PATTERN.matcher(token);
             StringBuilder result = new StringBuilder();
-            while(entityMatcher.find()) {
+            while (entityMatcher.find()) {
                 result.append(WordUtils.capitalizeFully(entityMatcher.group(0)));
             }
             return result.toString();
@@ -630,7 +630,7 @@ public class TextFormatter {
             int end;
             int prevEnd = 0;
             UnaryOperator<String> remappingFunction = firstMatchRemappingFunction;
-            while(partialAbbreviation.find()) {
+            while (partialAbbreviation.find()) {
                 start = partialAbbreviation.start();
                 end = partialAbbreviation.end();
                 if (start > 0) {
