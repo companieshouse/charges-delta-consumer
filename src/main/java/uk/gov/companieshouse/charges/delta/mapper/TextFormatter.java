@@ -37,7 +37,7 @@ public class TextFormatter {
     private static final Pattern GENERAL_ABBREV_PATTERN =
             Pattern.compile("ETC[.]|PP[.]|PH[.]?D[.]");
     private static final Pattern ENTITY_SUB_PATTERN =
-            Pattern.compile("(\\P{L}+)|(\\p{L}+)");
+            Pattern.compile("(\\P{L}+)|([\\p{L}']+)");
     private static final Pattern STOP_WORD_PATTERN =
             Pattern.compile("(?!^.*?[()].*$)^(\\P{L}*)(\\p{L}+)(.*)$");
 
@@ -683,7 +683,7 @@ public class TextFormatter {
             if (wordBeginningPattern.matches()) {
                 return wordBeginningPattern.group(1)
                         + WordUtils.capitalizeFully(wordBeginningPattern.group(2))
-                        + wordBeginningPattern.group(3);
+                        + wordBeginningPattern.group(3).toLowerCase(Locale.UK);
             } else {
                 return token;
             }

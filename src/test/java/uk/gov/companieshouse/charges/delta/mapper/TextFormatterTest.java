@@ -90,6 +90,10 @@ class TextFormatterTest {
                 Arguments.of("the word is; sci.d.c.b.a.", "The Word is; Sci.D.C.B.A."), // stop words surrounded with punctuation must not be capitalised
                 Arguments.of("the word is s.ci.d.c.b.a.", "The Word is S.CI.D.C.B.A."),
                 Arguments.of("b.a.!b.\"sc.m?.a.?m.sc.", "B.A.!B.\"SC.M?.A.?M.SC."),
+                Arguments.of("harrow-on-the-hill", "Harrow-On-The-Hill"), // TODO: existing algorithm transforms text to "Harrow-on-the-Hill"
+                Arguments.of("the presenter is from harrow-on-the-hill", "The Presenter is from Harrow-On-The-Hill"),
+                Arguments.of("the presenter is from \"harrow\"-\"on-the\"-\"hill!!!", "The Presenter is from \"Harrow\"-\"On-The\"-\"Hill!!!"),
+                Arguments.of("don't tell me.", "Don't Tell Me."),
                 Arguments.of("d.r. jOhN f SmItH of lC123456    pLc (IS anybody ERE); aND\nIS  From the uk in lONdON", "D.R. John F Smith of LC123456 PLC (Is Anybody Ere); And is from the UK in London")
         );
     }
@@ -138,6 +142,10 @@ class TextFormatterTest {
                 Arguments.of("john smith b.sc. is here", "John smith B.SC. is here"),
                 Arguments.of("i am mr. john smith ba.sci of london", "I am mr. John smith ba.sci of london"),
                 Arguments.of("i am mr. john smith b.sci of london", "I am mr. John smith B.sci of london"),
+                Arguments.of("harrow-on-the-hill", "Harrow-on-the-hill"),
+                Arguments.of("the presenter is from harrow-on-the-hill", "The presenter is from harrow-on-the-hill"),
+                Arguments.of("the presenter is from \"harrow\"-\"on-the\"-\"hill!!!", "The presenter is from \"harrow\"-\"on-the\"-\"hill!!!"),
+                Arguments.of("don't tell me.", "Don't tell me."),
                 Arguments.of("p/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc. \n\t but i\tthink (a cat) is 4life! æthelred is ready.", "P/Office the D.R. of an LLP says a cat is ) for christmas etc. but I think (a cat) is 4LIFE! Æthelred is ready.")
         );
     }
