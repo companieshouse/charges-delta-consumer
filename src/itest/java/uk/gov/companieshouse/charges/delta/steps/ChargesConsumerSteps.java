@@ -1,13 +1,17 @@
 package uk.gov.companieshouse.charges.delta.steps;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.Customization;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -20,11 +24,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
+import uk.gov.companieshouse.charges.delta.consumer.ResettableCountDownLatch;
 import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
-import uk.gov.companieshouse.charges.delta.service.ApiClientService;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
@@ -35,7 +38,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.common.Metadata.metadata;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 public class ChargesConsumerSteps {
@@ -53,15 +55,19 @@ public class ChargesConsumerSteps {
     private String companyNumber;
     private String chargeId;
     @Autowired
-    private ApiClientService apiClientService;
-    @Autowired
     private EncoderUtil encoderUtil;
     @Autowired
     private TestSupport testSupport;
+    @Autowired
+    private ResettableCountDownLatch resettableCountDownLatch;
+
+    @Before
+    public void beforeEach() {
+        resettableCountDownLatch.resetLatch(4);
+    }
 
     @Given("Charges delta consumer service is running")
     public void charges_delta_consumer_service_is_running() {
-
         ResponseEntity<String> response = restTemplate.getForEntity(HEALTHCHECK_URI, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.valueOf(200));
         assertThat(response.getBody()).isEqualTo(HEALTHCHECK_RESPONSE_BODY);
@@ -69,7 +75,7 @@ public class ChargesConsumerSteps {
 
     @When("a message with payload {string} is published to topic")
     public void a_message_is_published_to_topic(String dataFile)
-            throws InterruptedException, IOException {
+            throws InterruptedException, IOException, ExecutionException, TimeoutException {
         wireMockServer = testSupport.setupWiremock();
 
         String chargesDeltaDataJson = testSupport.loadInputFile(dataFile);
@@ -79,8 +85,7 @@ public class ChargesConsumerSteps {
         chargeId = encoderUtil.encodeWithSha1(chargeId);
         stubChargeDataApi("a_message_is_published_to_topic");
         kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson));
-        kafkaTemplate.flush();
-        TimeUnit.SECONDS.sleep(1);
+        assertThat(resettableCountDownLatch.getCountDownLatch().await(5, TimeUnit.SECONDS)).isTrue();
     }
 
     @Then("the Consumer should process and send a request with payload {string} "

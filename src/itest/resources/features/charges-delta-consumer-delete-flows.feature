@@ -3,7 +3,7 @@ Feature: Process Charges Delete Delta information with happy and error condition
   Scenario Outline: Consume a valid delete message, process it and charges data api delete endpoint is invoked with the
   correct charge id extracted from the payload
 
-    Given Charges delta consumer service for delete is running
+    Given Charges delta consumer service is running
     And Stubbed Charges Data API delete endpoint will return "<response>" http response code for "<companyNumber>" and "<chargeId>"
     When delete message with payload "<deltaMessage>" is published to charges topic
     Then Charges Data API delete endpoint is only invoked once getting back "<responseCode>"
@@ -16,7 +16,7 @@ Feature: Process Charges Delete Delta information with happy and error condition
   Scenario Outline: Consume a valid Charges Delete message in avro format message with an invalid json payload,
   process it and move to invalid message topic charges data api never called
 
-    Given Charges delta consumer service for delete is running
+    Given Charges delta consumer service is running
     And Stubbed Charges Data API delete endpoint will return "<response>" http response code for "<companyNumber>" and "<chargeId>"
     When delete message with payload "<deltaMessage>" is published to charges topic
     Then delete message should be moved to topic "<targetTopic>"
@@ -29,7 +29,7 @@ Feature: Process Charges Delete Delta information with happy and error condition
 
   Scenario Outline: Consume a valid delete message, Charges Data API delete endpoint returns 400
 
-    Given Charges delta consumer service for delete is running
+    Given Charges delta consumer service is running
     And Stubbed Charges Data API delete endpoint will return "<response>" http response code for "<companyNumber>" and "<chargeId>"
     When delete message with payload "<deltaMessage>" is published to charges topic
     Then delete message should be moved to topic "<targetTopic>"
@@ -41,7 +41,7 @@ Feature: Process Charges Delete Delta information with happy and error condition
 
   Scenario Outline: Consume a valid delete message, Charges Data API delete endpoint returns 503
 
-    Given Charges delta consumer service for delete is running
+    Given Charges delta consumer service is running
     And Stubbed Charges Data API delete endpoint will return "<response>" http response code for "<companyNumber>" and "<chargeId>"
     When delete message with payload "<deltaMessage>" is published to charges topic
     Then delete message should be retried "<retries>" on retry topic and moved to "<targetTopic>"
@@ -54,7 +54,7 @@ Feature: Process Charges Delete Delta information with happy and error condition
 
   Scenario Outline: Consume a valid delete message, but fails while processing before calling Charges Data API delete endpoint
 
-    Given Charges delta consumer service for delete is running
+    Given Charges delta consumer service is running
     And Stubbed Charges Data API delete endpoint will return "<response>" http response code for "<companyNumber>" and "<chargeId>"
     When delete message with payload "<deltaMessage>" is published to charges topic
     Then delete message should be retried "<retries>" on retry topic and moved to "<targetTopic>"
@@ -67,7 +67,7 @@ Feature: Process Charges Delete Delta information with happy and error condition
   Scenario Outline: Consume a Charges Delete message null/empty charge id,
   process it and move to invalid message topic charges data api never called
 
-    Given Charges delta consumer service for delete is running
+    Given Charges delta consumer service is running
     And Stubbed Charges Data API delete endpoint will return "<response>" http response code for "<companyNumber>" and "<chargeId>"
     When delete message with payload "<deltaMessage>" is published to charges topic
     Then delete message should be moved to topic "<targetTopic>"
