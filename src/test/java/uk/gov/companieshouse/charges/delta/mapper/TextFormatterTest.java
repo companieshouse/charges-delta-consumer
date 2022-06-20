@@ -90,9 +90,9 @@ class TextFormatterTest {
                 Arguments.of("the word is; sci.d.c.b.a.", "The Word is; Sci.D.C.B.A."), // stop words surrounded with punctuation must not be capitalised
                 Arguments.of("the word is s.ci.d.c.b.a.", "The Word is S.CI.D.C.B.A."),
                 Arguments.of("b.a.!b.\"sc.m?.a.?m.sc.", "B.A.!B.\"SC.M?.A.?M.SC."),
-                Arguments.of("harrow-on-the-hill", "Harrow-On-The-Hill"), // TODO: existing algorithm transforms text to "Harrow-on-the-Hill"
-                Arguments.of("the presenter is from harrow-on-the-hill", "The Presenter is from Harrow-On-The-Hill"),
-                Arguments.of("the presenter is from \"harrow\"-\"on-the\"-\"hill!!!", "The Presenter is from \"Harrow\"-\"On-The\"-\"Hill!!!"),
+                Arguments.of("harrow-on-the-hill", "Harrow-on-the-Hill"), // delimited stop words must not be capitalised
+                Arguments.of("the presenter is from harrow-on-the-hill", "The Presenter is from Harrow-on-the-Hill"),
+                Arguments.of("the presenter is from \"harrow\"-\"on-the\"-\"hill!!!", "The Presenter is from \"Harrow\"-\"on-the\"-\"Hill!!!"),
                 Arguments.of("don't tell me.", "Don't Tell Me."),
                 Arguments.of("c,om,mas", "C,Om,Mas"),
                 Arguments.of("the trees, the branches and the leaves", "The Trees, the Branches and the Leaves"),

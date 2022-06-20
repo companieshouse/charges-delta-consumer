@@ -40,6 +40,8 @@ public class TextFormatter {
             Pattern.compile("(\\P{L}+)|([\\p{L}']+)");
     private static final Pattern STOP_WORD_PATTERN =
             Pattern.compile("(?!^.*?[()].*$)^(\\P{L}*)(\\p{L}+)(.*)$");
+    private static final Pattern CONTAINS_STOP_WORD_PATTERN =
+            Pattern.compile("(?=^.*?\\p{L}[\\P{L}]\\p{L}.*$)^.*$");
 
     private static final Set<String> STOP_WORDS = new HashSet<>(Arrays.asList("A", "AN", "AT",
             "AS", "AND", "ARE", "BUT", "BY", "ERE", "FOR", "FROM", "IN", "INTO", "IS", "OF", "ON",
@@ -156,6 +158,8 @@ public class TextFormatter {
                 stateMachine.parenthesis();
             } else if (isStopWord(token, index, tokenizer.hasNext())) {
                 stateMachine.stopWord();
+            } else if (containsStopWord(token)) {
+                stateMachine.containsStopWord();
             } else {
                 stateMachine.regularText();
             }
@@ -204,6 +208,20 @@ public class TextFormatter {
                 && STOP_WORDS.contains(stopWordMatcher.group(2));
     }
 
+    private static boolean containsStopWord(String token) {
+        Matcher containsStopWord = CONTAINS_STOP_WORD_PATTERN.matcher(token);
+        if (!containsStopWord.matches()) {
+            return false;
+        }
+        Matcher wordExtractor = ENTITY_SUB_PATTERN.matcher(token);
+        while (wordExtractor.find()) {
+            if (STOP_WORDS.contains(wordExtractor.group(0))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static boolean endOfSentence(String token) {
         Matcher sentenceEndingMatcher = SENTENCE_ENDING_PATTERN.matcher(token);
         Matcher generalAbbrevPattern = GENERAL_ABBREV_PATTERN.matcher(token);
@@ -228,6 +246,8 @@ public class TextFormatter {
         FormatterState newParenthesesState(FormatterStateMachine stateMachine);
 
         FormatterState newStopWordState(FormatterStateMachine stateMachine);
+
+        FormatterState newContainsStopWordState(FormatterStateMachine stateMachine);
 
         FormatterState newForwardslashAbbrState(FormatterStateMachine stateMachine);
 
@@ -264,6 +284,11 @@ public class TextFormatter {
         @Override
         public FormatterState newStopWordState(FormatterStateMachine stateMachine) {
             return new StopWord(stateMachine);
+        }
+
+        @Override
+        public FormatterState newContainsStopWordState(FormatterStateMachine stateMachine) {
+            return new ContainsStopWords(stateMachine);
         }
 
         @Override
@@ -320,6 +345,11 @@ public class TextFormatter {
         }
 
         @Override
+        public FormatterState newContainsStopWordState(FormatterStateMachine stateMachine) {
+            return new RegularSentenceText(stateMachine);
+        }
+
+        @Override
         public FormatterState newForwardslashAbbrState(FormatterStateMachine stateMachine) {
             return new ForwardslashAbbreviation(stateMachine);
         }
@@ -357,6 +387,7 @@ public class TextFormatter {
         private final FormatterState entityNameState;
         private final FormatterState parenthesisState;
         private final FormatterState stopWordState;
+        private final FormatterState containsStopWordState;
         private final FormatterState forwardslashAbbrState;
         private final FormatterState abbreviationState;
         private final FormatterState endSentenceState;
@@ -372,6 +403,7 @@ public class TextFormatter {
             this.entityNameState = stateFactory.newEntityNameState(this);
             this.parenthesisState = stateFactory.newParenthesesState(this);
             this.stopWordState = stateFactory.newStopWordState(this);
+            this.containsStopWordState = stateFactory.newContainsStopWordState(this);
             this.forwardslashAbbrState = stateFactory.newForwardslashAbbrState(this);
             this.abbreviationState = stateFactory.newAbbreviationState(this);
             this.endSentenceState = stateFactory.newEndSentenceState(this);
@@ -398,6 +430,10 @@ public class TextFormatter {
 
         void stopWord() {
             this.currentState.stopWord();
+        }
+
+        void containsStopWord() {
+            this.currentState.containsStopWord();
         }
 
         void forwardslashAbbr() {
@@ -431,6 +467,8 @@ public class TextFormatter {
         void parenthesis();
 
         void stopWord();
+
+        void containsStopWord();
 
         void forwardslashAbbreviation();
 
@@ -475,6 +513,11 @@ public class TextFormatter {
         }
 
         @Override
+        public void containsStopWord() {
+            this.stateMachine.currentState = this.stateMachine.containsStopWordState;
+        }
+
+        @Override
         public void forwardslashAbbreviation() {
             this.stateMachine.currentState = this.stateMachine.forwardslashAbbrState;
         }
@@ -508,6 +551,28 @@ public class TextFormatter {
             StringBuilder result = new StringBuilder();
             while (entityMatcher.find()) {
                 result.append(WordUtils.capitalizeFully(entityMatcher.group(0)));
+            }
+            return result.toString();
+        }
+    }
+
+    private static class ContainsStopWords extends AbstractState {
+
+        public ContainsStopWords(FormatterStateMachine stateMachine) {
+            super(stateMachine);
+        }
+
+        @Override
+        public String mapToken(String token) {
+            Matcher entityMatcher = ENTITY_SUB_PATTERN.matcher(token);
+            StringBuilder result = new StringBuilder();
+            while (entityMatcher.find()) {
+                String segment = entityMatcher.group(0);
+                if (STOP_WORDS.contains(segment)) {
+                    result.append(entityMatcher.group(0).toLowerCase(Locale.UK));
+                } else {
+                    result.append(WordUtils.capitalizeFully(entityMatcher.group(0)));
+                }
             }
             return result.toString();
         }
@@ -668,6 +733,11 @@ public class TextFormatter {
 
         @Override
         public void stopWord() {
+            this.stateMachine.currentState = stateMachine.startSentenceState;
+        }
+
+        @Override
+        public void containsStopWord() {
             this.stateMachine.currentState = stateMachine.startSentenceState;
         }
     }
