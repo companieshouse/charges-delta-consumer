@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.charges.delta.steps;
 
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -19,12 +18,10 @@ import org.apache.kafka.common.header.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import uk.gov.companieshouse.charges.delta.common.TestConstants;
-import uk.gov.companieshouse.charges.delta.config.DelegatingLatch;
+import uk.gov.companieshouse.charges.delta.consumer.ResettableCountDownLatch;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
@@ -62,19 +59,11 @@ public class ChargesConsumerDeleteSteps {
     @Autowired
     public KafkaConsumer<String, Object> kafkaConsumer;
     @Autowired
-    private DelegatingLatch delegatingLatch;
+    private ResettableCountDownLatch resettableCountDownLatch;
 
     private WireMockServer wireMockServer;
     private String companyNumber;
     private String chargeId;
-
-    @Given("Charges delta consumer service for delete is running")
-    public void charges_delta_consumer_service_is_running() {
-
-        ResponseEntity<String> response = restTemplate.getForEntity(HEALTHCHECK_URI, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.valueOf(200));
-        assertThat(response.getBody()).isEqualTo(HEALTHCHECK_RESPONSE_BODY);
-    }
 
     @Given("Stubbed Charges Data API delete endpoint will return {string} http response code for {string} and {string}")
     public void stubChargesDataApiDeleteEndpointForResponse(String statusValue, String companyNumber, String chargeId){
@@ -97,7 +86,8 @@ public class ChargesConsumerDeleteSteps {
     public void messagePublishedToChargesTopic(String dataFile) throws InterruptedException, ExecutionException, TimeoutException {
         String chargesDeltaDataJson = testSupport.loadInputFile(dataFile);
         kafkaTemplate.send(topic, testSupport.createChsDeltaMessage(chargesDeltaDataJson, true)).get(TestConstants.DEFAULT_WAIT_TIMEOUT, TimeUnit.SECONDS);
-        delegatingLatch.getLatch().await(TestConstants.DEFAULT_WAIT_TIMEOUT, TimeUnit.SECONDS);
+
+        assertThat(resettableCountDownLatch.getCountDownLatch().await(5, TimeUnit.SECONDS)).isTrue();
     }
 
     @Then("delete message should be moved to topic {string}")

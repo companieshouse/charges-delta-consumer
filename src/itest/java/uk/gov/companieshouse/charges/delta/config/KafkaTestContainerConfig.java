@@ -1,12 +1,9 @@
 package uk.gov.companieshouse.charges.delta.config;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
-
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -19,20 +16,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
-import uk.gov.companieshouse.charges.delta.consumer.ChargesDeltaConsumerAspect;
+import uk.gov.companieshouse.charges.delta.consumer.KafkaMessageConsumerAspect;
+import uk.gov.companieshouse.charges.delta.consumer.ResettableCountDownLatch;
 import uk.gov.companieshouse.charges.delta.exception.RetryableTopicErrorInterceptor;
+import uk.gov.companieshouse.charges.delta.serialization.ChsDeltaDeserializer;
 import uk.gov.companieshouse.charges.delta.serialization.ChsDeltaSerializer;
 import uk.gov.companieshouse.charges.delta.steps.TestSupport;
 import uk.gov.companieshouse.delta.ChsDelta;
-import uk.gov.companieshouse.charges.delta.serialization.ChsDeltaDeserializer;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 
 @TestConfiguration
@@ -112,13 +112,13 @@ public class KafkaTestContainerConfig {
     }
 
     @Bean
-    public DelegatingLatch delegatingLatch() {
-        return new DelegatingLatch(new CountDownLatch(1));
+    public ResettableCountDownLatch resettableCountDownLatch() {
+        return new ResettableCountDownLatch();
     }
 
     @Bean
-    public ChargesDeltaConsumerAspect chargesDeltaConsumerAspect() {
-        return new ChargesDeltaConsumerAspect();
+    public KafkaMessageConsumerAspect kafkaMessageConsumerAspect() {
+        return new KafkaMessageConsumerAspect();
     }
 
     @Bean
