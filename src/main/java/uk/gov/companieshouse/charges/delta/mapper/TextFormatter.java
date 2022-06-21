@@ -40,8 +40,11 @@ public class TextFormatter {
     private static final Pattern MIXED_ALPHANUMERIC = Pattern.compile("(\\w+\\d+\\w*|\\d+\\w+)");
     private static final Pattern TOKENISATION_PATTERN = Pattern.compile("(\\S+(\\s+|$))");
     private static final Pattern POSSESSIVE_PATTERN = Pattern.compile(
-            "^([^a-z]*)I[^a-z]*?((?:[.]|[!?]+)?)[^a-z]*$",
+            "^([^a-z]*)I[^a-z]",
             Pattern.CASE_INSENSITIVE);
+    private static final Pattern POSSESSIVE_END_OF_SENTENCE_PATTERN = Pattern.compile(
+            "([.]|[!?]+)[^.!?a-z]*$"
+    );
     private static final Pattern FORWARDSLASH_ABBREVIATION = Pattern.compile("^(.?/)(.*)",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     private static final Pattern FIRST_LETTER = Pattern.compile("([a-z])",
@@ -53,7 +56,7 @@ public class TextFormatter {
                     "(^[^a-zA-Z]*([a-z][.])+))[^a-z]*\\s"),
             Pattern.CASE_INSENSITIVE);
     private static final Pattern END_OF_SENTENCE_PATTERN = Pattern.compile(
-            "[a-z][^a-z]*(?:[.]|[!?]+)([^a-z]*)\\s",
+            "[a-z][^a-z.!?]*(?:[.]|[!?]+)([^a-z\\s.!?]*)\\s",
             Pattern.CASE_INSENSITIVE);
 
     /**
@@ -195,8 +198,9 @@ public class TextFormatter {
 
     private static String mapWord(String token, SentenceState sentenceState) {
         Matcher possessivePatternMatcher = POSSESSIVE_PATTERN.matcher(token);
-        if (possessivePatternMatcher.matches()) {
-            sentenceState.setEndOfSentence(!possessivePatternMatcher.group(2).isEmpty());
+        Matcher possessiveEndOfSentenceMatcher = POSSESSIVE_END_OF_SENTENCE_PATTERN.matcher(token);
+        if (possessivePatternMatcher.find()) {
+            sentenceState.setEndOfSentence(possessiveEndOfSentenceMatcher.find());
             sentenceState.setMatchingBracket(
                     possessivePatternMatcher.group(1).matches("^[\\[(].*$"));
             return token.toUpperCase(Locale.UK);
