@@ -1,7 +1,9 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -82,37 +84,27 @@ public class TextFormatter {
         text = text.toUpperCase(Locale.UK);
         text = mapToken(STEM_PATTERN, text, (token, matcher) ->
                 STOP_WORDS.contains(token) ? token.toLowerCase(Locale.UK) :
-                        WordUtils.capitalizeFully(token), (token, matcher) -> token, true);
+                        WordUtils.capitalizeFully(token), true);
         text = mapToken(FIRST_WORD, text, (token, matcher) ->
-                        WordUtils.capitalizeFully(token),
-                (token, matcher) -> token.toLowerCase(Locale.UK), false);
+                        WordUtils.capitalizeFully(token), false);
         text = mapToken(LAST_WORD, text, (token, matcher) ->
-                WordUtils.capitalizeFully(token), (token, matcher) ->
-                token.toLowerCase(Locale.UK), false);
+                WordUtils.capitalizeFully(token), false);
         text = mapToken(OPENING_PARENTHESIS, text, (token, matcher) ->
-                        "(" + WordUtils.capitalizeFully(matcher.group(1)),
-                (token, matcher) -> token.toLowerCase(Locale.UK), false);
+                        "(" + WordUtils.capitalizeFully(matcher.group(1)), false);
         text = mapToken(CLOSING_PARENTHESIS, text, (token, matcher) ->
-                        WordUtils.capitalizeFully(matcher.group(1)) + ")",
-                (token, matcher) -> token.toLowerCase(Locale.UK), false);
+                        WordUtils.capitalizeFully(matcher.group(1)) + ")", false);
         text = mapToken(COLON, text, (token, matcher) ->
-                        matcher.group(1) + WordUtils.capitalizeFully(matcher.group(2)),
-                (token, matcher) -> token.toLowerCase(Locale.UK), false);
-        text = mapToken(NEWLINE, text, (token, matcher) -> " ",
-                (token, matcher) -> token, true);
+                        matcher.group(1) + WordUtils.capitalizeFully(matcher.group(2)), false);
+        text = mapToken(NEWLINE, text, (token, matcher) -> " ", true);
         text = mapToken(ABBREVIATIONS, text, (token, matcher) ->
-                        matcher.group(1).toUpperCase(Locale.UK) + ".",
-                (token, matcher) -> token, true);
-        text = mapToken(MULTIPLE_SPACES, text, (token, matcher) -> " ",
-                (token, matcher) -> token, true);
+                        matcher.group(1).toUpperCase(Locale.UK) + ".", true);
+        text = mapToken(MULTIPLE_SPACES, text, (token, matcher) -> " ", true);
         text = mapToken(MIXED_ALPHANUMERIC, text, (token, matcher) ->
-                        matcher.group(1).toUpperCase(Locale.UK),
-                (token, matcher) -> token, true);
+                        matcher.group(1).toUpperCase(Locale.UK), true);
         text = mapToken(MATCHES_ENTITY, text, (token, matcher) ->
                         ENTITIES.contains(token.toUpperCase(Locale.UK))
                                 ? token.toUpperCase(Locale.UK)
-                                : token,
-                (token, matcher) -> token, true);
+                                : token, true);
         return text.trim();
     }
 
@@ -151,27 +143,20 @@ public class TextFormatter {
         SentenceState sentenceState = new SentenceState();
         text = mapToken(TOKENISATION_PATTERN, text,
                 (token, matcher) ->
-                        TextFormatter.mapWord(token, sentenceState),
-                (token, matcher) ->
-                        token, true);
+                        TextFormatter.mapWord(token, sentenceState), true);
         if (!start.isEmpty()) {
             text = start + text;
         }
-        text = mapToken(NEWLINE, text, (token, matcher) -> " ",
-                (token, matcher) -> token, true);
+        text = mapToken(NEWLINE, text, (token, matcher) -> " ", true);
         text = mapToken(ABBREVIATIONS, text, (token, matcher) ->
-                        matcher.group(1).toUpperCase(Locale.UK) + ".",
-                (token, matcher) -> token, true);
-        text = mapToken(MULTIPLE_SPACES, text, (token, matcher) -> " ",
-                (token, matcher) -> token, true);
+                        matcher.group(1).toUpperCase(Locale.UK) + ".", true);
+        text = mapToken(MULTIPLE_SPACES, text, (token, matcher) -> " ", true);
         text = mapToken(MIXED_ALPHANUMERIC, text, (token, matcher) ->
-                        matcher.group(1).toUpperCase(Locale.UK),
-                (token, matcher) -> token, true);
+                        matcher.group(1).toUpperCase(Locale.UK), true);
         text = mapToken(MATCHES_ENTITY, text, (token, matcher) ->
                         ENTITIES.contains(token.toUpperCase(Locale.UK))
                                 ? token.toUpperCase(Locale.UK)
-                                : token,
-                (token, matcher) -> token, true);
+                                : token, true);
         return text.trim();
     }
 
@@ -221,8 +206,7 @@ public class TextFormatter {
         token = token.toLowerCase(Locale.UK);
         if (sentenceState.isEndOfSentence()) {
             token = mapToken(FIRST_LETTER,
-                    token, (t, m) -> t.toUpperCase(Locale.UK),
-                    (t, m) -> t, false);
+                    token, (t, m) -> t.toUpperCase(Locale.UK), false);
             sentenceState.setMatchingBracket(token.matches("^[\\[(].*$"));
         }
         Matcher generalAbbreviationMatcher = GENERAL_ABBREVIATION.matcher(token);
@@ -237,7 +221,6 @@ public class TextFormatter {
     private static String mapToken(Pattern pattern,
                                    String token,
                                    BiFunction<String, Matcher, String> matchRemappingFunction,
-                                   BiFunction<String, Matcher, String> nonMatchRemappingFunction,
                                    boolean global) {
         Matcher partialAbbreviation = pattern.matcher(token);
         StringBuilder result = new StringBuilder();
@@ -248,12 +231,7 @@ public class TextFormatter {
             start = partialAbbreviation.start();
             end = partialAbbreviation.end();
             if (start > 0) {
-                if (global) {
-                    result.append(nonMatchRemappingFunction.apply(
-                            token.substring(prevEnd, start), partialAbbreviation));
-                } else {
-                    result.append(token.substring(prevEnd, start));
-                }
+                result.append(token.substring(prevEnd, start));
             }
             result.append(matchRemappingFunction.apply(
                     token.substring(start, end), partialAbbreviation));
@@ -262,12 +240,7 @@ public class TextFormatter {
                 break;
             }
         }
-        if (global) {
-            result.append(nonMatchRemappingFunction.apply(
-                    token.substring(prevEnd), partialAbbreviation));
-        } else {
-            result.append(token.substring(prevEnd));
-        }
+        result.append(token.substring(prevEnd));
         return result.toString();
     }
 
