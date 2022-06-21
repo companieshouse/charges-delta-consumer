@@ -56,7 +56,7 @@ public class TextFormatter {
                     "(^[^a-zA-Z]*([a-z][.])+))[^a-z]*\\s"),
             Pattern.CASE_INSENSITIVE);
     private static final Pattern END_OF_SENTENCE_PATTERN = Pattern.compile(
-            "[a-z][^a-z.!?]*(?:[.]|[!?]+)([^a-z\\s.!?]*)\\s",
+            "[a-z][^a-z.!?]*[.!?]+([^a-z\\s.!?]*)\\s",
             Pattern.CASE_INSENSITIVE);
 
     /**
