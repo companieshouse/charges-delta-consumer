@@ -134,10 +134,10 @@ public class ChargesDeltaProcessor {
             logger.errorContext(logContext, message, null, logMap);
             throw new NonRetryableErrorException(message);
         }  else if (HttpStatus.GONE == httpStatus) {
-                // 410 GONE status is not retryable
-                String message = "410 GONE response received from charges-data-api";
-                logger.errorContext(logContext, message, null, logMap);
-                throw new NonRetryableErrorException(message);
+            // 410 GONE status is not retryable
+            String message = "410 GONE response received from charges-data-api";
+            logger.errorContext(logContext, message, null, logMap);
+            throw new NonRetryableErrorException(message);
         } else if (!httpStatus.is2xxSuccessful()) {
             // any other client or server status is retryable
             String message = "Non-Successful 200 response received from charges-data-api";
