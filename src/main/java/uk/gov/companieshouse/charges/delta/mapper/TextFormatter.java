@@ -1,9 +1,7 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -222,19 +220,19 @@ public class TextFormatter {
                                    String token,
                                    BiFunction<String, Matcher, String> matchRemappingFunction,
                                    boolean global) {
-        Matcher partialAbbreviation = pattern.matcher(token);
+        Matcher matcher = pattern.matcher(token);
         StringBuilder result = new StringBuilder();
         int start;
         int end;
         int prevEnd = 0;
-        while (partialAbbreviation.find()) {
-            start = partialAbbreviation.start();
-            end = partialAbbreviation.end();
+        while (matcher.find()) {
+            start = matcher.start();
+            end = matcher.end();
             if (start > 0) {
                 result.append(token.substring(prevEnd, start));
             }
             result.append(matchRemappingFunction.apply(
-                    token.substring(start, end), partialAbbreviation));
+                    token.substring(start, end), matcher));
             prevEnd = end;
             if (!global) {
                 break;
@@ -248,19 +246,19 @@ public class TextFormatter {
         private boolean endOfSentence = true;
         private boolean matchingBracket = false;
 
-        public boolean isEndOfSentence() {
+        private boolean isEndOfSentence() {
             return endOfSentence;
         }
 
-        public void setEndOfSentence(boolean endOfSentence) {
+        private void setEndOfSentence(boolean endOfSentence) {
             this.endOfSentence = endOfSentence;
         }
 
-        public boolean isMatchingBracket() {
+        private boolean isMatchingBracket() {
             return matchingBracket;
         }
 
-        public void setMatchingBracket(boolean matchingBracket) {
+        private void setMatchingBracket(boolean matchingBracket) {
             this.matchingBracket = matchingBracket;
         }
     }
