@@ -52,7 +52,10 @@
         "transaction_id": null,
         "delivered_on": "2016-11-01",
         "insolvency_case_number": null,
-        "links": null
+        "links": {
+          "filing": "/company/00285630/filing-history/MzE2MjA1MzI1NXRyYW5zSWRfc2FsdA",
+          "insolvency_case": null
+        }
       },
       {
         "filing_type": "charge-satisfaction",

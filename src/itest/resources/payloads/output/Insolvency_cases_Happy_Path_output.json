@@ -42,7 +42,10 @@
         "filing_type": "create-charge-pre-2006-companies-act",
         "delivered_on": [2008,5,13],
         "insolvency_case_number": null,
-        "links": null
+        "links": {
+          "filing": "/company/04796390/filing-history/MjAwNTQ2ODczNnRyYW5zSWRfc2FsdA",
+          "insolvency_case": null
+        }
       },
       {
         "filing_type": "liquidation-appointment-of-receiver",

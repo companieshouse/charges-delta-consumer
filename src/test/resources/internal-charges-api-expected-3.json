@@ -31,7 +31,10 @@
         "transaction_id": null,
         "delivered_on": "2008-12-23",
         "insolvency_case_number": null,
-        "links": null
+        "links": {
+          "filing": "/company/05288218/filing-history/MjAyMTQ0OTE0NHRyYW5zSWRfc2FsdA",
+          "insolvency_case": null
+        }
       }
     ],
     "insolvency_cases": null,

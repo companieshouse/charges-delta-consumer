@@ -33,7 +33,10 @@
         "transaction_id": null,
         "delivered_on": [2016,3,18],
         "insolvency_case_number": null,
-        "links": null
+        "links": {
+          "filing": "/company/OC342023/filing-history/MzE0NTE4NjY3N3RyYW5zSWRfc2FsdA",
+          "insolvency_case": null
+        }
       },
       {
         "filing_type": "charge-satisfaction-limited-liability-partnership",

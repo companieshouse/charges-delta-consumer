@@ -47,7 +47,10 @@
         "transaction_id": null,
         "delivered_on": "1989-03-15",
         "insolvency_case_number": null,
-        "links": null
+        "links": {
+          "filing": null,
+          "insolvency_case": null
+        }
       },
       {
         "filing_type": "charge-satisfaction-scotland-pre-2006-companies-act",

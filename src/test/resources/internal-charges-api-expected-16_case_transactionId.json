@@ -43,7 +43,10 @@
         "transaction_id": null,
         "delivered_on": "1988-01-18",
         "insolvency_case_number": null,
-        "links": null
+        "links": {
+          "filing": null,
+          "insolvency_case": null
+        }
       },
       {
         "filing_type": "liquidation-appointment-of-receiver-scotland",
