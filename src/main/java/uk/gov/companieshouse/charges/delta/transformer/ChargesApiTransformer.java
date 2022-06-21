@@ -123,11 +123,13 @@ public class ChargesApiTransformer {
     private void mapTransIdAndNoticeType(Charge charge, ChargeApi chargeApi,
                                          String companyNumber) {
         TransactionsApi transactionsApi = new TransactionsApi();
-        TransactionsLinks transactionsLinks = new TransactionsLinks();
 
-        transactionsLinks.setFiling(charge.getTransId() != null
-                ? encode(companyNumber, trim(charge.getTransId())) : null);
-        transactionsApi.setLinks(transactionsLinks);
+        if (charge.getTransId() != null) {
+            TransactionsLinks transactionsLinks = new TransactionsLinks();
+            transactionsLinks.setFiling(encode(companyNumber, trim(charge.getTransId())));
+            transactionsApi.setLinks(transactionsLinks);
+        }
+
         transactionsApi.setFilingType(getFilingType(charge));
         if (!isEmpty(trim(charge.getDeliveredOn()))) {
             transactionsApi.setDeliveredOn(LocalDate.parse(charge.getDeliveredOn(),
