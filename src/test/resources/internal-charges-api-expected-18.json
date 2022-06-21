@@ -48,7 +48,10 @@
         "transaction_id": null,
         "delivered_on": "2010-07-01",
         "insolvency_case_number": null,
-        "links": null
+        "links": {
+          "filing": "/company/NI027811/filing-history/MzAxODgwMDgxNXRyYW5zSWRfc2FsdA",
+          "insolvency_case": null
+        }
       }
     ],
     "insolvency_cases": null,

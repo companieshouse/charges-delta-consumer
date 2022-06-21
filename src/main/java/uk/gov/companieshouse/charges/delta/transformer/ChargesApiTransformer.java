@@ -96,7 +96,7 @@ public class ChargesApiTransformer {
                 }
             }
         }
-        mapTransIdAndNoticeType(charge, chargeApi);
+        mapTransIdAndNoticeType(charge, chargeApi,companyNumber);
         ChargeLink chargeLink = new ChargeLink();
         chargeLink.setSelf(COMPANY + companyNumber + CHARGES
                 + encoderUtil.encodeWithSha1(charge.getId()));
@@ -120,8 +120,16 @@ public class ChargesApiTransformer {
      * Maps transid, notice_type of Charge to filing within TransactionsLinks and filing type within
      * TransactionApi.
      */
-    private void mapTransIdAndNoticeType(Charge charge, ChargeApi chargeApi) {
+    private void mapTransIdAndNoticeType(Charge charge, ChargeApi chargeApi,
+                                         String companyNumber) {
         TransactionsApi transactionsApi = new TransactionsApi();
+
+        if (charge.getTransId() != null) {
+            TransactionsLinks transactionsLinks = new TransactionsLinks();
+            transactionsLinks.setFiling(encode(companyNumber, trim(charge.getTransId())));
+            transactionsApi.setLinks(transactionsLinks);
+        }
+
         transactionsApi.setFilingType(getFilingType(charge));
         if (!isEmpty(trim(charge.getDeliveredOn()))) {
             transactionsApi.setDeliveredOn(LocalDate.parse(charge.getDeliveredOn(),

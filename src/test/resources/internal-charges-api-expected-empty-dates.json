@@ -44,7 +44,10 @@
         "transaction_id": null,
         "delivered_on": null,
         "insolvency_case_number": null,
-        "links": null
+        "links": {
+          "filing": "/company/NI622400/filing-history/MzExMzg5MjgyM3RyYW5zSWRfc2FsdA",
+          "insolvency_case": null
+        }
       },
       {
         "filing_type": "charge-satisfaction-pre-2006-companies-act",
