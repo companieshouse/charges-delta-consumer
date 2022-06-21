@@ -65,14 +65,14 @@ class TextFormatterTest {
                 Arguments.of("bread and butter", "Bread and Butter"),
                 Arguments.of("and or the", "And or The"),
                 Arguments.of("King (of in the) Hill", "King (Of in The) Hill"),
-                Arguments.of("King (.of in the) Hill", "King (.Of in The) Hill"), // existing algorithm transforms text to King (.of in The) Hill
+                Arguments.of("King (.of in the) Hill", "King (.of in The) Hill"), // existing algorithm transforms text to King (.of in The) Hill
                 Arguments.of("King .(of in the) Hill", "King .(Of in The) Hill"),
-                Arguments.of("King .(.of in the.). Hill", "King .(.Of in The.). Hill"), // existing algorithm transforms text to King .(.of in the.). Hill
+                Arguments.of("King .(.of in the.). Hill", "King .(.of in the.). Hill"), // existing algorithm transforms text to King .(.of in the.). Hill
                 Arguments.of("King (is king of the) Hill", "King (Is King of The) Hill"),
                 Arguments.of("King (of. in the) Hill", "King (Of. in The) Hill"),
                 Arguments.of("An apple; an orange","An Apple; An Orange"),
-                Arguments.of("An apple; \"an orange","An Apple; \"An Orange"), // existing algorithm transforms text to An Apple; "an Orange
-                Arguments.of("An apple; and; an orange","An Apple; And; An Orange"),
+                Arguments.of("An apple; \"an orange","An Apple; \"an Orange"), // existing algorithm transforms text to An Apple; "an Orange
+                Arguments.of("An apple; and; an orange","An Apple; And; an Orange"),
                 Arguments.of("java coffee 4l1f3", "Java Coffee 4L1F3"),
                 Arguments.of("java coffee \"4l1f3\"", "Java Coffee \"4L1F3\""),
                 Arguments.of("llp", "LLP"),
@@ -88,11 +88,11 @@ class TextFormatterTest {
                 Arguments.of("sci.d.c.b.a.", "Sci.D.C.B.A."),
                 Arguments.of("the word is sci.d.c.b.a.", "The Word is Sci.D.C.B.A."),
                 Arguments.of("the word is; sci.d.c.b.a.", "The Word is; Sci.D.C.B.A."), // stop words surrounded with punctuation must not be capitalised
-                Arguments.of("the word is s.ci.d.c.b.a.", "The Word is S.CI.D.C.B.A."),
+                Arguments.of("the word is s.ci.d.c.b.a.", "The Word is S.Ci.D.C.B.A."),
                 Arguments.of("b.a.!b.\"sc.m?.a.?m.sc.", "B.A.!B.\"SC.M?.A.?M.SC."),
-                Arguments.of("harrow-on-the-hill", "Harrow-On-The-Hill"), // TODO: existing algorithm transforms text to "Harrow-on-the-Hill"
-                Arguments.of("the presenter is from harrow-on-the-hill", "The Presenter is from Harrow-On-The-Hill"),
-                Arguments.of("the presenter is from \"harrow\"-\"on-the\"-\"hill!!!", "The Presenter is from \"Harrow\"-\"On-The\"-\"Hill!!!"),
+                Arguments.of("harrow-on-the-hill", "Harrow-on-the-Hill"), // delimited stop words must not be capitalised
+                Arguments.of("the presenter is from harrow-on-the-hill", "The Presenter is from Harrow-on-the-Hill"),
+                Arguments.of("the presenter is from \"harrow\"-\"on-the\"-\"hill!!!", "The Presenter is from \"Harrow\"-\"on-the\"-\"Hill!!!"),
                 Arguments.of("don't tell me.", "Don't Tell Me."),
                 Arguments.of("c,om,mas", "C,Om,Mas"),
                 Arguments.of("the trees, the branches and the leaves", "The Trees, the Branches and the Leaves"),
@@ -108,7 +108,7 @@ class TextFormatterTest {
                 Arguments.of("", ""),
                 Arguments.of(".", "."),
                 Arguments.of("a", "A"),
-                Arguments.of("æ", "Æ"),
+                Arguments.of("æ", "æ"),
                 Arguments.of("ab", "Ab"),
                 Arguments.of("aB", "Ab"),
                 Arguments.of("bread butter", "Bread butter"),
@@ -131,20 +131,20 @@ class TextFormatterTest {
                 Arguments.of("\"llp\"", "\"LLP\""),
                 Arguments.of("d.r.", "D.R."),
                 Arguments.of("b.sc", "B.SC"),
-                Arguments.of("d.r john smith b.sc of london", "D.R john smith B.SC of london"),
-                Arguments.of("d.r john smith b.sci of london", "D.R john smith B.sci of london"),
-                Arguments.of("d.r john smith b.sci.b.sci.b.sci. of london", "D.R john smith B.sci.B.sci.B.sci. Of london"),
+                Arguments.of("d.r john smith b.sc of london", "D.r john smith B.SC of london"),
+                Arguments.of("d.r john smith b.sci of london", "D.r john smith B.sci of london"),
+                Arguments.of("d.r john smith b.sci.b.sci.b.sci. of london", "D.r john smith B.sci.B.sci.B.sci. Of london"),
                 Arguments.of("b.sc.", "B.SC."),
                 Arguments.of("b.sci.", "B.sci."),
                 Arguments.of("a.b.c.d.sci.", "A.B.C.D.sci."),
                 Arguments.of("sci.d.c.b.a.", "Sci.D.C.B.A."),
                 Arguments.of("the word is sci.d.c.b.a.", "The word is sci.D.C.B.A."),
-                Arguments.of("the word is s.ci.d.c.b.a.", "The word is S.CI.D.C.B.A."),
+                Arguments.of("the word is s.ci.d.c.b.a.", "The word is S.ci.D.C.B.A."),
                 Arguments.of("the word is; sci.d.c.b.a.", "The word is; sci.D.C.B.A."),
-                Arguments.of("b.a.!b.\"sc.m?.a.?m.sc.", "B.A.!B.\"SC.M?.A.?M.SC."),
+                Arguments.of("b.a.!b.\"sc.m?.a.?m.sc.", "B.A.!B.\"SC.m?.A.?M.SC."),
                 Arguments.of("to be. or not to be.", "To be. Or not to be."),
                 Arguments.of("£220,000.00                              AND ALL OTHER MONIES DUE OR TO BECOME DUE", "£220,000.00 and all other monies due or to become due"),
-                Arguments.of("john smith b.sc. is here", "John smith B.SC. is here"),
+                Arguments.of("john smith b.sc. is here", "John smith B.SC. Is here"),
                 Arguments.of("i am mr. john smith ba.sci of london", "I am mr. John smith ba.sci of london"),
                 Arguments.of("i am mr. john smith b.sci of london", "I am mr. John smith B.sci of london"),
                 Arguments.of("harrow-on-the-hill", "Harrow-on-the-hill"),
@@ -155,7 +155,7 @@ class TextFormatterTest {
                 Arguments.of("the trees, the branches and the leaves", "The trees, the branches and the leaves"),
                 Arguments.of("2 + 2 = 4", "2 + 2 = 4"),
                 Arguments.of("2+2=4", "2+2=4"),
-                Arguments.of("p/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc. \n\t but i\tthink (a cat) is 4life! æthelred is ready.", "P/Office the D.R. of an LLP says a cat is ) for christmas etc. but I think (a cat) is 4LIFE! Æthelred is ready.")
+                Arguments.of("p/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc. \n\t but i\tthink (a cat) is 4life! æthelred is ready.", "P/Office the D.R. of an LLP says a cat is ) for christmas etc. but I think (a cat) is 4LIFE! æThelred is ready.")
         );
     }
 
@@ -170,7 +170,7 @@ class TextFormatterTest {
                 Arguments.of("\\nHello", "Hello."),
                 Arguments.of("Hello\\n\\nWorld", "Hello. World."),
                 Arguments.of("Hello\\n \\n \\nWorld", "Hello. World."),
-                Arguments.of("\\np/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc.  \\n\\n\t but i\tthink (a cat) is 4life! æthelred is ready", "P/Office the D.R. of an LLP says a cat is ) for christmas etc.. But I think (a cat) is 4LIFE! Æthelred is ready.")
+                Arguments.of("\\np/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc.  \\n\\n\t but i\tthink (a cat) is 4life! æthelred is ready", "P/Office the D.R. of an LLP says a cat is ) for christmas etc.. but I think (a cat) is 4LIFE! æThelred is ready.")
         );
     }
 }
