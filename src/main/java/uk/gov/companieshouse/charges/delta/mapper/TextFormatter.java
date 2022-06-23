@@ -170,7 +170,8 @@ public class TextFormatter {
      * <li>The final character will be exactly one full stop.</li>
      * <li>The string will be formatted
      * {@link TextFormatter#formatAsSentence(String) as a sentence}.</li>
-     * <li>Escaped newlines will be replaced with full stops.</li>
+     * <li>Escaped newlines except for one at the very end of the string will be
+     * replaced with full stops.</li>
      * <li>An escaped newline will be removed from the start of the string if present.</li>
      * <li>Multiple escaped newlines will be replaced with a single escaped newline.</li>
      * <li>Spaces before newlines will be removed.</li>
@@ -188,6 +189,7 @@ public class TextFormatter {
                 .replaceAll("\\h\\\\n", "\\\\n")
                 .replaceAll("(?:\\\\n)+", "\\\\n")
                 .replaceAll("\\A\\\\n", "")
+                .replaceAll("\\\\n\\Z", "")
                 .replaceAll("\\\\n+", ". ");
         text = formatAsSentence(text);
         if (!text.endsWith(".")) {
