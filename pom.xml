@@ -383,7 +383,6 @@
                         <arg>-Xlint</arg>
                         <arg>-Xlint:-processing</arg>
                         <arg>-Xlint:-serial</arg>
-                        <arg>-Werror</arg>
                     </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
