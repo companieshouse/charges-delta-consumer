@@ -42,6 +42,8 @@ public class TextFormatter {
     private static final Pattern POSSESSIVE_PATTERN = Pattern.compile(
             "^([^a-z]*)I[^a-z]",
             Pattern.CASE_INSENSITIVE);
+    private static final Pattern FULL_STOPS_AND_NUMBERS_PATTERN = Pattern.compile(
+            "([a-zA-Z0-9]{2,})\\.([0-9]{1,})\\.");
     private static final Pattern POSSESSIVE_END_OF_SENTENCE_PATTERN = Pattern.compile(
             "([.]|[!?]+)[^.!?a-z]*$"
     );
@@ -201,13 +203,24 @@ public class TextFormatter {
     private static String mapWord(String token, SentenceState sentenceState) {
         Matcher possessivePatternMatcher = POSSESSIVE_PATTERN.matcher(token);
         Matcher possessiveEndOfSentenceMatcher = POSSESSIVE_END_OF_SENTENCE_PATTERN.matcher(token);
+        Matcher fullStopsAndNumbersMatcher = FULL_STOPS_AND_NUMBERS_PATTERN.matcher(token);
         if (possessivePatternMatcher.find()) {
             sentenceState.setEndOfSentence(possessiveEndOfSentenceMatcher.find());
             sentenceState.setMatchingBracket(
                     possessivePatternMatcher.group(1).matches("^[\\[(].*$"));
             return token.toUpperCase(Locale.UK);
         }
+
         token = token.toLowerCase(Locale.UK);
+        if (sentenceState.isNumbersAndFullStopsToggled()) {
+            String sentenceCasedWord = token.substring(0, 1).toUpperCase() + token.substring(1);
+            token = sentenceCasedWord;
+            sentenceState.setNumbersAndFullStopsToggled(false);
+        }
+        if (fullStopsAndNumbersMatcher.find()) {
+            sentenceState.setNumbersAndFullStopsToggled(true);
+        }
+
         if (sentenceState.isEndOfSentence()) {
             token = mapToken(FIRST_LETTER,
                     token, (t, m) -> t.toUpperCase(Locale.UK), false);
@@ -251,6 +264,7 @@ public class TextFormatter {
     private static class SentenceState {
         private boolean endOfSentence = true;
         private boolean matchingBracket = false;
+        private boolean numbersAndFullStopsToggled = false;
 
         private boolean isEndOfSentence() {
             return endOfSentence;
@@ -266,6 +280,14 @@ public class TextFormatter {
 
         private void setMatchingBracket(boolean matchingBracket) {
             this.matchingBracket = matchingBracket;
+        }
+
+        public boolean isNumbersAndFullStopsToggled() {
+            return numbersAndFullStopsToggled;
+        }
+
+        public void setNumbersAndFullStopsToggled(boolean numbersAndFullStopsToggled) {
+            this.numbersAndFullStopsToggled = numbersAndFullStopsToggled;
         }
     }
 }
