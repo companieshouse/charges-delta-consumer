@@ -211,9 +211,10 @@ public class TextFormatter {
         }
 
         token = token.toLowerCase(Locale.UK);
-        if (sentenceState.isNumbersAndFullStopsToggled()) {
-            String sentenceCasedWord = token.substring(0, 1).toUpperCase() + token.substring(1);
-            token = sentenceCasedWord;
+        if (sentenceState.isEndOfSentence() || sentenceState.isNumbersAndFullStopsToggled()) {
+            token = mapToken(FIRST_LETTER,
+                    token, (t, m) -> t.toUpperCase(Locale.UK), false);
+            sentenceState.setMatchingBracket(token.matches("^[\\[(].*$"));
             sentenceState.setNumbersAndFullStopsToggled(false);
         }
 
@@ -222,11 +223,6 @@ public class TextFormatter {
             sentenceState.setNumbersAndFullStopsToggled(true);
         }
 
-        if (sentenceState.isEndOfSentence()) {
-            token = mapToken(FIRST_LETTER,
-                    token, (t, m) -> t.toUpperCase(Locale.UK), false);
-            sentenceState.setMatchingBracket(token.matches("^[\\[(].*$"));
-        }
         Matcher generalAbbreviationMatcher = GENERAL_ABBREVIATION.matcher(token);
         Matcher endOfSentenceMatcher = END_OF_SENTENCE_PATTERN.matcher(token);
         sentenceState.setEndOfSentence(!generalAbbreviationMatcher.find()
