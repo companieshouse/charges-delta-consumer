@@ -9,9 +9,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -135,13 +133,13 @@ public class ChargesApiTransformer {
             transactionsApi.setDeliveredOn(LocalDate.parse(charge.getDeliveredOn(),
                     DateTimeFormatter.ofPattern("yyyyMMdd")));
         }
-        Optional<List<TransactionsApi>> transactionsApiListOptional =
-                Optional.ofNullable(chargeApi.getTransactions());
-        transactionsApiListOptional.ifPresentOrElse(
-                (transactionsApiList) -> transactionsApiList.add(0, transactionsApi),
-                () -> chargeApi.addTransactionsItem(transactionsApi)
-        );
-        sortListBasedOnDeliveredOnDate(chargeApi);
+
+        if (chargeApi.getTransactions() != null) {
+            sortListBasedOnDeliveredOnDate(chargeApi);
+            chargeApi.getTransactions().add(0, transactionsApi);
+        } else {
+            chargeApi.addTransactionsItem(transactionsApi);
+        }
     }
 
     private void sortListBasedOnDeliveredOnDate(ChargeApi chargeApi) {
