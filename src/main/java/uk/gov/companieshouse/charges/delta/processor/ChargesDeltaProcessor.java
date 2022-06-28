@@ -20,7 +20,6 @@ import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ChargesDeleteDelta;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
-import uk.gov.companieshouse.api.error.ApiErrorResponseException;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.charges.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
@@ -81,6 +80,36 @@ public class ChargesDeltaProcessor {
         handleResponse(HttpStatus.valueOf(apiResponse.getStatusCode()), logContext, logMap);
     }
 
+    /**
+     * Process Charges Delta Delete message.
+     */
+    public String processDelete(Message<ChsDelta> chsDelta) {
+        final ChsDelta payload = chsDelta.getPayload();
+        final String logContext = payload.getContextId();
+        final Map<String, Object> logMap = new HashMap<>();
+        final ChargesDeleteDelta chargesDeleteDelta =
+                mapToChargesDelta(payload, ChargesDeleteDelta.class);
+
+        logger.trace(String.format("ChargesDeleteDelta extracted from Kafka message: %s",
+                chargesDeleteDelta));
+
+        Optional<String> chargeIdOptional = Optional.ofNullable(chargesDeleteDelta.getChargesId())
+                .filter(Predicate.not(String::isEmpty));
+
+        //pass in the chargeId and encode it with base64 after doing a SHA1 hash
+        final String chargeId = encoderUtil.encodeWithSha1(chargeIdOptional.orElseThrow(
+                () -> new NonRetryableErrorException("Charge Id is empty!")));
+
+        logMap.put("company_number", 0);
+        logMap.put("chargeId", chargeId);
+
+        final ApiResponse<Void> apiResponse = deleteCharge(logContext, chargeId);
+
+        handleDeleteResponse(HttpStatus.valueOf(apiResponse.getStatusCode()), logContext, logMap);
+
+        return chargeId;
+    }
+
     private <T> T mapToChargesDelta(ChsDelta payload, Class<T> deltaclass)
             throws NonRetryableErrorException {
         try {
@@ -105,19 +134,15 @@ public class ChargesDeltaProcessor {
         final String chargeId = encoderUtil.encodeWithSha1(
                 chargeIdOptional.orElseThrow(
                         () -> new NonRetryableErrorException("Charge Id is empty!")));
-
         logMap.put("company_number", companyNumber);
-        logMap.put("charge_id", chargeId);
-        logger.infoContext(
-                logContext,
-                format("Update charge for company number [%s] and charge id [%s]",
-                        companyNumber, chargeId),
-                logMap);
+        logMap.put("chargeId", chargeId);
+
+        logger.trace(String.format("Performing a PUT with "
+                + "company number %s for contextId %s", companyNumber, logContext));
         return apiClientService.putCharge(logContext,
                         companyNumber,
                         chargeId,
                         internalChargeApi);
-
     }
 
     private void handleResponse(
@@ -151,53 +176,12 @@ public class ChargesDeltaProcessor {
     }
 
     /**
-     * Process Charges Delta Delete message.
-     */
-    public String processDelete(Message<ChsDelta> chsDelta) {
-        final ChsDelta payload = chsDelta.getPayload();
-        final String logContext = payload.getContextId();
-        final Map<String, Object> logMap = new HashMap<>();
-        final ChargesDeleteDelta chargesDeleteDelta =
-                mapToChargesDelta(payload, ChargesDeleteDelta.class);
-
-        logger.trace(String.format("ChargesDeleteDelta extracted from Kafka message: %s",
-                chargesDeleteDelta));
-
-        Optional<String> chargeIdOptional = Optional.ofNullable(chargesDeleteDelta.getChargesId())
-                .filter(Predicate.not(String::isEmpty));
-
-        //pass in the chargeId and encode it with base64 after doing a SHA1 hash
-        final String chargeId = encoderUtil.encodeWithSha1(chargeIdOptional.orElseThrow(
-                () -> new NonRetryableErrorException("Charge Id is empty!")));
-
-        logMap.put("chargeId", chargeId);
-
-        logger.infoContext(
-                logContext,
-                String.format(
-                        "Process DELETE charge for charge id %s", chargeId),
-                logMap);
-
-        final ApiResponse<Void> apiResponse =
-                deleteCharge(logContext, chargeId, logMap);
-
-        handleDeleteResponse(HttpStatus.valueOf(apiResponse.getStatusCode()), logContext, logMap);
-
-        return chargeId;
-    }
-
-    /**
      * Invoke Charges Data API to update charges database.
      */
-    private ApiResponse<Void> deleteCharge(final String logContext, String chargeId,
-                                                final Map<String, Object> logMap) {
-        logger.infoContext(
-                logContext,
-                format("Deleting charge id [%s]", chargeId),
-                logMap);
-        return apiClientService.deleteCharge(logContext, "0",
-                chargeId);
-
+    private ApiResponse<Void> deleteCharge(final String logContext, String chargeId) {
+        logger.trace(String.format("Performing DELETE with "
+                + "chargeId: %s for contextId: %s", chargeId, logContext));
+        return apiClientService.deleteCharge(logContext, "0", chargeId);
     }
 
     private void handleDeleteResponse(
