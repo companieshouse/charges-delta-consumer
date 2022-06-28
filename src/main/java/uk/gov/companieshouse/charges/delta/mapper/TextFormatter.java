@@ -203,7 +203,6 @@ public class TextFormatter {
     private static String mapWord(String token, SentenceState sentenceState) {
         Matcher possessivePatternMatcher = POSSESSIVE_PATTERN.matcher(token);
         Matcher possessiveEndOfSentenceMatcher = POSSESSIVE_END_OF_SENTENCE_PATTERN.matcher(token);
-        Matcher fullStopsAndNumbersMatcher = FULL_STOPS_AND_NUMBERS_PATTERN.matcher(token);
         if (possessivePatternMatcher.find()) {
             sentenceState.setEndOfSentence(possessiveEndOfSentenceMatcher.find());
             sentenceState.setMatchingBracket(
@@ -217,6 +216,8 @@ public class TextFormatter {
             token = sentenceCasedWord;
             sentenceState.setNumbersAndFullStopsToggled(false);
         }
+
+        Matcher fullStopsAndNumbersMatcher = FULL_STOPS_AND_NUMBERS_PATTERN.matcher(token);
         if (fullStopsAndNumbersMatcher.find()) {
             sentenceState.setNumbersAndFullStopsToggled(true);
         }
