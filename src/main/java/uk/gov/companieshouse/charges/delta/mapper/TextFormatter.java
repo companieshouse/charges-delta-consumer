@@ -32,6 +32,7 @@ public class TextFormatter {
             "(\\b(?i:" + String.join("|", ENTITIES) + ")\\b)");
     private static final Pattern LAST_WORD = Pattern.compile("(\\p{L}[\\p{L}']*)$");
     private static final Pattern OPENING_PARENTHESIS = Pattern.compile("[(](\\p{L}[\\p{L}']*)");
+    private static final Pattern OPENING_PARENTHESIS_OPTIONAL_QUOTES = Pattern.compile("^[(][\"]*");
     private static final Pattern CLOSING_PARENTHESIS = Pattern.compile("(\\p{L}[\\p{L}']*)[)]");
     private static final Pattern COLON = Pattern.compile("([:;]\\s+)(\\p{L}[\\p{L}']*)");
     private static final Pattern NEWLINE = Pattern.compile("\\n");
@@ -43,7 +44,9 @@ public class TextFormatter {
             "^([^a-z]*)I[^a-z]",
             Pattern.CASE_INSENSITIVE);
     private static final Pattern FULL_STOPS_AND_NUMBERS_PATTERN = Pattern.compile(
-            "([a-zA-Z0-9]{2,})\\.([0-9]{1,})\\.");
+            "[a-zA-Z0-9]{2,}\\.[0-9]{1,}\\.");
+    private static final Pattern WHITESPACE_FULLSTOP_PATTERN = Pattern.compile(
+            "[(]?[a-zA-Z0-9]{2,}\\.[0-9]{1,}[)]?\\s{1,}");
     private static final Pattern POSSESSIVE_END_OF_SENTENCE_PATTERN = Pattern.compile(
             "([.]|[!?]+)[^.!?a-z]*$"
     );
@@ -137,6 +140,7 @@ public class TextFormatter {
             return text;
         }
         text = text.toUpperCase(Locale.UK);
+        System.out.println("Uppercase: " + text);
         Matcher forwardslashAbbreviationMatcher = FORWARDSLASH_ABBREVIATION.matcher(text);
         String start = "";
         if (forwardslashAbbreviationMatcher.find()) {
@@ -147,19 +151,25 @@ public class TextFormatter {
         text = mapToken(TOKENISATION_PATTERN, text,
                 (token, matcher) ->
                         TextFormatter.mapWord(token, sentenceState), true);
+        System.out.println("TOKENISATION: " + text);
         if (!start.isEmpty()) {
             text = start + text;
         }
         text = mapToken(NEWLINE, text, (token, matcher) -> " ", true);
+        System.out.println("NEWLINE: " + text);
         text = mapToken(ABBREVIATIONS, text, (token, matcher) ->
                         matcher.group(1).toUpperCase(Locale.UK) + ".", true);
+        System.out.println("ABBREVIATIONS: " + text);
         text = mapToken(MULTIPLE_SPACES, text, (token, matcher) -> " ", true);
+        System.out.println("MULTIPLE SPACES: " + text);
         text = mapToken(MIXED_ALPHANUMERIC, text, (token, matcher) ->
                         matcher.group(1).toUpperCase(Locale.UK), true);
+        System.out.println("MIXED ALPHANUMERIC: " + text);
         text = mapToken(MATCHES_ENTITY, text, (token, matcher) ->
                         ENTITIES.contains(token.toUpperCase(Locale.UK))
                                 ? token.toUpperCase(Locale.UK)
                                 : token, true);
+        System.out.println("MATCHES ENTITY: " + text);
         return text.trim();
     }
 
@@ -218,9 +228,19 @@ public class TextFormatter {
             sentenceState.setNumbersAndFullStopsToggled(false);
         }
 
+        if (sentenceState.isWhitespaceFullStopsToggled()) {
+            token = token.toLowerCase(Locale.UK);
+            System.out.println(token);
+        }
+
         Matcher fullStopsAndNumbersMatcher = FULL_STOPS_AND_NUMBERS_PATTERN.matcher(token);
         if (fullStopsAndNumbersMatcher.find()) {
             sentenceState.setNumbersAndFullStopsToggled(true);
+        }
+
+        Matcher whitespaceAndFullStopsMatcher = WHITESPACE_FULLSTOP_PATTERN.matcher(token);
+        if (whitespaceAndFullStopsMatcher.find()) {
+            sentenceState.setWhitespaceFullStopsToggled(true);
         }
 
         Matcher generalAbbreviationMatcher = GENERAL_ABBREVIATION.matcher(token);
@@ -262,6 +282,7 @@ public class TextFormatter {
         private boolean endOfSentence = true;
         private boolean matchingBracket = false;
         private boolean numbersAndFullStopsToggled = false;
+        private boolean whitespaceFullStopsToggled = false;
 
         private boolean isEndOfSentence() {
             return endOfSentence;
@@ -285,6 +306,14 @@ public class TextFormatter {
 
         public void setNumbersAndFullStopsToggled(boolean numbersAndFullStopsToggled) {
             this.numbersAndFullStopsToggled = numbersAndFullStopsToggled;
+        }
+
+        public boolean isWhitespaceFullStopsToggled() {
+            return whitespaceFullStopsToggled;
+        }
+
+        public void setWhitespaceFullStopsToggled(boolean whitespaceFullStopsToggled) {
+            this.whitespaceFullStopsToggled = whitespaceFullStopsToggled;
         }
     }
 }

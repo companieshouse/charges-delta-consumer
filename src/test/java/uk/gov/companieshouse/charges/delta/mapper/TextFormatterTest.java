@@ -157,7 +157,9 @@ class TextFormatterTest {
                 Arguments.of("2+2=4", "2+2=4"),
                 Arguments.of("this is a word with two full stops.. so is this..", "This is a word with two full stops.. So is this.."),
                 Arguments.of("i.. don't know if this will work", "I.. Don't know if this will work"),
-                Arguments.of("p/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc. \n\t but i\tthink (a cat) is 4life! æthelred is ready.", "P/Office the D.R. of an LLP says a cat is ) for christmas etc. but I think (a cat) is 4LIFE! æThelred is ready.")
+                Arguments.of("p/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc. \n\t but i\tthink (a cat) is 4life! æthelred is ready.", "P/Office the D.R. of an LLP says a cat is ) "
+                        + "for christmas etc. but I think (a cat) is 4LIFE! æThelred is ready."),
+                Arguments.of("(Hello world.321)                                 (\"the trust deed\")", "(Hello world.321) (\"the trust deed\")")
         );
     }
 
