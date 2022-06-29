@@ -43,9 +43,9 @@ public class TextFormatter {
     private static final Pattern POSSESSIVE_PATTERN = Pattern.compile(
             "^([^a-z]*)I[^a-z]",
             Pattern.CASE_INSENSITIVE);
-    private static final Pattern FULL_STOPS_AND_NUMBERS_PATTERN = Pattern.compile(
-            "[a-zA-Z0-9]{2,}\\.[0-9]{1,}\\.");
-    private static final Pattern WHITESPACE_FULLSTOP_PATTERN = Pattern.compile(
+    private static final Pattern TWO_FULL_STOPS_SEPARATED_BY_NUMBERS_PATTERN = Pattern.compile(
+            "[(]?[a-zA-Z0-9]{2,}\\.[0-9]{1,}\\.[)]?");
+    private static final Pattern ONE_FULL_STOP_FOLLOWED_BY_NUMBERS_PATTERN = Pattern.compile(
             "[(]?[a-zA-Z0-9]{2,}\\.[0-9]{1,}[)]?\\s{1,}");
     private static final Pattern POSSESSIVE_END_OF_SENTENCE_PATTERN = Pattern.compile(
             "([.]|[!?]+)[^.!?a-z]*$"
@@ -140,7 +140,6 @@ public class TextFormatter {
             return text;
         }
         text = text.toUpperCase(Locale.UK);
-        System.out.println("Uppercase: " + text);
         Matcher forwardslashAbbreviationMatcher = FORWARDSLASH_ABBREVIATION.matcher(text);
         String start = "";
         if (forwardslashAbbreviationMatcher.find()) {
@@ -151,25 +150,19 @@ public class TextFormatter {
         text = mapToken(TOKENISATION_PATTERN, text,
                 (token, matcher) ->
                         TextFormatter.mapWord(token, sentenceState), true);
-        System.out.println("TOKENISATION: " + text);
         if (!start.isEmpty()) {
             text = start + text;
         }
         text = mapToken(NEWLINE, text, (token, matcher) -> " ", true);
-        System.out.println("NEWLINE: " + text);
         text = mapToken(ABBREVIATIONS, text, (token, matcher) ->
                         matcher.group(1).toUpperCase(Locale.UK) + ".", true);
-        System.out.println("ABBREVIATIONS: " + text);
         text = mapToken(MULTIPLE_SPACES, text, (token, matcher) -> " ", true);
-        System.out.println("MULTIPLE SPACES: " + text);
         text = mapToken(MIXED_ALPHANUMERIC, text, (token, matcher) ->
                         matcher.group(1).toUpperCase(Locale.UK), true);
-        System.out.println("MIXED ALPHANUMERIC: " + text);
         text = mapToken(MATCHES_ENTITY, text, (token, matcher) ->
                         ENTITIES.contains(token.toUpperCase(Locale.UK))
                                 ? token.toUpperCase(Locale.UK)
                                 : token, true);
-        System.out.println("MATCHES ENTITY: " + text);
         return text.trim();
     }
 
@@ -221,26 +214,26 @@ public class TextFormatter {
         }
 
         token = token.toLowerCase(Locale.UK);
-        if (sentenceState.isEndOfSentence() || sentenceState.isNumbersAndFullStopsToggled()) {
+        if (sentenceState.isEndOfSentence() || sentenceState.isTwoFullStopsAndNumbersToggled()) {
             token = mapToken(FIRST_LETTER,
                     token, (t, m) -> t.toUpperCase(Locale.UK), false);
             sentenceState.setMatchingBracket(token.matches("^[\\[(].*$"));
-            sentenceState.setNumbersAndFullStopsToggled(false);
+            sentenceState.setTwoFullStopsAndNumbersToggled(false);
         }
 
-        if (sentenceState.isWhitespaceFullStopsToggled()) {
+        if (sentenceState.isFullStopFollowedByNumbersToggled()) {
             token = token.toLowerCase(Locale.UK);
-            System.out.println(token);
+            sentenceState.setFullStopFollowedByNumbersToggled(false);
         }
 
-        Matcher fullStopsAndNumbersMatcher = FULL_STOPS_AND_NUMBERS_PATTERN.matcher(token);
-        if (fullStopsAndNumbersMatcher.find()) {
-            sentenceState.setNumbersAndFullStopsToggled(true);
+        Matcher twoFullStopsSeparatedByNumbersMatcher = TWO_FULL_STOPS_SEPARATED_BY_NUMBERS_PATTERN.matcher(token);
+        if (twoFullStopsSeparatedByNumbersMatcher.find()) {
+            sentenceState.setTwoFullStopsAndNumbersToggled(true);
         }
 
-        Matcher whitespaceAndFullStopsMatcher = WHITESPACE_FULLSTOP_PATTERN.matcher(token);
-        if (whitespaceAndFullStopsMatcher.find()) {
-            sentenceState.setWhitespaceFullStopsToggled(true);
+        Matcher oneFullStopFollowedByNumbersMatcher = ONE_FULL_STOP_FOLLOWED_BY_NUMBERS_PATTERN.matcher(token);
+        if (oneFullStopFollowedByNumbersMatcher.find()) {
+            sentenceState.setFullStopFollowedByNumbersToggled(true);
         }
 
         Matcher generalAbbreviationMatcher = GENERAL_ABBREVIATION.matcher(token);
@@ -281,8 +274,8 @@ public class TextFormatter {
     private static class SentenceState {
         private boolean endOfSentence = true;
         private boolean matchingBracket = false;
-        private boolean numbersAndFullStopsToggled = false;
-        private boolean whitespaceFullStopsToggled = false;
+        private boolean twoFullStopsAndNumbersToggled = false;
+        private boolean fullStopFollowedByNumbersToggled = false;
 
         private boolean isEndOfSentence() {
             return endOfSentence;
@@ -300,20 +293,20 @@ public class TextFormatter {
             this.matchingBracket = matchingBracket;
         }
 
-        public boolean isNumbersAndFullStopsToggled() {
-            return numbersAndFullStopsToggled;
+        public boolean isTwoFullStopsAndNumbersToggled() {
+            return twoFullStopsAndNumbersToggled;
         }
 
-        public void setNumbersAndFullStopsToggled(boolean numbersAndFullStopsToggled) {
-            this.numbersAndFullStopsToggled = numbersAndFullStopsToggled;
+        public void setTwoFullStopsAndNumbersToggled(boolean twoFullStopsAndNumbersToggled) {
+            this.twoFullStopsAndNumbersToggled = twoFullStopsAndNumbersToggled;
         }
 
-        public boolean isWhitespaceFullStopsToggled() {
-            return whitespaceFullStopsToggled;
+        public boolean isFullStopFollowedByNumbersToggled() {
+            return fullStopFollowedByNumbersToggled;
         }
 
-        public void setWhitespaceFullStopsToggled(boolean whitespaceFullStopsToggled) {
-            this.whitespaceFullStopsToggled = whitespaceFullStopsToggled;
+        public void setFullStopFollowedByNumbersToggled(boolean fullStopFollowedByNumbersToggled) {
+            this.fullStopFollowedByNumbersToggled = fullStopFollowedByNumbersToggled;
         }
     }
 }
