@@ -32,7 +32,6 @@ public class TextFormatter {
             "(\\b(?i:" + String.join("|", ENTITIES) + ")\\b)");
     private static final Pattern LAST_WORD = Pattern.compile("(\\p{L}[\\p{L}']*)$");
     private static final Pattern OPENING_PARENTHESIS = Pattern.compile("[(](\\p{L}[\\p{L}']*)");
-    private static final Pattern OPENING_PARENTHESIS_OPTIONAL_QUOTES = Pattern.compile("^[(][\"]*");
     private static final Pattern CLOSING_PARENTHESIS = Pattern.compile("(\\p{L}[\\p{L}']*)[)]");
     private static final Pattern COLON = Pattern.compile("([:;]\\s+)(\\p{L}[\\p{L}']*)");
     private static final Pattern NEWLINE = Pattern.compile("\\n");
