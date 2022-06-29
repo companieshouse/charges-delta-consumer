@@ -225,12 +225,14 @@ public class TextFormatter {
             sentenceState.setFullStopFollowedByNumbersToggled(false);
         }
 
-        Matcher twoFullStopsSeparatedByNumbersMatcher = TWO_FULL_STOPS_SEPARATED_BY_NUMBERS_PATTERN.matcher(token);
+        Matcher twoFullStopsSeparatedByNumbersMatcher =
+                TWO_FULL_STOPS_SEPARATED_BY_NUMBERS_PATTERN.matcher(token);
         if (twoFullStopsSeparatedByNumbersMatcher.find()) {
             sentenceState.setTwoFullStopsAndNumbersToggled(true);
         }
 
-        Matcher oneFullStopFollowedByNumbersMatcher = ONE_FULL_STOP_FOLLOWED_BY_NUMBERS_PATTERN.matcher(token);
+        Matcher oneFullStopFollowedByNumbersMatcher =
+                ONE_FULL_STOP_FOLLOWED_BY_NUMBERS_PATTERN.matcher(token);
         if (oneFullStopFollowedByNumbersMatcher.find()) {
             sentenceState.setFullStopFollowedByNumbersToggled(true);
         }
