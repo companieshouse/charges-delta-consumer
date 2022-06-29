@@ -87,6 +87,7 @@ notice_type: 407(NI),  filing_type: create-charge-northern-ireland-pre-2006-comp
 notice_type: 408(NI),  filing_type: create-charge-by-judgement-enforcement-office-northern-ireland-pre-2006-companies-act-form-408
 notice_type: C408(NI),  filing_type: create-charge-by-judgement-enforcement-office-northern-ireland-pre-2006-companies-act-form-C408
 notice_type: 410(Scot),  filing_type: create-charge-scotland-pre-2006-companies-act
+notice_type: LLP410(Scot), filing_type: create-charge-scotland-pre-2006-companies-act-limited-liability-partnership
 notice_type: 411A(NI),  filing_type: charge-satisfaction-northern-ireland-pre-2006-companies-act
 notice_type: 411B(NI),  filing_type: charge-release-cease-northern-ireland-pre-2006-companies-act
 notice_type: LLP411A(NI),  filing_type: charge-satisfaction-northern-ireland-pre-2006-companies-act-limited-liability-partnership
