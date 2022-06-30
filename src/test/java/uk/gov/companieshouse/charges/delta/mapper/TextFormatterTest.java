@@ -172,7 +172,8 @@ class TextFormatterTest {
                         + "for christmas etc. but I think (a cat) is 4LIFE! æThelred is ready."),
                 Arguments.of("This sentence contains sequence AB.1234. sentence casing should apply after the full stop", "This sentence contains sequence ab.1234. Sentence casing should apply after the full stop"),
                 Arguments.of("This sentence contains brackets and sequence AB.1234. (sentence casing) applies inside the brackets and after the full stop.", "This sentence contains brackets and sequence ab.1234. (Sentence casing) applies inside the brackets and after the full stop."),
-                Arguments.of("(this sentence has closing brackets after a full stop.) this one does not.", "(This sentence has closing brackets after a full stop.) This one does not.")
+                Arguments.of("(this sentence has closing brackets after a full stop.) this one does not.", "(This sentence has closing brackets after a full stop.) This one does not."),
+                Arguments.of("this sentence has an unmatched closing bracket after a full stop.) this one does not.", "This sentence has an unmatched closing bracket after a full stop.) this one does not.")
         );
     }
 
