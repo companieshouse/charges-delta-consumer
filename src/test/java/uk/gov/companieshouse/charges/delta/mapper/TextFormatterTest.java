@@ -52,6 +52,17 @@ class TextFormatterTest {
         assertEquals(expected, actual);
     }
 
+    @ParameterizedTest(name = "End of sentence should be [{1}] for token [{0}]")
+    @MethodSource("endOfSentence")
+    @DisplayName("Determine if provided token is the end of a sentence")
+    void testEndOfSentence(String token, TextFormatter.SentenceTerminationState expected) {
+        // when
+        TextFormatter.SentenceTerminationState actual = TextFormatter.isEndOfSentence(token);
+
+        // then
+        assertEquals(expected, actual);
+    }
+
     private static Stream<Arguments> entityNameFormatting() {
         return Stream.of(
                 Arguments.of(null, null),
@@ -65,14 +76,14 @@ class TextFormatterTest {
                 Arguments.of("bread and butter", "Bread and Butter"),
                 Arguments.of("and or the", "And or The"),
                 Arguments.of("King (of in the) Hill", "King (Of in The) Hill"),
-                Arguments.of("King (.of in the) Hill", "King (.of in The) Hill"), // existing algorithm transforms text to King (.of in The) Hill
+                Arguments.of("King (.of in the) Hill", "King (.of in The) Hill"),
                 Arguments.of("King .(of in the) Hill", "King .(Of in The) Hill"),
-                Arguments.of("King .(.of in the.). Hill", "King .(.of in the.). Hill"), // existing algorithm transforms text to King .(.of in the.). Hill
+                Arguments.of("King .(.of in the.). Hill", "King .(.of in the.). Hill"),
                 Arguments.of("King (is king of the) Hill", "King (Is King of The) Hill"),
                 Arguments.of("King (of. in the) Hill", "King (Of. in The) Hill"),
-                Arguments.of("An apple; an orange","An Apple; An Orange"),
-                Arguments.of("An apple; \"an orange","An Apple; \"an Orange"), // existing algorithm transforms text to An Apple; "an Orange
-                Arguments.of("An apple; and; an orange","An Apple; And; an Orange"),
+                Arguments.of("An apple; an orange", "An Apple; An Orange"),
+                Arguments.of("An apple; \"an orange", "An Apple; \"an Orange"),
+                Arguments.of("An apple; and; an orange", "An Apple; And; an Orange"),
                 Arguments.of("java coffee 4l1f3", "Java Coffee 4L1F3"),
                 Arguments.of("java coffee \"4l1f3\"", "Java Coffee \"4L1F3\""),
                 Arguments.of("llp", "LLP"),
@@ -159,7 +170,9 @@ class TextFormatterTest {
                 Arguments.of("i.. don't know if this will work", "I.. Don't know if this will work"),
                 Arguments.of("p/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc. \n\t but i\tthink (a cat) is 4life! æthelred is ready.", "P/Office the D.R. of an LLP says a cat is ) "
                         + "for christmas etc. but I think (a cat) is 4LIFE! æThelred is ready."),
-                Arguments.of("this sentence has a full stop followed by numbers.123 (This) should be lowercase", "This sentence has a full stop followed by numbers.123 (this) should be lowercase")
+                Arguments.of("This sentence contains sequence AB.1234. sentence casing should apply after the full stop", "This sentence contains sequence ab.1234. Sentence casing should apply after the full stop"),
+                Arguments.of("This sentence contains brackets and sequence AB.1234. (sentence casing) applies inside the brackets and after the full stop.", "This sentence contains brackets and sequence ab.1234. (Sentence casing) applies inside the brackets and after the full stop."),
+                Arguments.of("(this sentence has closing brackets after a full stop.) this one does not.", "(This sentence has closing brackets after a full stop.) This one does not.")
         );
     }
 
@@ -173,11 +186,29 @@ class TextFormatterTest {
                 Arguments.of("\\n\\n", "."),
                 Arguments.of("\\nHello", "Hello."),
                 Arguments.of("this is a word with two full stops.. so is this..\\n", "This is a word with two full stops.. So is this.."),
-                Arguments.of("This sentence contains sequence AB.1234. sentence casing should apply after the full stop", "This sentence contains sequence ab.1234. Sentence casing should apply after the full stop."),
-                Arguments.of("This sentence contains brackets and sequence AB.1234. (sentence casing) applies inside the brackets and after the full stop.", "This sentence contains brackets and sequence ab.1234. (Sentence casing) applies inside the brackets and after the full stop."),
                 Arguments.of("Hello\\n\\nWorld", "Hello. World."),
                 Arguments.of("Hello\\n \\n \\nWorld", "Hello. World."),
                 Arguments.of("\\np/office the d.r. of an lLp saYs a cAT is ) for ChrIstmAS etc.  \\n\\n\t but i\tthink (a cat) is 4life! æthelred is ready", "P/Office the D.R. of an LLP says a cat is ) for christmas etc.. but I think (a cat) is 4LIFE! æThelred is ready.")
+        );
+    }
+
+    private static Stream<Arguments> endOfSentence() {
+        return Stream.of(
+                Arguments.of(null, TextFormatter.SentenceTerminationState.NOT_TERMINATED),
+                Arguments.of("", TextFormatter.SentenceTerminationState.NOT_TERMINATED),
+                Arguments.of(".", TextFormatter.SentenceTerminationState.NOT_TERMINATED),
+                Arguments.of("a.", TextFormatter.SentenceTerminationState.NOT_TERMINATED),
+                Arguments.of("a. ", TextFormatter.SentenceTerminationState.TERMINATED),
+                Arguments.of("a'. ", TextFormatter.SentenceTerminationState.TERMINATED),
+                Arguments.of("'a. ", TextFormatter.SentenceTerminationState.TERMINATED),
+                Arguments.of("a.' ", TextFormatter.SentenceTerminationState.TERMINATED),
+                Arguments.of("a.b ", TextFormatter.SentenceTerminationState.NOT_TERMINATED),
+                Arguments.of("b.sc ", TextFormatter.SentenceTerminationState.NOT_TERMINATED),
+                Arguments.of("a.b! ", TextFormatter.SentenceTerminationState.TERMINATED),
+                Arguments.of("a.b? ", TextFormatter.SentenceTerminationState.TERMINATED),
+                Arguments.of("a.) ", TextFormatter.SentenceTerminationState.TERMINATED_WITH_BRACKET),
+                Arguments.of("a.) ", TextFormatter.SentenceTerminationState.TERMINATED_WITH_BRACKET),
+                Arguments.of("a). ", TextFormatter.SentenceTerminationState.TERMINATED)
         );
     }
 }
