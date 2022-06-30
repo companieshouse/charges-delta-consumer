@@ -253,7 +253,7 @@ public class TextFormatter {
     }
 
     static SentenceTerminationState isEndOfSentence(String token) {
-        if(StringUtils.isEmpty(token)) {
+        if (StringUtils.isEmpty(token)) {
             return SentenceTerminationState.NOT_TERMINATED;
         }
 
@@ -263,9 +263,9 @@ public class TextFormatter {
         boolean closingBracket = false;
 
         String current;
-        for(int i = 0; i < token.length(); i++) {
+        for (int i = 0; i < token.length(); i++) {
             current = Character.toString(token.charAt(i));
-            if(FIRST_LETTER.matcher(current).matches()) {
+            if (FIRST_LETTER.matcher(current).matches()) {
                 singleLetter = true;
                 terminator = false;
                 endSpace = false;
