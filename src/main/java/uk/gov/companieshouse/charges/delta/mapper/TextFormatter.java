@@ -42,10 +42,6 @@ public class TextFormatter {
     private static final Pattern POSSESSIVE_PATTERN = Pattern.compile(
             "^([^a-z]*)I[^a-z]",
             Pattern.CASE_INSENSITIVE);
-    private static final Pattern TWO_FULL_STOPS_SEPARATED_BY_NUMBERS_PATTERN = Pattern.compile(
-            "[(]?[a-zA-Z0-9]{2,}\\.[0-9]{1,}\\.[)]?");
-    private static final Pattern ONE_FULL_STOP_FOLLOWED_BY_NUMBERS_PATTERN = Pattern.compile(
-            "[(]?[a-zA-Z0-9]{2,}\\.[0-9]{1,}[)]?\\s{1,}");
     private static final Pattern POSSESSIVE_END_OF_SENTENCE_PATTERN = Pattern.compile(
             "([.]|[!?]+)[^.!?a-z]*$"
     );
@@ -59,9 +55,9 @@ public class TextFormatter {
                     "(?:[A-Z][.])(?:[A-Z][.])+|",
                     "(^[^a-zA-Z]*([a-z][.])+))[^a-z]*\\s"),
             Pattern.CASE_INSENSITIVE);
-    private static final Pattern END_OF_SENTENCE_PATTERN = Pattern.compile(
-            "[a-z][^a-z.!?]*[.!?]+([^a-z\\s.!?]*)\\s",
-            Pattern.CASE_INSENSITIVE);
+    private static final Pattern SENTENCE_TERMINATOR = Pattern.compile("[.!?]");
+    private static final Pattern CLOSING_BRACKET = Pattern.compile("[])]");
+    private static final Pattern WHITESPACE = Pattern.compile("\\s");
 
     /**
      * Format a given string as an entity name in accordance to the following rules
@@ -211,38 +207,18 @@ public class TextFormatter {
                     possessivePatternMatcher.group(1).matches("^[\\[(].*$"));
             return token.toUpperCase(Locale.UK);
         }
-
         token = token.toLowerCase(Locale.UK);
-        if (sentenceState.isEndOfSentence() || sentenceState.isTwoFullStopsAndNumbersToggled()) {
+        if (sentenceState.isEndOfSentence()) {
             token = mapToken(FIRST_LETTER,
                     token, (t, m) -> t.toUpperCase(Locale.UK), false);
             sentenceState.setMatchingBracket(token.matches("^[\\[(].*$"));
-            sentenceState.setTwoFullStopsAndNumbersToggled(false);
         }
-
-        if (sentenceState.isFullStopFollowedByNumbersToggled()) {
-            token = token.toLowerCase(Locale.UK);
-            sentenceState.setFullStopFollowedByNumbersToggled(false);
-        }
-
-        Matcher twoFullStopsSeparatedByNumbersMatcher =
-                TWO_FULL_STOPS_SEPARATED_BY_NUMBERS_PATTERN.matcher(token);
-        if (twoFullStopsSeparatedByNumbersMatcher.find()) {
-            sentenceState.setTwoFullStopsAndNumbersToggled(true);
-        }
-
-        Matcher oneFullStopFollowedByNumbersMatcher =
-                ONE_FULL_STOP_FOLLOWED_BY_NUMBERS_PATTERN.matcher(token);
-        if (oneFullStopFollowedByNumbersMatcher.find()) {
-            sentenceState.setFullStopFollowedByNumbersToggled(true);
-        }
-
         Matcher generalAbbreviationMatcher = GENERAL_ABBREVIATION.matcher(token);
-        Matcher endOfSentenceMatcher = END_OF_SENTENCE_PATTERN.matcher(token);
+        SentenceTerminationState terminationState = isEndOfSentence(token);
         sentenceState.setEndOfSentence(!generalAbbreviationMatcher.find()
-                && endOfSentenceMatcher.find()
-                && !(endOfSentenceMatcher.group(1).matches("[])].*$")
-                && !sentenceState.isMatchingBracket()));
+                && (terminationState == SentenceTerminationState.TERMINATED
+                || (terminationState == SentenceTerminationState.TERMINATED_WITH_BRACKET
+                    && sentenceState.isMatchingBracket())));
         return token;
     }
 
@@ -272,11 +248,49 @@ public class TextFormatter {
         return result.toString();
     }
 
+    enum SentenceTerminationState {
+        NOT_TERMINATED, TERMINATED, TERMINATED_WITH_BRACKET
+    }
+
+    static SentenceTerminationState isEndOfSentence(String token) {
+        if (StringUtils.isEmpty(token)) {
+            return SentenceTerminationState.NOT_TERMINATED;
+        }
+
+        boolean singleLetter = false;
+        boolean terminator = false;
+        boolean endSpace = false;
+        boolean closingBracket = false;
+
+        String current;
+        for (int i = 0; i < token.length(); i++) {
+            current = Character.toString(token.charAt(i));
+            if (FIRST_LETTER.matcher(current).matches()) {
+                singleLetter = true;
+                terminator = false;
+                endSpace = false;
+                closingBracket = false;
+            } else if (SENTENCE_TERMINATOR.matcher(current).matches()) {
+                terminator = true;
+                closingBracket = false;
+            } else if (CLOSING_BRACKET.matcher(current).matches()) {
+                closingBracket = true;
+            } else if (WHITESPACE.matcher(current).matches() && i == token.length() - 1) {
+                endSpace = true;
+            }
+        }
+        if (singleLetter && terminator && closingBracket && endSpace) {
+            return SentenceTerminationState.TERMINATED_WITH_BRACKET;
+        } else if (singleLetter && terminator && endSpace) {
+            return SentenceTerminationState.TERMINATED;
+        } else {
+            return SentenceTerminationState.NOT_TERMINATED;
+        }
+    }
+
     private static class SentenceState {
         private boolean endOfSentence = true;
         private boolean matchingBracket = false;
-        private boolean twoFullStopsAndNumbersToggled = false;
-        private boolean fullStopFollowedByNumbersToggled = false;
 
         private boolean isEndOfSentence() {
             return endOfSentence;
@@ -292,22 +306,6 @@ public class TextFormatter {
 
         private void setMatchingBracket(boolean matchingBracket) {
             this.matchingBracket = matchingBracket;
-        }
-
-        public boolean isTwoFullStopsAndNumbersToggled() {
-            return twoFullStopsAndNumbersToggled;
-        }
-
-        public void setTwoFullStopsAndNumbersToggled(boolean twoFullStopsAndNumbersToggled) {
-            this.twoFullStopsAndNumbersToggled = twoFullStopsAndNumbersToggled;
-        }
-
-        public boolean isFullStopFollowedByNumbersToggled() {
-            return fullStopFollowedByNumbersToggled;
-        }
-
-        public void setFullStopFollowedByNumbersToggled(boolean fullStopFollowedByNumbersToggled) {
-            this.fullStopFollowedByNumbersToggled = fullStopFollowedByNumbersToggled;
         }
     }
 }
