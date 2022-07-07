@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -17,6 +18,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;
+import uk.gov.companieshouse.api.charges.TransactionsApi;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ChargesDeleteDelta;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
@@ -70,6 +72,7 @@ public class ChargesDeltaProcessor {
         Charge charge = chargesDelta.getCharges().get(0);
         InternalChargeApi internalChargeApi = transformer.transform(charge, headers);
 
+        removeBrokenFilingLinks(internalChargeApi, charge.getCompanyNumber());
         logger.info(String.format("Charge message with contextId: %s "
                 + "transformed to InternalChargeApi "
                 + ": %s", logContext, internalChargeApi));
@@ -117,6 +120,19 @@ public class ChargesDeltaProcessor {
             return mapper.readValue(payload.getData(), deltaclass);
         } catch (Exception exception) {
             throw new NonRetryableErrorException("Error when extracting charges delta", exception);
+        }
+    }
+
+    private void removeBrokenFilingLinks(InternalChargeApi internalChargeApi,
+                                         String companyNumber) {
+        List<TransactionsApi> transactions = internalChargeApi.getExternalData().getTransactions();
+        for (TransactionsApi transaction : transactions) {
+            if (transaction.getLinks() != null) {
+                if (transaction.getLinks().getFiling() != null & transaction.getLinks().getFiling()
+                        .equals(String.format("/company/%s/filing-history/", companyNumber))) {
+                    transaction.getLinks().setFiling(null);
+                }
+            }
         }
     }
 

@@ -24,7 +24,7 @@ Feature: Process Charges Delta information
     | charges-delta-source-3.json                          | internal-charges-api-expected-3.json                        |
     | charges-delta-source-19.json                         | internal-charges-api-expected-19.json                       |
     | charges-delta-source-20.json                         | internal-charges-api-expected-20.json                       |
-
+    | Additional_notices_No_Trans_Id.json                  | Additional_notices_No_Trans_Id_output.json                  |
 
 
 
