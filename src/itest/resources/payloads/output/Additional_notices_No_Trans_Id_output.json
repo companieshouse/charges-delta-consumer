@@ -1,0 +1,84 @@
+{
+  "external_data": {
+    "persons_entitled": [
+      {
+        "name": "Lyell Trading Limited"
+      }
+    ],
+    "charge_number": 49,
+    "particulars": {
+      "floating_charge_covers_all": true,
+      "type": "brief-description",
+      "contains_floating_charge": true,
+      "description": "The freehold land known as millennium house, 60 victoria street, liverpool and registered with hm land registry under title number MS303172.",
+      "contains_fixed_charge": true,
+      "contains_negative_pledge": true,
+      "chargor_acting_as_bare_trustee": null
+    },
+    "scottish_alterations": {
+      "type": null,
+      "description": null,
+      "has_alterations_to_order": null,
+      "has_alterations_to_prohibitions": null
+    },
+    "charge_code": "081242070049",
+    "links": {
+      "self": "/company/08124207/charges/vxRpuvN7Cgiokh1jt3Io0u3maWY"
+    },
+    "created_on": [2019,10,11],
+    "transactions": [
+      {
+        "filing_type": "create-charge-with-deed",
+        "transaction_id": null,
+        "delivered_on": [2019,10,17],
+        "insolvency_case_number": null,
+        "links": {
+          "insolvency_case": null
+        }
+      },
+      {
+        "filing_type": "charge-part-both",
+        "transaction_id": null,
+        "delivered_on": [2019,10,22],
+        "insolvency_case_number": null,
+        "links": {
+          "insolvency_case": null
+        }
+      },
+      {
+        "filing_type": "charge-part-satisfaction",
+        "transaction_id": null,
+        "delivered_on": [2019,10,29],
+        "insolvency_case_number": null,
+        "links": {
+          "insolvency_case": null
+        }
+      },
+      {
+        "filing_type": "charge-part-release",
+        "transaction_id": null,
+        "delivered_on": [2019,11,1],
+        "insolvency_case_number": null,
+        "links": {
+          "insolvency_case": null
+        }
+      }
+    ],
+    "status": "part-satisfied",
+    "classification": {
+      "description": "A registered charge",
+      "type": "charge-description"
+    },
+    "delivered_on": [2019,10,17],
+    "assets_ceased_released": "multiple-filings",
+    "acquired_on": null,
+    "resolved_on": null,
+    "covering_instrument_date": null,
+    "more_than_four_persons_entitled": null,
+    "satisfied_on": null
+  },
+  "internal_data": {
+    "updated_by": "charges-delta-0-0",
+    "delta_at": "2015-06-25T22:00:00.000Z"
+  }
+}

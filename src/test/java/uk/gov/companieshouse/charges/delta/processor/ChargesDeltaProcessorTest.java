@@ -234,6 +234,7 @@ public class ChargesDeltaProcessorTest {
     void When_ChsDelta_with_null_chargeId_Expect_ErrorResponse(String jsonFileName) throws IOException {
         Message<ChsDelta> mockChsChargesDeltaMessage = testSupport.createChsDeltaMessage(
                 jsonFileName, false);
+        when(transformer.transform(any(Charge.class), any(MessageHeaders.class))).thenReturn(testSupport.mockInternalChargeApi());
 
         assertThrows( NonRetryableErrorException.class,
                 () -> deltaProcessor.processDelta(mockChsChargesDeltaMessage));

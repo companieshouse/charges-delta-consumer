@@ -7,9 +7,11 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.FileCopyUtils;
+import uk.gov.companieshouse.api.charges.ChargeApi;
 import uk.gov.companieshouse.api.charges.ChargesApi;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.charges.InternalData;
+import uk.gov.companieshouse.api.charges.TransactionsApi;
 import uk.gov.companieshouse.api.delta.AdditionalNotice;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.delta.ChargesDelta;
@@ -113,8 +115,12 @@ public class TestSupport {
     {
         InternalChargeApi internalChargeApi = new InternalChargeApi();
         InternalData internalData = new InternalData();
+        ChargeApi externalData = new ChargeApi();
+        List<TransactionsApi> transactions = new ArrayList<>();
+        externalData.setTransactions(transactions);
         internalData.setUpdatedBy("test-partition_1-offset_1");
         internalChargeApi.setInternalData(internalData);
+        internalChargeApi.setExternalData(externalData);
         return internalChargeApi;
 
     }
