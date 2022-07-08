@@ -3,6 +3,7 @@ package uk.gov.companieshouse.charges.delta.mapper;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.regex.Matcher;
@@ -39,12 +40,6 @@ public class TextFormatter {
     private static final Pattern ABBREVIATIONS = Pattern.compile("\\b(\\p{L})[.]");
     private static final Pattern MIXED_ALPHANUMERIC = Pattern.compile("(\\w+\\d+\\w*|\\d+\\w+)");
     private static final Pattern TOKENISATION_PATTERN = Pattern.compile("(\\S+(\\s+|$))");
-    private static final Pattern POSSESSIVE_PATTERN = Pattern.compile(
-            "^([^a-z]*)I[^a-z]",
-            Pattern.CASE_INSENSITIVE);
-    private static final Pattern POSSESSIVE_END_OF_SENTENCE_PATTERN = Pattern.compile(
-            "([.]|[!?]+)[^.!?a-z]*$"
-    );
     private static final Pattern FORWARDSLASH_ABBREVIATION = Pattern.compile("^(.?/)(.*)",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     private static final Pattern FIRST_LETTER = Pattern.compile("([a-z])",
@@ -56,6 +51,7 @@ public class TextFormatter {
                     "(^[^a-zA-Z]*([a-z][.])+))[^a-z]*\\s"),
             Pattern.CASE_INSENSITIVE);
     private static final Pattern SENTENCE_TERMINATOR = Pattern.compile("[.!?]");
+    private static final Pattern OPENING_BRACKET = Pattern.compile("[(\\[]");
     private static final Pattern CLOSING_BRACKET = Pattern.compile("[])]");
     private static final Pattern WHITESPACE = Pattern.compile("\\s");
 
@@ -199,12 +195,10 @@ public class TextFormatter {
     }
 
     private static String mapWord(String token, SentenceState sentenceState) {
-        Matcher possessivePatternMatcher = POSSESSIVE_PATTERN.matcher(token);
-        Matcher possessiveEndOfSentenceMatcher = POSSESSIVE_END_OF_SENTENCE_PATTERN.matcher(token);
-        if (possessivePatternMatcher.find()) {
-            sentenceState.setEndOfSentence(possessiveEndOfSentenceMatcher.find());
-            sentenceState.setMatchingBracket(
-                    possessivePatternMatcher.group(1).matches("^[\\[(].*$"));
+        Possessiveness possessive = isPossessive(token);
+        if (possessive.possessive) {
+            sentenceState.setEndOfSentence(possessive.endOfSentence);
+            sentenceState.setMatchingBracket(possessive.openingBrackets);
             return token.toUpperCase(Locale.UK);
         }
         token = token.toLowerCase(Locale.UK);
@@ -246,6 +240,80 @@ public class TextFormatter {
         }
         result.append(token.substring(prevEnd));
         return result.toString();
+    }
+
+    static class Possessiveness {
+        boolean possessive;
+        boolean openingBrackets;
+        boolean endOfSentence;
+
+        Possessiveness() {
+        }
+
+        Possessiveness(boolean possessive, boolean openingBrackets, boolean endOfSentence) {
+            this.possessive = possessive;
+            this.openingBrackets = openingBrackets;
+            this.endOfSentence = endOfSentence;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Possessiveness that = (Possessiveness) o;
+            return possessive == that.possessive && openingBrackets == that.openingBrackets && endOfSentence == that.endOfSentence;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(possessive, openingBrackets, endOfSentence);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder result = new StringBuilder();
+            if (possessive) {
+                result.append("possessive");
+            } else {
+                result.append("not possessive");
+                return result.toString();
+            }
+            if (openingBrackets) {
+                result.append(", opening brackets");
+            } else {
+                result.append(", no opening brackets");
+            }
+            if (endOfSentence) {
+                result.append(", end of sentence");
+            } else {
+                result.append(", not end of sentence");
+            }
+            return result.toString();
+        }
+    }
+
+    static final Possessiveness NON_POSSESSIVE = new Possessiveness();
+
+    static Possessiveness isPossessive(String token) {
+        Possessiveness result = new Possessiveness();
+        if (StringUtils.isEmpty(token)) {
+            return NON_POSSESSIVE;
+        }
+        token = token.toUpperCase(Locale.UK);
+        for (int i = 0; i < token.length(); i++) {
+            String letter = Character.toString(token.charAt(i));
+            if (OPENING_BRACKET.matcher(letter).matches() && !result.possessive) {
+                result.openingBrackets = true;
+            } else if ("I".equals(letter.toUpperCase(Locale.UK)) && !result.possessive) {
+                result.possessive = true;
+                result.endOfSentence = false;
+            } else if (SENTENCE_TERMINATOR.matcher(letter).matches()) {
+                result.endOfSentence = true;
+            } else if(FIRST_LETTER.matcher(letter).matches()) {
+                return NON_POSSESSIVE;
+            }
+        }
+        return result;
     }
 
     enum SentenceTerminationState {
