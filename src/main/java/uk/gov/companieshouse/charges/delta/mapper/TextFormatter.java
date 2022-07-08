@@ -257,11 +257,17 @@ public class TextFormatter {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Possessiveness that = (Possessiveness) o;
-            return possessive == that.possessive && openingBrackets == that.openingBrackets && endOfSentence == that.endOfSentence;
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (other == null || getClass() != other.getClass()) {
+                return false;
+            }
+            Possessiveness that = (Possessiveness) other;
+            return possessive == that.possessive
+                    && openingBrackets == that.openingBrackets
+                    && endOfSentence == that.endOfSentence;
         }
 
         @Override
@@ -309,7 +315,7 @@ public class TextFormatter {
                 result.endOfSentence = false;
             } else if (SENTENCE_TERMINATOR.matcher(letter).matches()) {
                 result.endOfSentence = true;
-            } else if(FIRST_LETTER.matcher(letter).matches()) {
+            } else if (FIRST_LETTER.matcher(letter).matches()) {
                 return NON_POSSESSIVE;
             }
         }
