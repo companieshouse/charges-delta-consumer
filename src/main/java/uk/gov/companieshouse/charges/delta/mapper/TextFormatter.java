@@ -51,6 +51,7 @@ public class TextFormatter {
                     "(^[^a-zA-Z]*([a-z][.])+))[^a-z]*\\s"),
             Pattern.CASE_INSENSITIVE);
     private static final Pattern SENTENCE_TERMINATOR = Pattern.compile("[.!?]");
+    private static final Pattern OPENING_BRACKET = Pattern.compile("[(\\[]");
     private static final Pattern CLOSING_BRACKET = Pattern.compile("[])]");
     private static final Pattern WHITESPACE = Pattern.compile("\\s");
 
@@ -300,14 +301,15 @@ public class TextFormatter {
         }
         token = token.toUpperCase(Locale.UK);
         for (int i = 0; i < token.length(); i++) {
-            if ((token.charAt(i) == '(' || token.charAt(i) == '[') && !result.possessive) {
+            String letter = Character.toString(token.charAt(i));
+            if (OPENING_BRACKET.matcher(letter).matches() && !result.possessive) {
                 result.openingBrackets = true;
-            } else if (Character.toUpperCase(token.charAt(i)) == 'I' && !result.possessive) {
+            } else if ("I".equals(letter.toUpperCase(Locale.UK)) && !result.possessive) {
                 result.possessive = true;
                 result.endOfSentence = false;
-            } else if (token.charAt(i) == '.' || token.charAt(i) == '!' || token.charAt(i) == '?') {
+            } else if (SENTENCE_TERMINATOR.matcher(letter).matches()) {
                 result.endOfSentence = true;
-            } else if(Character.isAlphabetic(token.charAt(i))) {
+            } else if(FIRST_LETTER.matcher(letter).matches()) {
                 return NON_POSSESSIVE;
             }
         }
