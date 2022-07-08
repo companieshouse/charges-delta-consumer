@@ -185,7 +185,7 @@ class TextFormatterTest {
                 Arguments.of("This sentence contains brackets and sequence AB.1234. (sentence casing) applies inside the brackets and after the full stop.", "This sentence contains brackets and sequence ab.1234. (Sentence casing) applies inside the brackets and after the full stop."),
                 Arguments.of("(this sentence has closing brackets after a full stop.) this one does not.", "(This sentence has closing brackets after a full stop.) This one does not."),
                 Arguments.of("this sentence has an unmatched closing bracket after a full stop.) this one does not.", "This sentence has an unmatched closing bracket after a full stop.) this one does not."),
-                Arguments.of("THIS SENTENCE CONTAINS A WEIRD 2.2I AGREEMENT ACRONYM", "This sentence contains a weird 2.2I agreement acronym"),
+                Arguments.of("THIS SENTENCE CONTAINS AN ACRONYM 2.2I WITH AN I", "This sentence contains an acronym 2.2I with an I"),
                 Arguments.of("this sentence contains approximately (i)-(iii) roman numerals", "This sentence contains approximately (i)-(iii) roman numerals")
         );
     }
