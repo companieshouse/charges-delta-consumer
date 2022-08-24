@@ -85,7 +85,7 @@ Feature: Process Charges Delta information with error conditions
       | charges-delta-source-2.json      | 3      | 404              | charges-delta-charges-delta-consumer-error  |
 
 
-  Scenario Outline: Consume the message and process it and call charges data api getting 404 response moved to invalid
+  Scenario Outline: Consume the message and process it and call charges data api getting 410 response moved to invalid
 
     Given Charges delta consumer service is running
     And payload, companyNumber and chargeId are set from test data file "<deltaMessage>"
@@ -95,4 +95,4 @@ Feature: Process Charges Delta information with error conditions
 
     Examples:
       | deltaMessage                   | endpointResult   | targetTopic                                  |
-      | charges-delta-source-2.json    | 404              | charges-delta-charges-delta-consumer-invalid |
+      | charges-delta-source-2.json    | 410              | charges-delta-charges-delta-consumer-invalid |
