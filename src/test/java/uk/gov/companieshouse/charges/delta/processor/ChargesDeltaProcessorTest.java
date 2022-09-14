@@ -167,7 +167,7 @@ public class ChargesDeltaProcessorTest {
         doReturn(response).when(apiClientService).deleteCharge(eq("context_id"), eq("0"),
                 eq("yt6cQ-A2DqNpqwAMDWxKX12Axv4"));
 
-        assertThrows(RetryableErrorException.class, () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
+        assertThrows(NonRetryableErrorException.class, () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
         verify(apiClientService).deleteCharge("context_id", "0",
                 "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -176,7 +176,7 @@ public class ChargesDeltaProcessorTest {
     private static Stream<Arguments> provideExceptionParameters() {
         return Stream.of(
                 Arguments.of(HttpStatus.BAD_REQUEST, NonRetryableErrorException.class),
-                Arguments.of(HttpStatus.NOT_FOUND, RetryableErrorException.class),
+                Arguments.of(HttpStatus.NOT_FOUND, NonRetryableErrorException.class),
                 Arguments.of(HttpStatus.UNAUTHORIZED, RetryableErrorException.class),
                 Arguments.of(HttpStatus.INTERNAL_SERVER_ERROR, RetryableErrorException.class)
         );
