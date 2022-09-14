@@ -176,7 +176,7 @@ public class ChargesDeltaProcessorTest {
     private static Stream<Arguments> provideExceptionParameters() {
         return Stream.of(
                 Arguments.of(HttpStatus.BAD_REQUEST, NonRetryableErrorException.class),
-                Arguments.of(HttpStatus.NOT_FOUND, NonRetryableErrorException.class),
+                Arguments.of(HttpStatus.NOT_FOUND, RetryableErrorException.class),
                 Arguments.of(HttpStatus.UNAUTHORIZED, RetryableErrorException.class),
                 Arguments.of(HttpStatus.INTERNAL_SERVER_ERROR, RetryableErrorException.class)
         );

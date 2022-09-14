@@ -175,10 +175,10 @@ public class ChargesDeltaProcessor {
             logger.errorContext(logContext, message, null, logMap);
             throw new NonRetryableErrorException(message);
         }  else if (HttpStatus.NOT_FOUND == httpStatus) {
-            // 404 GONE status is not retryable
+            // 404 NOT FOUND status is retryable
             String message = "404 NOT FOUND response received from charges-data-api";
             logger.errorContext(logContext, message, null, logMap);
-            throw new NonRetryableErrorException(message);
+            throw new RetryableErrorException(message);
         } else if (!httpStatus.is2xxSuccessful()) {
             // any other client or server status is retryable
             String message = "Non-Successful 200 response received from charges-data-api";
