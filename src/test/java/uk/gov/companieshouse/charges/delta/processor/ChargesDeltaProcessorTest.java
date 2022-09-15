@@ -167,7 +167,7 @@ public class ChargesDeltaProcessorTest {
         doReturn(response).when(apiClientService).deleteCharge(eq("context_id"), eq("0"),
                 eq("yt6cQ-A2DqNpqwAMDWxKX12Axv4"));
 
-        assertThrows(NonRetryableErrorException.class, () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
+        assertThrows(RetryableErrorException.class, () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
         verify(apiClientService).deleteCharge("context_id", "0",
                 "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
