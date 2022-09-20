@@ -174,11 +174,11 @@ public class ChargesDeltaProcessor {
             String message = "400 BAD_REQUEST response received from charges-data-api";
             logger.errorContext(logContext, message, null, logMap);
             throw new NonRetryableErrorException(message);
-        }  else if (HttpStatus.GONE == httpStatus) {
-            // 410 GONE status is not retryable
-            String message = "410 GONE response received from charges-data-api";
+        }  else if (HttpStatus.NOT_FOUND == httpStatus) {
+            // 404 NOT FOUND status is retryable
+            String message = "404 NOT FOUND response received from charges-data-api";
             logger.errorContext(logContext, message, null, logMap);
-            throw new NonRetryableErrorException(message);
+            throw new RetryableErrorException(message);
         } else if (!httpStatus.is2xxSuccessful()) {
             // any other client or server status is retryable
             String message = "Non-Successful 200 response received from charges-data-api";
@@ -209,7 +209,7 @@ public class ChargesDeltaProcessor {
         String msg = "Response from DELETE charge request";
         Set<HttpStatus> nonRetryableStatuses =
                 Collections.unmodifiableSet(EnumSet.of(
-                    HttpStatus.BAD_REQUEST, HttpStatus.NOT_FOUND));
+                    HttpStatus.BAD_REQUEST));
 
         if (nonRetryableStatuses.contains(httpStatus)) {
             throw new NonRetryableErrorException(
