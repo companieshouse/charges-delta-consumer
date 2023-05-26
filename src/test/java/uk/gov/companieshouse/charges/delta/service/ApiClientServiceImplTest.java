@@ -102,7 +102,6 @@ class ApiClientServiceImplTest {
 
     @Test
     void putCharge() throws ApiErrorResponseException, URIValidationException {
-        org.junit.jupiter.api.Assertions.fail();
         when(internalApiClientSupplier.get()).thenReturn(internalApiClient);
         when(internalApiClient.getHttpClient()).thenReturn(httpClient);
         when(internalApiClient.privateDeltaChargeResourceHandler()).thenReturn(privateDeltaResourceHandler);
