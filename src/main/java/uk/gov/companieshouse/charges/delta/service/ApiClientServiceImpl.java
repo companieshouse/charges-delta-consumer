@@ -32,7 +32,7 @@ import uk.gov.companieshouse.logging.Logger;
 @Service
 public class ApiClientServiceImpl implements ApiClientService {
 
-    //private Supplier<InternalApiClient> internalApiClientSupplier;
+    private Supplier<InternalApiClient> internalApiClientSupplier;
     private Logger logger;
 
     /**
