@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
@@ -38,11 +37,14 @@ public class ChargesDeltaProcessor {
     private final Logger logger;
     private final ApiClientService apiClientService;
     private final EncoderUtil encoderUtil;
+    private final Set<HttpStatus> nonRetryableStatuses =
+            Collections.unmodifiableSet(EnumSet.of(
+                    HttpStatus.BAD_REQUEST,
+                    HttpStatus.CONFLICT));
 
     /**
      * The constructor.
      */
-    @Autowired
     public ChargesDeltaProcessor(ChargesApiTransformer transformer,
                                  Logger logger,
                                  ApiClientService apiClientService,
@@ -128,7 +130,7 @@ public class ChargesDeltaProcessor {
         List<TransactionsApi> transactions = internalChargeApi.getExternalData().getTransactions();
         for (TransactionsApi transaction : transactions) {
             if (transaction.getLinks() != null) {
-                if (transaction.getLinks().getFiling() != null & transaction.getLinks().getFiling()
+                if (transaction.getLinks().getFiling() != null && transaction.getLinks().getFiling()
                         .equals(String.format("/company/%s/filing-history/", companyNumber))) {
                     transaction.getLinks().setFiling(null);
                 }
@@ -169,25 +171,19 @@ public class ChargesDeltaProcessor {
 
         logMap.put("status", httpStatus.toString());
 
-        if (HttpStatus.BAD_REQUEST == httpStatus) {
-            // 400 BAD REQUEST status is not retryable
-            String message = "400 BAD_REQUEST response received from charges-data-api";
+        if (httpStatus.is2xxSuccessful()) {
+            logger.infoContext(logContext, "Successfully invoked charges-data-api "
+                            + "PUT endpoint for message", logMap);
+        } else if (HttpStatus.CONFLICT == httpStatus || HttpStatus.BAD_REQUEST == httpStatus) {
+            String message = String.format("Non-retryable response %s from charges-data-api",
+                    httpStatus);
             logger.errorContext(logContext, message, null, logMap);
             throw new NonRetryableErrorException(message);
-        }  else if (HttpStatus.NOT_FOUND == httpStatus) {
-            // 404 NOT FOUND status is retryable
-            String message = "404 NOT FOUND response received from charges-data-api";
-            logger.errorContext(logContext, message, null, logMap);
+        }  else {
+            String message = String.format("Retryable response %s from charges-data-api",
+                    httpStatus);
+            logger.infoContext(logContext, message, logMap);
             throw new RetryableErrorException(message);
-        } else if (!httpStatus.is2xxSuccessful()) {
-            // any other client or server status is retryable
-            String message = "Non-Successful 200 response received from charges-data-api";
-            logger.errorContext(logContext, message, null, logMap);
-            throw new RetryableErrorException(message);
-        } else {
-            logger.info(String.format("Successfully invoked charges-data-api "
-                            + "PUT endpoint for message with contextId: %s",
-                    logContext));
         }
     }
 
@@ -203,27 +199,21 @@ public class ChargesDeltaProcessor {
     private void handleDeleteResponse(
             final HttpStatus httpStatus,
             final String logContext,
-            final Map<String, Object> logMap)
-            throws NonRetryableErrorException, RetryableErrorException {
-        logMap.put("status", httpStatus.toString());
-        String msg = "Response from DELETE charge request";
-        Set<HttpStatus> nonRetryableStatuses =
-                Collections.unmodifiableSet(EnumSet.of(
-                    HttpStatus.BAD_REQUEST));
+            final Map<String, Object> logMap) {
 
         if (nonRetryableStatuses.contains(httpStatus)) {
-            throw new NonRetryableErrorException(
-                    String.format("Bad request DELETE Api Response %s", msg));
+            String message = String.format("Non-retryable request DELETE Api Response %s",
+                    httpStatus);
+            logger.infoContext(logContext, message, logMap);
+            throw new NonRetryableErrorException(message);
         } else if (!httpStatus.is2xxSuccessful()) {
-            // any other client or server status is retryable
-            logger.errorContext(logContext, msg + ", retry", null, logMap);
-            throw new RetryableErrorException(
-                    String.format("Unsuccessful DELETE API response, %s", msg));
+            String message = String.format("Retryable request DELETE Api Response %s", httpStatus);
+            logger.errorContext(logContext, message, null, logMap);
+            throw new RetryableErrorException(message);
         } else {
             logger.info(String.format("Successfully invoked charges-data-api "
                             + "DELETE endpoint for message with contextId: %s",
                     logContext));
         }
     }
-
 }
