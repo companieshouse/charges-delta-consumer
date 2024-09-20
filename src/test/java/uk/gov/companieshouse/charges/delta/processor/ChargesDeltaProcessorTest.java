@@ -115,7 +115,7 @@ public class ChargesDeltaProcessorTest {
 
     @Test
     @DisplayName("When can't transform into charges delta API, throws retryable error")
-    void When_CantTransformIntoChargesDeltaApi_RetryableError() throws IOException {
+    void When_CantTransformIntoChargesDeltaApi_RetryableError() {
         Message<ChsDelta> invalidChsDeltaMessage = testSupport.createInvalidChsDeltaMessage(false);
         assertThrows(NonRetryableErrorException.class, () -> deltaProcessor.processDelta(invalidChsDeltaMessage));
     }
@@ -138,7 +138,7 @@ public class ChargesDeltaProcessorTest {
 
     @Test
     @DisplayName("When mapping an invalid ChsDelta message into Charges Delete Delta then throws a non-retryable exception")
-    void When_Invalid_ChargesDeleteDelta_nonRetryableError() throws IOException {
+    void When_Invalid_ChargesDeleteDelta_nonRetryableError() {
         Message<ChsDelta> invalidChsChargesDeltaDeltaMessage = testSupport.createInvalidChsDeltaMessage(true);
         Assertions.assertThrows(NonRetryableErrorException.class, () -> deltaProcessor.processDelete(invalidChsChargesDeltaDeltaMessage));
     }
@@ -176,6 +176,7 @@ public class ChargesDeltaProcessorTest {
     private static Stream<Arguments> provideExceptionParameters() {
         return Stream.of(
                 Arguments.of(HttpStatus.BAD_REQUEST, NonRetryableErrorException.class),
+                Arguments.of(HttpStatus.CONFLICT, NonRetryableErrorException.class),
                 Arguments.of(HttpStatus.NOT_FOUND, RetryableErrorException.class),
                 Arguments.of(HttpStatus.UNAUTHORIZED, RetryableErrorException.class),
                 Arguments.of(HttpStatus.INTERNAL_SERVER_ERROR, RetryableErrorException.class)
