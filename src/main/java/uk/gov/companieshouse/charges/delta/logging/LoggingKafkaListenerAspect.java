@@ -29,7 +29,7 @@ class LoggingKafkaListenerAspect {
 
     private final int maxAttempts;
 
-    LoggingKafkaListenerAspect(@Value("${consumer.max-attempts}") int maxAttempts) {
+    LoggingKafkaListenerAspect(@Value("${charges.delta.retry-attempts}") int maxAttempts) {
         this.maxAttempts = maxAttempts;
     }
 

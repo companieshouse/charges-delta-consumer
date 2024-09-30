@@ -1,7 +1,13 @@
 package uk.gov.companieshouse.charges.delta.processor;
 
-import java.io.IOException;
-import java.util.stream.Stream;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,32 +26,20 @@ import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.charges.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
-import uk.gov.companieshouse.charges.delta.util.TestSupport;
 import uk.gov.companieshouse.charges.delta.service.ApiClientService;
 import uk.gov.companieshouse.charges.delta.transformer.ChargesApiTransformer;
+import uk.gov.companieshouse.charges.delta.util.TestSupport;
 import uk.gov.companieshouse.delta.ChsDelta;
-import uk.gov.companieshouse.logging.Logger;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.doReturn;
+import java.io.IOException;
+import java.util.stream.Stream;
 
 @ExtendWith(MockitoExtension.class)
-public class ChargesDeltaProcessorTest {
+class ChargesDeltaProcessorTest {
 
     private ChargesDeltaProcessor deltaProcessor;
 
     @Mock
     private ChargesApiTransformer transformer;
-
-    @Mock
-    private Logger logger;
 
     @Mock
     private ApiClientService apiClientService;
@@ -57,7 +51,7 @@ public class ChargesDeltaProcessorTest {
     @BeforeEach
     void setUp() {
         encoderUtil = new EncoderUtil("some_salt", "transId_salt");
-        deltaProcessor = new ChargesDeltaProcessor(transformer, logger, apiClientService, encoderUtil);
+        deltaProcessor = new ChargesDeltaProcessor(transformer, apiClientService, encoderUtil);
         testSupport = new TestSupport();
     }
 
@@ -67,7 +61,7 @@ public class ChargesDeltaProcessorTest {
         Message<ChsDelta> testChsDeltaMessage = testSupport.createChsDeltaMessage("charges-delta-source-1.json", false);
         ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
         when(transformer.transform(any(Charge.class), any(MessageHeaders.class))).thenReturn(testSupport.mockInternalChargeApi());
-        doReturn(response).when(apiClientService).putCharge(any(), any(), any(), any());
+        doReturn(response).when(apiClientService).putCharge(any(), any(), any());
 
         deltaProcessor.processDelta(testChsDeltaMessage);
         verify(transformer).transform(any(Charge.class), any(MessageHeaders.class));
@@ -87,12 +81,12 @@ public class ChargesDeltaProcessorTest {
         Message<ChsDelta> testChsDeltaMessage = testSupport.createChsDeltaMessage("charges-delta-source-1.json", false);
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
         when(transformer.transform(any(Charge.class), any(MessageHeaders.class))).thenReturn(testSupport.mockInternalChargeApi());
-        doReturn(response).when(apiClientService).putCharge(eq("context_id"), eq("01099198"),
-                eq("6DrQgDD109T7kBnVwtx5HrEX9B0"), eq(testSupport.mockInternalChargeApi()));
+        doReturn(response).when(apiClientService).putCharge("01099198",
+                "6DrQgDD109T7kBnVwtx5HrEX9B0", testSupport.mockInternalChargeApi());
 
         deltaProcessor.processDelta(testChsDeltaMessage);
         verify(transformer).transform(any(Charge.class), any(MessageHeaders.class));
-        verify(apiClientService).putCharge("context_id", "01099198",
+        verify(apiClientService).putCharge( "01099198",
                 "6DrQgDD109T7kBnVwtx5HrEX9B0", testSupport.mockInternalChargeApi());
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK.value());
     }
@@ -106,10 +100,10 @@ public class ChargesDeltaProcessorTest {
         final ApiResponse<Void> response = new ApiResponse<>(httpStatus.value(), null, null);
 
         when(transformer.transform(any(), any())).thenReturn(testSupport.mockInternalChargeApi());
-        doReturn(response).when(apiClientService).putCharge(any(), any(), any(), any());
+        doReturn(response).when(apiClientService).putCharge(any(), any(), any());
 
         assertThrows(exception, () -> deltaProcessor.processDelta(chsDeltaMessage));
-        verify(apiClientService).putCharge("context_id", "01099198",
+        verify(apiClientService).putCharge("01099198",
                 "6DrQgDD109T7kBnVwtx5HrEX9B0", testSupport.mockInternalChargeApi());
     }
 
@@ -126,13 +120,12 @@ public class ChargesDeltaProcessorTest {
         Message<ChsDelta> mockChsChargesDeleteDeltaMessage = testSupport.createChsDeltaMessage(
                 "charges-delete-delta-source-1.json", true);
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
-        doReturn(response).when(apiClientService).deleteCharge(eq("context_id"), eq("0"),
-                eq("yt6cQ-A2DqNpqwAMDWxKX12Axv4"));
-        String chargeId = deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage);
-        Assertions.assertEquals("yt6cQ-A2DqNpqwAMDWxKX12Axv4", chargeId);
-
-        verify(apiClientService).deleteCharge("context_id", "0",
+        doReturn(response).when(apiClientService).deleteCharge("0",
                 "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
+
+        deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage);
+
+        verify(apiClientService).deleteCharge("0","yt6cQ-A2DqNpqwAMDWxKX12Axv4");
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
@@ -149,12 +142,11 @@ public class ChargesDeltaProcessorTest {
         Message<ChsDelta> mockChsChargesDeleteDeltaMessage = testSupport.createChsDeltaMessage(
                 "charges-delete-delta-source-1.json", true);
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), null, null);
-        doReturn(response).when(apiClientService).deleteCharge(eq("context_id"), eq("0"),
-                eq("yt6cQ-A2DqNpqwAMDWxKX12Axv4"));
+        doReturn(response).when(apiClientService).deleteCharge("0",
+                "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
 
         assertThrows(RetryableErrorException.class, () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
-        verify(apiClientService).deleteCharge("context_id", "0",
-                "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
+        verify(apiClientService).deleteCharge("0","yt6cQ-A2DqNpqwAMDWxKX12Axv4");
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
@@ -164,12 +156,11 @@ public class ChargesDeltaProcessorTest {
         Message<ChsDelta> mockChsChargesDeleteDeltaMessage = testSupport.createChsDeltaMessage(
                 "charges-delete-delta-source-1.json", true);
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.NOT_FOUND.value(), null, null);
-        doReturn(response).when(apiClientService).deleteCharge(eq("context_id"), eq("0"),
-                eq("yt6cQ-A2DqNpqwAMDWxKX12Axv4"));
+        doReturn(response).when(apiClientService).deleteCharge("0",
+                "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
 
         assertThrows(RetryableErrorException.class, () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
-        verify(apiClientService).deleteCharge("context_id", "0",
-                "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
+        verify(apiClientService).deleteCharge("0","yt6cQ-A2DqNpqwAMDWxKX12Axv4");
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
@@ -192,11 +183,11 @@ public class ChargesDeltaProcessorTest {
         Message<ChsDelta> mockChsChargesDeleteDeltaMessage = testSupport.createChsDeltaMessage(
                 "charges-delete-delta-source-1.json", true);
         final ApiResponse<Void> response = new ApiResponse<>(httpStatus.value(), null, null);
-        doReturn(response).when(apiClientService).deleteCharge(eq("context_id"), eq("0"),
-                eq("yt6cQ-A2DqNpqwAMDWxKX12Axv4"));
+        doReturn(response).when(apiClientService).deleteCharge("0",
+                "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
 
         assertThrows(exception, () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
-        verify(apiClientService).deleteCharge("context_id", "0",
+        verify(apiClientService).deleteCharge("0",
                 "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
         assertThat(response.getStatusCode()).isEqualTo(httpStatus.value());
     }
@@ -218,7 +209,7 @@ public class ChargesDeltaProcessorTest {
         assertThrows( NonRetryableErrorException.class,
                 () -> deltaProcessor.processDelete(mockChsChargesDeleteDeltaMessage));
 
-        verify(apiClientService, times(0)).deleteCharge("context_id", "0",
+        verify(apiClientService, times(0)).deleteCharge("0",
                 "yt6cQ-A2DqNpqwAMDWxKX12Axv4");
     }
 
@@ -240,7 +231,7 @@ public class ChargesDeltaProcessorTest {
         assertThrows( NonRetryableErrorException.class,
                 () -> deltaProcessor.processDelta(mockChsChargesDeltaMessage));
 
-        verify(apiClientService, times(0)).putCharge("context_id", "NI622400",
+        verify(apiClientService, times(0)).putCharge("NI622400",
                 "yt6cQ-A2DqNpqwAMDWxKX12Axv4", testSupport.mockInternalChargeApi());
     }
 

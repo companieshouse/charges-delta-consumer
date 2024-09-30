@@ -1,27 +1,23 @@
 package uk.gov.companieshouse.charges.delta.serialization;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.delta.ChsDelta;
-import uk.gov.companieshouse.logging.Logger;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class ChsDeltaSerializerTest {
+class ChsDeltaSerializerTest {
 
-    @Mock
-    private Logger logger;
     private ChsDeltaSerializer serializer;
 
     @BeforeEach
     public void init() {
-        serializer = new ChsDeltaSerializer(logger);
+        serializer = new ChsDeltaSerializer();
     }
 
     @ParameterizedTest
@@ -37,7 +33,7 @@ public class ChsDeltaSerializerTest {
     @Test
     void When_serialize_null_returns_null() {
         byte[] serialize = serializer.serialize("", null);
-        assertThat(serialize).isEqualTo(null);
+        assertThat(serialize).isNull();
     }
 
     @Test
@@ -48,7 +44,7 @@ public class ChsDeltaSerializerTest {
     }
 
     private ChsDelta decodedData(byte[] chsDelta) {
-        ChsDeltaDeserializer serializer = new ChsDeltaDeserializer(this.logger);
+        ChsDeltaDeserializer serializer = new ChsDeltaDeserializer();
         return serializer.deserialize("", chsDelta);
     }
 }

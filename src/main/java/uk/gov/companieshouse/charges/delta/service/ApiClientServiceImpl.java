@@ -1,5 +1,7 @@
 package uk.gov.companieshouse.charges.delta.service;
 
+import static uk.gov.companieshouse.charges.delta.ChargesDeltaConsumerApplication.NAMESPACE;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
 import uk.gov.companieshouse.charges.delta.logging.DataMapHolder;
 import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.logging.LoggerFactory;
 import java.util.Collections;
 import java.util.function.Supplier;
 
@@ -29,18 +32,15 @@ public class ApiClientServiceImpl implements ApiClientService {
     private static final String ERROR_RESPONSE_EXCEPTION = "Private API Error Response exception";
     private static final String SDK_EXCEPTION = "SDK exception";
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
     private final Supplier<InternalApiClient> internalApiClientSupplier;
-    private final Logger logger;
 
     /**
      * Construct an {@link ApiClientServiceImpl}.
      *
-     * @param logger the CH logger
      */
     @Autowired
-    public ApiClientServiceImpl(final Logger logger,
-                                Supplier<InternalApiClient> internalApiClientSupplier) {
-        this.logger = logger;
+    public ApiClientServiceImpl(Supplier<InternalApiClient> internalApiClientSupplier) {
         this.internalApiClientSupplier = internalApiClientSupplier;
     }
 
@@ -82,17 +82,17 @@ public class ApiClientServiceImpl implements ApiClientService {
         try {
             return executor.execute();
         } catch (URIValidationException ex) {
-            logger.error(SDK_EXCEPTION, ex, DataMapHolder.getLogMap());
+            LOGGER.error(SDK_EXCEPTION, ex, DataMapHolder.getLogMap());
             throw new RetryableErrorException(SDK_EXCEPTION, ex);
         } catch (ApiErrorResponseException ex) {
             DataMapHolder.get().status(String.valueOf(ex.getStatusCode()));
-            logger.error(ERROR_RESPONSE_EXCEPTION, ex, DataMapHolder.getLogMap());
+            LOGGER.error(ERROR_RESPONSE_EXCEPTION, ex, DataMapHolder.getLogMap());
             if (ex.getStatusCode() != 0) {
                 return new ApiResponse<>(ex.getStatusCode(), Collections.emptyMap());
             }
             throw new RetryableErrorException(ERROR_RESPONSE_EXCEPTION, ex);
         } catch (Exception ex) {
-            logger.error(PRIVATE_API_GENERIC_EXCEPTION, ex, DataMapHolder.getLogMap());
+            LOGGER.error(PRIVATE_API_GENERIC_EXCEPTION, ex, DataMapHolder.getLogMap());
             throw new RetryableErrorException(PRIVATE_API_GENERIC_EXCEPTION, ex);
         }
     }

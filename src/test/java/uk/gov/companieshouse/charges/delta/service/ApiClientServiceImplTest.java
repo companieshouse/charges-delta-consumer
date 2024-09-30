@@ -1,9 +1,16 @@
 package uk.gov.companieshouse.charges.delta.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpResponseException;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,10 +22,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.companieshouse.api.InternalApiClient;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.error.ApiErrorResponseException;
@@ -27,27 +32,12 @@ import uk.gov.companieshouse.api.handler.delta.charges.request.PrivateChargesDel
 import uk.gov.companieshouse.api.handler.delta.charges.request.PrivateChargesUpsert;
 import uk.gov.companieshouse.api.handler.delta.charges.request.PrivateChargesUpsertResourceHandler;
 import uk.gov.companieshouse.api.handler.exception.URIValidationException;
-import uk.gov.companieshouse.api.http.ApiKeyHttpClient;
 import uk.gov.companieshouse.api.http.HttpClient;
 import uk.gov.companieshouse.api.model.ApiResponse;
-import uk.gov.companieshouse.charges.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
 import uk.gov.companieshouse.logging.Logger;
-
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @TestPropertySource(
         properties = {
@@ -95,11 +85,6 @@ class ApiClientServiceImplTest {
     @Mock
     InternalChargeApi internalChargeApi;
 
-    @BeforeEach
-    void setup() {
-
-    }
-
     @Test
     void putCharge() throws ApiErrorResponseException, URIValidationException {
         when(internalApiClientSupplier.get()).thenReturn(internalApiClient);
@@ -111,7 +96,7 @@ class ApiClientServiceImplTest {
         when(privateChargesUpsert.execute()).thenReturn(response);
 
         ApiResponse<?> apiResponse = apiClientService.putCharge(
-                "context_id", "12345678",
+                "12345678",
                 "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA",
                 internalChargeApi);
 
@@ -143,7 +128,7 @@ class ApiClientServiceImplTest {
         when(privateChargesUpsert.execute()).thenThrow(exceptionFromApi);
 
         ApiResponse<?> apiResponse = assertDoesNotThrow(() -> apiClientService.putCharge(
-                "context_id", "12345678",
+                "12345678",
                 "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA",
                 internalChargeApi));
 
@@ -170,7 +155,7 @@ class ApiClientServiceImplTest {
         when(privateChargesDelete.execute()).thenReturn(response);
 
         ApiResponse<?> apiResponse = apiClientService.deleteCharge(
-                "LOG_CONTEXT", "0111", "test");
+                "0111", "test");
 
         Assertions.assertThat(apiResponse).isNotNull();
 
@@ -206,7 +191,7 @@ class ApiClientServiceImplTest {
         when(privateChargesDelete.execute()).thenThrow(exceptionFromApi);
 
         ApiResponse<?> apiResponse = assertDoesNotThrow(() -> apiClientService.deleteCharge(
-                "LOG_CONTEXT", "0", "test"));
+                "0", "test"));
 
         Assertions.assertThat(apiResponse).isNotNull();
         Assertions.assertThat(apiResponse.getStatusCode()).isEqualTo(httpStatus.value());
@@ -231,7 +216,7 @@ class ApiClientServiceImplTest {
         when(privateChargesDelete.execute()).thenThrow(URIValidationException.class);
 
         assertThrows(RetryableErrorException.class, () -> apiClientService.deleteCharge(
-                "LOG_CONTEXT", "0", "test"));
+                "0", "test"));
 
         verify(internalApiClient, times(1)).getHttpClient();
         verify(internalApiClient, times(1)).privateDeltaChargeResourceHandler();
@@ -277,7 +262,7 @@ class ApiClientServiceImplTest {
         when(privateChargesUpsert.execute()).thenThrow(URIValidationException.class);
 
         assertThrows(RetryableErrorException.class, () -> apiClientService.putCharge(
-                "context_id", "12345678",
+                "12345678",
                 "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA",
                 internalChargeApi));
 
@@ -302,7 +287,7 @@ class ApiClientServiceImplTest {
                 .thenReturn(privateChargesUpsert);
         when(privateChargesUpsert.execute()).thenThrow(buildApiErrorResponseCustomException(0));
         assertThrows(RetryableErrorException.class, () -> apiClientService.putCharge(
-                "context_id", "12345678",
+                "12345678",
                 "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA",
                 internalChargeApi));
 
@@ -326,7 +311,7 @@ class ApiClientServiceImplTest {
         when(privateChargesDelete.execute()).thenThrow(buildApiErrorResponseCustomException(0));
 
         assertThrows(RetryableErrorException.class, () -> apiClientService.deleteCharge(
-                "LOG_CONTEXT", "0", "test"));
+                "0", "test"));
 
         verify(internalApiClient, times(1)).getHttpClient();
         verify(internalApiClient, times(1)).privateDeltaChargeResourceHandler();
