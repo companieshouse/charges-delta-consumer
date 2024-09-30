@@ -1,28 +1,21 @@
 package uk.gov.companieshouse.charges.delta.service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Supplier;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.api.InternalApiClient;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.error.ApiErrorResponseException;
 import uk.gov.companieshouse.api.handler.Executor;
-import uk.gov.companieshouse.api.handler.delta.PrivateDeltaResourceHandler;
 import uk.gov.companieshouse.api.handler.delta.charges.request.PrivateChargesDelete;
 import uk.gov.companieshouse.api.handler.delta.charges.request.PrivateChargesUpsert;
-import uk.gov.companieshouse.api.handler.delta.charges.request.PrivateChargesUpsertResourceHandler;
 import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 import uk.gov.companieshouse.api.model.ApiResponse;
-import uk.gov.companieshouse.charges.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
+import uk.gov.companieshouse.charges.delta.logging.DataMapHolder;
 import uk.gov.companieshouse.logging.Logger;
+import java.util.Collections;
+import java.util.function.Supplier;
 
 
 /**
@@ -32,8 +25,12 @@ import uk.gov.companieshouse.logging.Logger;
 @Service
 public class ApiClientServiceImpl implements ApiClientService {
 
-    private Supplier<InternalApiClient> internalApiClientSupplier;
-    private Logger logger;
+    private static final String PRIVATE_API_GENERIC_EXCEPTION = "Private API Generic exception";
+    private static final String ERROR_RESPONSE_EXCEPTION = "Private API Error Response exception";
+    private static final String SDK_EXCEPTION = "SDK exception";
+
+    private final Supplier<InternalApiClient> internalApiClientSupplier;
+    private final Logger logger;
 
     /**
      * Construct an {@link ApiClientServiceImpl}.
@@ -48,77 +45,55 @@ public class ApiClientServiceImpl implements ApiClientService {
     }
 
     @Override
-    public ApiResponse<Void> putCharge(final String log, String companyNumber,
+    public ApiResponse<Void> putCharge(String companyNumber,
                                        final String chargeId,
                                        InternalChargeApi internalChargeApi) {
-        final String uri = String.format(PUT_CHARGE_URI, companyNumber, chargeId);
+        final String formattedUri = String.format(PUT_CHARGE_URI, companyNumber, chargeId);
+        DataMapHolder.get().uri(formattedUri);
 
-        Map<String, Object> logMap = createLogMap(companyNumber, "PUT", uri, chargeId);
-        logger.infoContext(log, String.format("PUT %s", uri), logMap);
         InternalApiClient internalApiClient = internalApiClientSupplier.get();
-        internalApiClient.getHttpClient().setRequestId(log);
+        internalApiClient.getHttpClient().setRequestId(DataMapHolder.getRequestId());
 
-        PrivateDeltaResourceHandler privateDeltaResourceHandler =
-                internalApiClient.privateDeltaChargeResourceHandler();
-        PrivateChargesUpsertResourceHandler privateChargesUpsertResourceHandler
-                = privateDeltaResourceHandler.putCharge();
         PrivateChargesUpsert privateChargesUpsert =
-                privateChargesUpsertResourceHandler.upsert(uri, internalChargeApi);
-        return execute(log, logMap, privateChargesUpsert);
+                internalApiClient
+                        .privateDeltaChargeResourceHandler()
+                        .putCharge()
+                        .upsert(formattedUri, internalChargeApi);
+
+        return execute(privateChargesUpsert);
     }
 
     @Override
-    public ApiResponse<Void> deleteCharge(String log, String companyNumber,
-                                          String chargeId) {
-        final String uri =
-                String.format(DELETE_CHARGE_URI, companyNumber, chargeId);
-
-        Map<String,Object> logMap = createLogMap(companyNumber,"DELETE", uri, chargeId);
-        logger.infoContext(log, String.format("DELETE %s", uri), logMap);
+    public ApiResponse<Void> deleteCharge(String companyNumber, String chargeId) {
+        final String formattedUri = String.format(DELETE_CHARGE_URI, companyNumber, chargeId);
+        DataMapHolder.get().uri(formattedUri);
 
         InternalApiClient internalApiClient = internalApiClientSupplier.get();
-        internalApiClient.getHttpClient().setRequestId(log);
+        internalApiClient.getHttpClient().setRequestId(DataMapHolder.getRequestId());
 
-        PrivateDeltaResourceHandler privateDeltaResourceHandler =
-                internalApiClient.privateDeltaChargeResourceHandler();
-        PrivateChargesDelete executor = privateDeltaResourceHandler.deleteCharge(uri);
+        PrivateChargesDelete executor = internalApiClient
+                .privateDeltaChargeResourceHandler()
+                .deleteCharge(formattedUri);
 
-        return execute(log, logMap, executor);
-
+        return execute(executor);
     }
 
-    private ApiResponse<Void> execute(String log, Map<String, Object> logMap,
-                                      Executor<ApiResponse<Void>> executor) {
+    private ApiResponse<Void> execute(Executor<ApiResponse<Void>> executor) {
         try {
             return executor.execute();
         } catch (URIValidationException ex) {
-            logger.errorContext(log, "SDK exception", ex, logMap);
-            throw new RetryableErrorException("SDK Exception", ex);
+            logger.error(SDK_EXCEPTION, ex, DataMapHolder.getLogMap());
+            throw new RetryableErrorException(SDK_EXCEPTION, ex);
         } catch (ApiErrorResponseException ex) {
-            String message = "Private API Error Response exception";
-            logMap.put("status", ex.getStatusCode());
-            logger.errorContext(log, message, ex, logMap);
+            DataMapHolder.get().status(String.valueOf(ex.getStatusCode()));
+            logger.error(ERROR_RESPONSE_EXCEPTION, ex, DataMapHolder.getLogMap());
             if (ex.getStatusCode() != 0) {
                 return new ApiResponse<>(ex.getStatusCode(), Collections.emptyMap());
             }
-            throw new RetryableErrorException(message, ex);
+            throw new RetryableErrorException(ERROR_RESPONSE_EXCEPTION, ex);
         } catch (Exception ex) {
-            String message = "Private API Generic exception";
-            logger.errorContext(log, message, ex, logMap);
-            throw new RetryableErrorException(message, ex);
+            logger.error(PRIVATE_API_GENERIC_EXCEPTION, ex, DataMapHolder.getLogMap());
+            throw new RetryableErrorException(PRIVATE_API_GENERIC_EXCEPTION, ex);
         }
     }
-
-    private Map<String, Object> createLogMap(String companyNumber, String method, String path,
-                                             String chargeId) {
-        final Map<String, Object> logMap = new HashMap<>();
-        logMap.put("company_number", companyNumber);
-        logMap.put("charge_id", chargeId);
-        logMap.put("method", method);
-        logMap.put("path", path);
-        return logMap;
-    }
-
-
-
 }

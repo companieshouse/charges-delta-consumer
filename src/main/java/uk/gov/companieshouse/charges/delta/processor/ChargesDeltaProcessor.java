@@ -1,20 +1,10 @@
 package uk.gov.companieshouse.charges.delta.processor;
 
-import static java.lang.String.format;
+import static uk.gov.companieshouse.charges.delta.ChargesDeltaConsumerApplication.NAMESPACE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.charges.TransactionsApi;
@@ -24,17 +14,28 @@ import uk.gov.companieshouse.api.delta.ChargesDelta;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.charges.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
+import uk.gov.companieshouse.charges.delta.logging.DataMapHolder;
 import uk.gov.companieshouse.charges.delta.service.ApiClientService;
 import uk.gov.companieshouse.charges.delta.transformer.ChargesApiTransformer;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.logging.LoggerFactory;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
 
 
 @Component
 public class ChargesDeltaProcessor {
 
+    public static final String NON_RETRYABLE_RESPONSE_ERROR_MESSAGE = "Non-retryable response %s from charges-data-api";
+    public static final String RETRYABLE_RESPONSE_ERROR_MESSAGE = "Retryable response %s from charges-data-api";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
     private final ChargesApiTransformer transformer;
-    private final Logger logger;
     private final ApiClientService apiClientService;
     private final EncoderUtil encoderUtil;
     private final Set<HttpStatus> nonRetryableStatuses =
@@ -46,11 +47,9 @@ public class ChargesDeltaProcessor {
      * The constructor.
      */
     public ChargesDeltaProcessor(ChargesApiTransformer transformer,
-                                 Logger logger,
                                  ApiClientService apiClientService,
                                  EncoderUtil encoderUtil) {
         this.transformer = transformer;
-        this.logger = logger;
         this.apiClientService = apiClientService;
         this.encoderUtil = encoderUtil;
     }
@@ -59,44 +58,30 @@ public class ChargesDeltaProcessor {
      * Process CHS Delta message.
      */
     public void processDelta(Message<ChsDelta> chsDelta) {
-        final MessageHeaders headers = chsDelta.getHeaders();
-        final ChsDelta payload = chsDelta.getPayload();
-        final String logContext = payload.getContextId();
-        final Map<String, Object> logMap = new HashMap<>();
-        final ChargesDelta chargesDelta = mapToChargesDelta(payload, ChargesDelta.class);
-        logger.trace(format("DSND-514: ChargesDelta extracted "
-                + "from a Kafka message: %s", chargesDelta));
+        final ChargesDelta chargesDelta =
+                mapToChargesDelta(chsDelta.getPayload(), ChargesDelta.class);
+
         if (chargesDelta.getCharges().isEmpty()) {
             throw new NonRetryableErrorException("No charge items found inside ChargesDelta");
         }
 
         // Assuming we always get only one charge item inside charges delta
         Charge charge = chargesDelta.getCharges().get(0);
-        InternalChargeApi internalChargeApi = transformer.transform(charge, headers);
+        InternalChargeApi internalChargeApi = transformer.transform(charge, chsDelta.getHeaders());
 
         removeBrokenFilingLinks(internalChargeApi, charge.getCompanyNumber());
-        logger.info(String.format("Charge message with contextId: %s "
-                + "transformed to InternalChargeApi "
-                + ": %s", logContext, internalChargeApi));
 
-        ApiResponse<Void> apiResponse = updateChargesData(logContext, charge,
-                internalChargeApi, logMap);
+        ApiResponse<Void> apiResponse = updateChargesData(charge, internalChargeApi);
 
-        handleResponse(HttpStatus.valueOf(apiResponse.getStatusCode()), logContext, logMap);
+        handleResponse(HttpStatus.valueOf(apiResponse.getStatusCode()));
     }
 
     /**
      * Process Charges Delta Delete message.
      */
-    public String processDelete(Message<ChsDelta> chsDelta) {
-        final ChsDelta payload = chsDelta.getPayload();
-        final String logContext = payload.getContextId();
-        final Map<String, Object> logMap = new HashMap<>();
+    public void processDelete(Message<ChsDelta> chsDelta) {
         final ChargesDeleteDelta chargesDeleteDelta =
-                mapToChargesDelta(payload, ChargesDeleteDelta.class);
-
-        logger.trace(String.format("ChargesDeleteDelta extracted from Kafka message: %s",
-                chargesDeleteDelta));
+                mapToChargesDelta(chsDelta.getPayload(), ChargesDeleteDelta.class);
 
         Optional<String> chargeIdOptional = Optional.ofNullable(chargesDeleteDelta.getChargesId())
                 .filter(Predicate.not(String::isEmpty));
@@ -105,14 +90,12 @@ public class ChargesDeltaProcessor {
         final String chargeId = encoderUtil.encodeWithSha1(chargeIdOptional.orElseThrow(
                 () -> new NonRetryableErrorException("Charge Id is empty!")));
 
-        logMap.put("company_number", 0);
-        logMap.put("chargeId", chargeId);
+        DataMapHolder.get().companyNumber("0");
+        DataMapHolder.get().chargesId(chargeId);
 
-        final ApiResponse<Void> apiResponse = deleteCharge(logContext, chargeId);
+        final ApiResponse<Void> apiResponse = deleteCharge(chargeId);
 
-        handleDeleteResponse(HttpStatus.valueOf(apiResponse.getStatusCode()), logContext, logMap);
-
-        return chargeId;
+        handleDeleteResponse(HttpStatus.valueOf(apiResponse.getStatusCode()));
     }
 
     private <T> T mapToChargesDelta(ChsDelta payload, Class<T> deltaclass)
@@ -141,9 +124,8 @@ public class ChargesDeltaProcessor {
     /**
      * Invoke Charges Data API to update charges database.
      */
-    private ApiResponse<Void> updateChargesData(final String logContext, Charge charge,
-                                   InternalChargeApi internalChargeApi,
-                                   final Map<String, Object> logMap) {
+    private ApiResponse<Void> updateChargesData(Charge charge, InternalChargeApi internalChargeApi) {
+
         final String companyNumber = charge.getCompanyNumber();
         Optional<String> chargeIdOptional = Optional.ofNullable(charge.getId())
                 .filter(Predicate.not(String::isEmpty));
@@ -151,38 +133,29 @@ public class ChargesDeltaProcessor {
         //pass in the chargeId and encode it with base64 after doing a SHA1 hash
         final String chargeId = encoderUtil.encodeWithSha1(
                 chargeIdOptional.orElseThrow(
-                        () -> new NonRetryableErrorException("Charge Id is empty!")));
-        logMap.put("company_number", companyNumber);
-        logMap.put("chargeId", chargeId);
+                        () -> new NonRetryableErrorException("Charge Id is empty")));
+        DataMapHolder.get().companyNumber(companyNumber);
+        DataMapHolder.get().chargesId(chargeId);
 
-        logger.trace(String.format("Performing a PUT with "
-                + "company number %s for contextId %s", companyNumber, logContext));
-        return apiClientService.putCharge(logContext,
-                        companyNumber,
-                        chargeId,
-                        internalChargeApi);
+        return apiClientService.putCharge(companyNumber, chargeId, internalChargeApi);
     }
 
-    private void handleResponse(
-            final HttpStatus httpStatus,
-            final String logContext,
-            final Map<String, Object> logMap)
+    private void handleResponse(final HttpStatus httpStatus)
             throws NonRetryableErrorException, RetryableErrorException {
-
-        logMap.put("status", httpStatus.toString());
+        DataMapHolder.get().status(httpStatus.toString());
 
         if (httpStatus.is2xxSuccessful()) {
-            logger.infoContext(logContext, "Successfully invoked charges-data-api "
-                            + "PUT endpoint for message", logMap);
+            LOGGER.info("Successfully invoked charges-data-api PUT endpoint",
+                    DataMapHolder.getLogMap());
         } else if (HttpStatus.CONFLICT == httpStatus || HttpStatus.BAD_REQUEST == httpStatus) {
-            String message = String.format("Non-retryable response %s from charges-data-api",
+            String message = String.format(NON_RETRYABLE_RESPONSE_ERROR_MESSAGE,
                     httpStatus);
-            logger.errorContext(logContext, message, null, logMap);
+            LOGGER.error(message, null, DataMapHolder.getLogMap());
             throw new NonRetryableErrorException(message);
         }  else {
-            String message = String.format("Retryable response %s from charges-data-api",
+            String message = String.format(RETRYABLE_RESPONSE_ERROR_MESSAGE,
                     httpStatus);
-            logger.infoContext(logContext, message, logMap);
+            LOGGER.info(message, DataMapHolder.getLogMap());
             throw new RetryableErrorException(message);
         }
     }
@@ -190,30 +163,25 @@ public class ChargesDeltaProcessor {
     /**
      * Invoke Charges Data API to update charges database.
      */
-    private ApiResponse<Void> deleteCharge(final String logContext, String chargeId) {
-        logger.trace(String.format("Performing DELETE with "
-                + "chargeId: %s for contextId: %s", chargeId, logContext));
-        return apiClientService.deleteCharge(logContext, "0", chargeId);
+    private ApiResponse<Void> deleteCharge(String chargeId) {
+        return apiClientService.deleteCharge("0", chargeId);
     }
 
-    private void handleDeleteResponse(
-            final HttpStatus httpStatus,
-            final String logContext,
-            final Map<String, Object> logMap) {
+    private void handleDeleteResponse(final HttpStatus httpStatus) {
 
         if (nonRetryableStatuses.contains(httpStatus)) {
-            String message = String.format("Non-retryable request DELETE Api Response %s",
-                    httpStatus);
-            logger.infoContext(logContext, message, logMap);
-            throw new NonRetryableErrorException(message);
+            LOGGER.info(String.format(NON_RETRYABLE_RESPONSE_ERROR_MESSAGE,
+                    httpStatus), DataMapHolder.getLogMap());
+            throw new NonRetryableErrorException(String.format(NON_RETRYABLE_RESPONSE_ERROR_MESSAGE,
+                    httpStatus));
         } else if (!httpStatus.is2xxSuccessful()) {
-            String message = String.format("Retryable request DELETE Api Response %s", httpStatus);
-            logger.errorContext(logContext, message, null, logMap);
-            throw new RetryableErrorException(message);
+            LOGGER.error(String.format(RETRYABLE_RESPONSE_ERROR_MESSAGE, httpStatus),
+                    null, DataMapHolder.getLogMap());
+            throw new RetryableErrorException(String.format(RETRYABLE_RESPONSE_ERROR_MESSAGE,
+                    httpStatus));
         } else {
-            logger.info(String.format("Successfully invoked charges-data-api "
-                            + "DELETE endpoint for message with contextId: %s",
-                    logContext));
+            LOGGER.info("Successfully invoked charges-data-api DELETE endpoint",
+                    DataMapHolder.getLogMap());
         }
     }
 }

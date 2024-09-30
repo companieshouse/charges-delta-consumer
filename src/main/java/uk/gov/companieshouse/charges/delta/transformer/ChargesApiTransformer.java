@@ -23,6 +23,7 @@ import uk.gov.companieshouse.api.charges.TransactionsApi;
 import uk.gov.companieshouse.api.charges.TransactionsLinks;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
+import uk.gov.companieshouse.charges.delta.logging.DataMapHolder;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
 import uk.gov.companieshouse.charges.delta.mapper.NoticeTypeMapperUtils;
 import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
@@ -59,8 +60,8 @@ public class ChargesApiTransformer {
      * @return source object mapped to InternalChargeApi
      */
     public InternalChargeApi transform(Charge charge, MessageHeaders headers) {
-        logger.trace(String.format("DSND-498: Charge message to be transformed "
-                + ": %s", charge));
+        logger.trace(String.format("Charge message to be transformed "
+                + ": %s", charge), DataMapHolder.getLogMap());
         try {
             ChargeApi chargeApi = chargeApiMapper.chargeToChargeApi(charge,
                     charge.getCompanyNumber());
@@ -71,8 +72,8 @@ public class ChargesApiTransformer {
                     getKafkaHeader(headers, KafkaHeaders.RECEIVED_TOPIC),
                     getKafkaHeader(headers, KafkaHeaders.RECEIVED_PARTITION_ID),
                     getKafkaHeader(headers, KafkaHeaders.OFFSET), internalChargeApi, charge);
-            logger.trace(String.format("DSND-498: Charge message transformed to InternalChargeApi "
-                    + ": %s", internalChargeApi));
+            logger.trace(String.format("Charge message transformed to InternalChargeApi "
+                    + ": %s", internalChargeApi), DataMapHolder.getLogMap());
             return internalChargeApi;
         } catch (Exception ex) {
             throw new RetryableErrorException("Unable to map Charge delta to Charge API object",

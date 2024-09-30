@@ -1,7 +1,6 @@
 
 package uk.gov.companieshouse.charges.delta.service;
 
-import uk.gov.companieshouse.api.InternalApiClient;
 import uk.gov.companieshouse.api.charges.InternalChargeApi;
 import uk.gov.companieshouse.api.model.ApiResponse;
 
@@ -21,7 +20,6 @@ public interface ApiClientService {
      * Submit charge.
      */
     ApiResponse<Void> putCharge(
-            final String log,
             final String companyNumber,
             final String chargeId,
             final InternalChargeApi internalChargeApi);
@@ -30,7 +28,6 @@ public interface ApiClientService {
      * Delete charge.
      */
     ApiResponse<Void> deleteCharge(
-            final String log,
             final String companyNumber,
             final String chargeId);
 }
