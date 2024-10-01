@@ -91,7 +91,7 @@ public class ChargesDeltaProcessor {
                 () -> new NonRetryableErrorException("Charge Id is empty!")));
 
         DataMapHolder.get().companyNumber("0");
-        DataMapHolder.get().chargesId(chargeId);
+        DataMapHolder.get().mortgageId(chargeId);
 
         final ApiResponse<Void> apiResponse = deleteCharge(chargeId);
 
@@ -135,7 +135,7 @@ public class ChargesDeltaProcessor {
                 chargeIdOptional.orElseThrow(
                         () -> new NonRetryableErrorException("Charge Id is empty")));
         DataMapHolder.get().companyNumber(companyNumber);
-        DataMapHolder.get().chargesId(chargeId);
+        DataMapHolder.get().mortgageId(chargeId);
 
         return apiClientService.putCharge(companyNumber, chargeId, internalChargeApi);
     }
