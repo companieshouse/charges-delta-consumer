@@ -5,6 +5,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.kafka.retrytopic.FixedDelayStrategy;
+import org.springframework.kafka.retrytopic.RetryTopicHeaders;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Header;
@@ -41,9 +42,10 @@ public class ChargesDeltaConsumer {
             groupId = "${charges.delta.group-id}",
             containerFactory = "listenerContainerFactory")
     public void receiveMainMessages(Message<ChsDelta> message,
+                                    @Header(name = RetryTopicHeaders.DEFAULT_HEADER_ATTEMPTS, required = false) Integer attempt,
                                     @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                                    @Header(KafkaHeaders.RECEIVED_PARTITION_ID) String partition,
-                                    @Header(KafkaHeaders.OFFSET) String offset) {
+                                    @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
+                                    @Header(KafkaHeaders.OFFSET) Long offset) {
         ChsDelta chsDelta = message.getPayload();
         DataMapHolder.get().contextId(chsDelta.getContextId());
 

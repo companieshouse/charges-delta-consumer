@@ -25,7 +25,7 @@
         <maven-build-helper-plugin.version>3.2.0</maven-build-helper-plugin.version>
         <docker-maven-plugin.version>1.0.0</docker-maven-plugin.version>
         <ch-kafka.version>1.4.2</ch-kafka.version>
-        <structured-logging.version>1.9.12</structured-logging.version>
+        <structured-logging.version>unversioned</structured-logging.version>
         <kafka-models.version>1.0.28</kafka-models.version>
         <private-api-sdk-java.version>2.0.181</private-api-sdk-java.version>
         <api-sdk-manager-java-library.version>1.0.4</api-sdk-manager-java-library.version>
