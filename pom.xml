@@ -22,7 +22,7 @@
         <main.class>uk.gov.companieshouse.charges.delta.ChargesDeltaConsumerApplication</main.class>
 
         <map-struct.version>1.6.2</map-struct.version>
-        <maven-build-helper-plugin.version>3.6.0</maven-build-helper-plugin.version>
+        <maven-build-helper-plugin.version>3.4.0</maven-build-helper-plugin.version>
         <ch-kafka.version>1.4.8</ch-kafka.version>
         <structured-logging.version>1.9.38</structured-logging.version>
         <kafka-models.version>1.0.40</kafka-models.version>
@@ -33,8 +33,8 @@
         <commons-text.version>1.12.0</commons-text.version>
 
         <!-- Tests -->
-        <maven-surefire-plugin.version>3.5.0</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.5.0</maven-failsafe-plugin.version>
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
         <io-cucumber.version>7.19.0</io-cucumber.version>
         <skip.integration.tests>false</skip.integration.tests>
         <skip.unit.tests>false</skip.unit.tests>
