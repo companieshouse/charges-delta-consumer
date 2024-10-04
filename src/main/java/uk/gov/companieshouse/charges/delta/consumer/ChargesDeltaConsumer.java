@@ -12,7 +12,6 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.charges.delta.exception.NonRetryableErrorException;
-import uk.gov.companieshouse.charges.delta.logging.DataMapHolder;
 import uk.gov.companieshouse.charges.delta.processor.ChargesDeltaProcessor;
 import uk.gov.companieshouse.delta.ChsDelta;
 
@@ -46,8 +45,6 @@ public class ChargesDeltaConsumer {
                                     @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                                     @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
                                     @Header(KafkaHeaders.OFFSET) Long offset) {
-        ChsDelta chsDelta = message.getPayload();
-        DataMapHolder.get().contextId(chsDelta.getContextId());
 
         if (Boolean.TRUE.equals(message.getPayload().getIsDelete())) {
             deltaProcessor.processDelete(message);

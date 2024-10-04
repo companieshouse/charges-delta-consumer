@@ -15,7 +15,7 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 public class DescriptiveChargeApiMapperAspect {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
-//TODO think this class can be removed completely as it's not used anywhere.
+
     @AfterReturning(value = "execution(* uk.gov.companieshouse.charges.delta.mapper"
             + ".TextFormatter.*(..))", returning = "mappedValue")
     void logMapping(JoinPoint joinPoint, Object mappedValue) {

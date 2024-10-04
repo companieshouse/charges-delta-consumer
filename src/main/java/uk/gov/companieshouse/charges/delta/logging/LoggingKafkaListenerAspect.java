@@ -12,7 +12,6 @@ import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -60,8 +59,7 @@ class LoggingKafkaListenerAspect {
             if (retryCount >= maxAttempts -1){
                 LOGGER.error("Max retry attempts reached", ex, DataMapHolder.getLogMap());
             } else {
-                LOGGER.info(String.format(EXCEPTION_MESSAGE,
-                                ex.getClass().getSimpleName(), Arrays.toString(ex.getStackTrace())),
+                LOGGER.info(String.format(EXCEPTION_MESSAGE, ex.getClass().getSimpleName()),
                         DataMapHolder.getLogMap());
             }
             throw ex;

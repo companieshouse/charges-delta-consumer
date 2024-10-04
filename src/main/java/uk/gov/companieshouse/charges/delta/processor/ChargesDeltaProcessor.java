@@ -82,6 +82,7 @@ public class ChargesDeltaProcessor {
     public void processDelete(Message<ChsDelta> chsDelta) {
         final ChargesDeleteDelta chargesDeleteDelta =
                 mapToChargesDelta(chsDelta.getPayload(), ChargesDeleteDelta.class);
+        DataMapHolder.get().mortgageId(chargesDeleteDelta.getChargesId());
 
         Optional<String> chargeIdOptional = Optional.ofNullable(chargesDeleteDelta.getChargesId())
                 .filter(Predicate.not(String::isEmpty));
@@ -89,9 +90,6 @@ public class ChargesDeltaProcessor {
         //pass in the chargeId and encode it with base64 after doing a SHA1 hash
         final String chargeId = encoderUtil.encodeWithSha1(chargeIdOptional.orElseThrow(
                 () -> new NonRetryableErrorException("Charge Id is empty!")));
-
-        DataMapHolder.get().companyNumber("0");
-        DataMapHolder.get().mortgageId(chargeId);
 
         final ApiResponse<Void> apiResponse = deleteCharge(chargeId);
 
@@ -126,18 +124,18 @@ public class ChargesDeltaProcessor {
      */
     private ApiResponse<Void> updateChargesData(Charge charge, InternalChargeApi internalChargeApi) {
 
-        final String companyNumber = charge.getCompanyNumber();
+        DataMapHolder.get().companyNumber(charge.getCompanyNumber());
         Optional<String> chargeIdOptional = Optional.ofNullable(charge.getId())
                 .filter(Predicate.not(String::isEmpty));
+        DataMapHolder.get().mortgageId(chargeIdOptional.orElseThrow(
+                () -> new NonRetryableErrorException("Charge Id is empty")));
 
         //pass in the chargeId and encode it with base64 after doing a SHA1 hash
         final String chargeId = encoderUtil.encodeWithSha1(
                 chargeIdOptional.orElseThrow(
                         () -> new NonRetryableErrorException("Charge Id is empty")));
-        DataMapHolder.get().companyNumber(companyNumber);
-        DataMapHolder.get().mortgageId(chargeId);
 
-        return apiClientService.putCharge(companyNumber, chargeId, internalChargeApi);
+        return apiClientService.putCharge(charge.getCompanyNumber(), chargeId, internalChargeApi);
     }
 
     private void handleResponse(final HttpStatus httpStatus)
@@ -152,7 +150,7 @@ public class ChargesDeltaProcessor {
                     httpStatus);
             LOGGER.error(message, null, DataMapHolder.getLogMap());
             throw new NonRetryableErrorException(message);
-        }  else {
+        } else {
             String message = String.format(RETRYABLE_RESPONSE_ERROR_MESSAGE,
                     httpStatus);
             LOGGER.info(message, DataMapHolder.getLogMap());
@@ -170,13 +168,13 @@ public class ChargesDeltaProcessor {
     private void handleDeleteResponse(final HttpStatus httpStatus) {
 
         if (nonRetryableStatuses.contains(httpStatus)) {
-            LOGGER.info(String.format(NON_RETRYABLE_RESPONSE_ERROR_MESSAGE,
+            LOGGER.error(String.format(NON_RETRYABLE_RESPONSE_ERROR_MESSAGE,
                     httpStatus), DataMapHolder.getLogMap());
             throw new NonRetryableErrorException(String.format(NON_RETRYABLE_RESPONSE_ERROR_MESSAGE,
                     httpStatus));
         } else if (!httpStatus.is2xxSuccessful()) {
-            LOGGER.error(String.format(RETRYABLE_RESPONSE_ERROR_MESSAGE, httpStatus),
-                    null, DataMapHolder.getLogMap());
+            LOGGER.info(String.format(RETRYABLE_RESPONSE_ERROR_MESSAGE, httpStatus),
+                    DataMapHolder.getLogMap());
             throw new RetryableErrorException(String.format(RETRYABLE_RESPONSE_ERROR_MESSAGE,
                     httpStatus));
         } else {
