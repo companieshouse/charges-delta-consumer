@@ -33,7 +33,6 @@ import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 import uk.gov.companieshouse.api.http.HttpClient;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
-import uk.gov.companieshouse.logging.Logger;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -50,9 +49,6 @@ class ApiClientServiceImplTest {
     private String apiKey;
     @Value("${api.api-url}")
     private String apiUrl;
-
-    @Mock
-    Logger logger;
 
     @Mock
     private InternalApiClient internalApiClient;
