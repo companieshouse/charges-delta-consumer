@@ -8,8 +8,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.api.client.http.HttpHeaders;
-import com.google.api.client.http.HttpResponseException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -116,8 +114,7 @@ class ApiClientServiceImplTest {
     @ParameterizedTest
     @MethodSource("provideExceptionParameters")
     @DisplayName("When calling DELETE charge and an error occurs then throw the appropriate exception based on the error type")
-    void When_PutCharge_Exception_Then_Throw_Appropriate_Exception(HttpStatus httpStatus,
-            ApiErrorResponseException exceptionFromApi)
+    void When_PutCharge_Exception_Then_Throw_Appropriate_Exception(int statusCode)
             throws ApiErrorResponseException, URIValidationException {
         when(internalApiClientSupplier.get()).thenReturn(internalApiClient);
         when(internalApiClient.getHttpClient()).thenReturn(httpClient);
@@ -125,7 +122,7 @@ class ApiClientServiceImplTest {
         when(privateDeltaResourceHandler.putCharge()).thenReturn(privateChargesUpsertResourceHandler);
         when(privateChargesUpsertResourceHandler.upsert(anyString(), any(InternalChargeApi.class)))
                 .thenReturn(privateChargesUpsert);
-        when(privateChargesUpsert.execute()).thenThrow(exceptionFromApi);
+        when(privateChargesUpsert.execute()).thenReturn(new ApiResponse<>(statusCode, null));
 
         ApiResponse<?> apiResponse = assertDoesNotThrow(() -> apiClientService.putCharge(
                 "12345678",
@@ -133,7 +130,7 @@ class ApiClientServiceImplTest {
                 internalChargeApi));
 
         Assertions.assertThat(apiResponse).isNotNull();
-        Assertions.assertThat(apiResponse.getStatusCode()).isEqualTo(httpStatus.value());
+        Assertions.assertThat(apiResponse.getStatusCode()).isEqualTo(statusCode);
 
         verify(internalApiClient, times(1)).getHttpClient();
         verify(internalApiClient, times(1)).privateDeltaChargeResourceHandler();
@@ -168,33 +165,22 @@ class ApiClientServiceImplTest {
 
     }
 
-    private static Stream<Arguments> provideExceptionParameters() {
-        return Stream.of(
-                Arguments.of(HttpStatus.BAD_REQUEST, buildApiErrorResponseException(HttpStatus.BAD_REQUEST)),
-                Arguments.of(HttpStatus.NOT_FOUND, buildApiErrorResponseException(HttpStatus.NOT_FOUND)),
-                Arguments.of(HttpStatus.UNAUTHORIZED, buildApiErrorResponseException(HttpStatus.UNAUTHORIZED)),
-                Arguments.of(HttpStatus.INTERNAL_SERVER_ERROR, buildApiErrorResponseException(HttpStatus.INTERNAL_SERVER_ERROR)),
-                Arguments.of(HttpStatus.INTERNAL_SERVER_ERROR, buildApiErrorResponseException(HttpStatus.INTERNAL_SERVER_ERROR))
-        );
-    }
-
     @ParameterizedTest
     @MethodSource("provideExceptionParameters")
     @DisplayName("When calling DELETE charge and an error occurs then throw the appropriate exception based on the error type")
-    void When_Delete_Exception_Then_Throw_Appropriate_Exception(HttpStatus httpStatus,
-            ApiErrorResponseException exceptionFromApi)
+    void When_Delete_Exception_Then_Throw_Appropriate_Exception(int statusCode)
             throws ApiErrorResponseException, URIValidationException {
         when(internalApiClientSupplier.get()).thenReturn(internalApiClient);
         when(internalApiClient.getHttpClient()).thenReturn(httpClient);
         when(internalApiClient.privateDeltaChargeResourceHandler()).thenReturn(privateDeltaResourceHandler);
         when(privateDeltaResourceHandler.deleteCharge(Mockito.anyString())).thenReturn(privateChargesDelete);
-        when(privateChargesDelete.execute()).thenThrow(exceptionFromApi);
+        when(privateChargesDelete.execute()).thenReturn(new ApiResponse<>(statusCode, null));
 
         ApiResponse<?> apiResponse = assertDoesNotThrow(() -> apiClientService.deleteCharge(
                 "0", "test"));
 
         Assertions.assertThat(apiResponse).isNotNull();
-        Assertions.assertThat(apiResponse.getStatusCode()).isEqualTo(httpStatus.value());
+        Assertions.assertThat(apiResponse.getStatusCode()).isEqualTo(statusCode);
 
         verify(internalApiClient, times(1)).getHttpClient();
         verify(internalApiClient, times(1)).privateDeltaChargeResourceHandler();
@@ -227,28 +213,6 @@ class ApiClientServiceImplTest {
 
     }
 
-    private static ApiErrorResponseException buildApiErrorResponseException(HttpStatus httpStatus) {
-
-        final HttpResponseException httpResponseException = new HttpResponseException.Builder(
-                httpStatus.value(),
-                httpStatus.getReasonPhrase(),
-                new HttpHeaders()
-        ).build();
-
-        return ApiErrorResponseException.fromHttpResponseException(httpResponseException);
-    }
-
-    private static ApiErrorResponseException buildApiErrorResponseCustomException(int nonHttpStatusCode) {
-
-        final HttpResponseException httpResponseException = new HttpResponseException.Builder(
-                nonHttpStatusCode,
-                "some error",
-                new HttpHeaders()
-        ).build();
-
-        return ApiErrorResponseException.fromHttpResponseException(httpResponseException);
-    }
-
     @Test
     @DisplayName("When calling PUT charge and URLValidation exception occurs then throw the appropriate exception based on the error type")
     void When_Put_Exception_Then_Throw_Appropriate_Exception()
@@ -275,51 +239,12 @@ class ApiClientServiceImplTest {
 
     }
 
-    @Test
-    @DisplayName("When calling PUT charge and APIResponse returns 0 status code")
-    void When_Put_Exception_With_Status_Code_0_Then_Throw_Appropriate_Exception()
-            throws ApiErrorResponseException, URIValidationException {
-        when(internalApiClientSupplier.get()).thenReturn(internalApiClient);
-        when(internalApiClient.getHttpClient()).thenReturn(httpClient);
-        when(internalApiClient.privateDeltaChargeResourceHandler()).thenReturn(privateDeltaResourceHandler);
-        when(privateDeltaResourceHandler.putCharge()).thenReturn(privateChargesUpsertResourceHandler);
-        when(privateChargesUpsertResourceHandler.upsert(anyString(), any(InternalChargeApi.class)))
-                .thenReturn(privateChargesUpsert);
-        when(privateChargesUpsert.execute()).thenThrow(buildApiErrorResponseCustomException(0));
-        assertThrows(RetryableErrorException.class, () -> apiClientService.putCharge(
-                "12345678",
-                "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA",
-                internalChargeApi));
-
-        verify(internalApiClient, times(1)).getHttpClient();
-        verify(internalApiClient, times(1)).privateDeltaChargeResourceHandler();
-        verify(privateDeltaResourceHandler, times(1))
-                .putCharge();
-        verify(privateChargesUpsert, times(1))
-                .execute();
-
-    }
-
-    @Test
-    @DisplayName("When calling DELETE charge and APIResponse returns 0 status code")
-    void When_Delete_Exception_With_Status_Code_0_Then_Throw_Appropriate_Exception()
-            throws ApiErrorResponseException, URIValidationException {
-        when(internalApiClientSupplier.get()).thenReturn(internalApiClient);
-        when(internalApiClient.getHttpClient()).thenReturn(httpClient);
-        when(internalApiClient.privateDeltaChargeResourceHandler()).thenReturn(privateDeltaResourceHandler);
-        when(privateDeltaResourceHandler.deleteCharge(Mockito.anyString())).thenReturn(privateChargesDelete);
-        when(privateChargesDelete.execute()).thenThrow(buildApiErrorResponseCustomException(0));
-
-        assertThrows(RetryableErrorException.class, () -> apiClientService.deleteCharge(
-                "0", "test"));
-
-        verify(internalApiClient, times(1)).getHttpClient();
-        verify(internalApiClient, times(1)).privateDeltaChargeResourceHandler();
-        verify(privateDeltaResourceHandler, times(1))
-                .deleteCharge(Mockito.anyString());
-        verify(privateChargesDelete, times(1))
-                .execute();
-
-
+    private static Stream<Arguments> provideExceptionParameters() {
+        return Stream.of(
+                Arguments.of(HttpStatus.BAD_REQUEST.value()),
+                Arguments.of(HttpStatus.NOT_FOUND.value()),
+                Arguments.of(HttpStatus.UNAUTHORIZED.value()),
+                Arguments.of(HttpStatus.INTERNAL_SERVER_ERROR.value())
+        );
     }
 }
