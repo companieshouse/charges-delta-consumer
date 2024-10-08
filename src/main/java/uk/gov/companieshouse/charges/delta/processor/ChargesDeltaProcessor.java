@@ -67,12 +67,19 @@ public class ChargesDeltaProcessor {
 
         // Assuming we always get only one charge item inside charges delta
         Charge charge = chargesDelta.getCharges().get(0);
+        Optional<String> chargeIdOptional = Optional.ofNullable(charge.getId())
+                .filter(Predicate.not(String::isEmpty));
+        String rawChargeId = chargeIdOptional.orElseThrow(
+                () -> new NonRetryableErrorException("Charge Id is empty"));
+
+        DataMapHolder.get().mortgageId(rawChargeId);
         DataMapHolder.get().companyNumber(charge.getCompanyNumber());
+
         InternalChargeApi internalChargeApi = transformer.transform(charge, chsDelta.getHeaders());
 
         removeBrokenFilingLinks(internalChargeApi, charge.getCompanyNumber());
 
-        ApiResponse<Void> apiResponse = updateChargesData(charge, internalChargeApi);
+        ApiResponse<Void> apiResponse = updateChargesData(rawChargeId, charge, internalChargeApi);
 
         handleResponse(HttpStatus.valueOf(apiResponse.getStatusCode()));
     }
@@ -122,17 +129,10 @@ public class ChargesDeltaProcessor {
     /**
      * Invoke Charges Data API to update charges database.
      */
-    private ApiResponse<Void> updateChargesData(Charge charge, InternalChargeApi internalChargeApi) {
-
-        Optional<String> chargeIdOptional = Optional.ofNullable(charge.getId())
-                .filter(Predicate.not(String::isEmpty));
-        DataMapHolder.get().mortgageId(chargeIdOptional.orElseThrow(
-                () -> new NonRetryableErrorException("Charge Id is empty")));
+    private ApiResponse<Void> updateChargesData(String rawChargeId, Charge charge, InternalChargeApi internalChargeApi) {
 
         //pass in the chargeId and encode it with base64 after doing a SHA1 hash
-        final String chargeId = encoderUtil.encodeWithSha1(
-                chargeIdOptional.orElseThrow(
-                        () -> new NonRetryableErrorException("Charge Id is empty")));
+        final String chargeId = encoderUtil.encodeWithSha1(rawChargeId);
 
         return apiClientService.putCharge(charge.getCompanyNumber(), chargeId, internalChargeApi);
     }
