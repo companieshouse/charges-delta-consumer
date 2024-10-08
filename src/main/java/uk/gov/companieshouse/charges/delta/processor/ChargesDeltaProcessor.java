@@ -67,6 +67,7 @@ public class ChargesDeltaProcessor {
 
         // Assuming we always get only one charge item inside charges delta
         Charge charge = chargesDelta.getCharges().get(0);
+        DataMapHolder.get().companyNumber(charge.getCompanyNumber());
         InternalChargeApi internalChargeApi = transformer.transform(charge, chsDelta.getHeaders());
 
         removeBrokenFilingLinks(internalChargeApi, charge.getCompanyNumber());
@@ -110,12 +111,11 @@ public class ChargesDeltaProcessor {
                                          String companyNumber) {
         List<TransactionsApi> transactions = internalChargeApi.getExternalData().getTransactions();
         for (TransactionsApi transaction : transactions) {
-            if (transaction.getLinks() != null) {
-                if (transaction.getLinks().getFiling() != null && transaction.getLinks().getFiling()
+            if (transaction.getLinks() != null && transaction.getLinks().getFiling() != null && transaction.getLinks().getFiling()
                         .equals(String.format("/company/%s/filing-history/", companyNumber))) {
                     transaction.getLinks().setFiling(null);
                 }
-            }
+
         }
     }
 
@@ -124,7 +124,6 @@ public class ChargesDeltaProcessor {
      */
     private ApiResponse<Void> updateChargesData(Charge charge, InternalChargeApi internalChargeApi) {
 
-        DataMapHolder.get().companyNumber(charge.getCompanyNumber());
         Optional<String> chargeIdOptional = Optional.ofNullable(charge.getId())
                 .filter(Predicate.not(String::isEmpty));
         DataMapHolder.get().mortgageId(chargeIdOptional.orElseThrow(
