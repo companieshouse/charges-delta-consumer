@@ -2,6 +2,7 @@ package uk.gov.companieshouse.charges.delta.transformer;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.trim;
+import static uk.gov.companieshouse.charges.delta.ChargesDeltaConsumerApplication.NAMESPACE;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -23,10 +24,12 @@ import uk.gov.companieshouse.api.charges.TransactionsApi;
 import uk.gov.companieshouse.api.charges.TransactionsLinks;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
+import uk.gov.companieshouse.charges.delta.logging.DataMapHolder;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
 import uk.gov.companieshouse.charges.delta.mapper.NoticeTypeMapperUtils;
 import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
 import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.logging.LoggerFactory;
 
 @Component
 public class ChargesApiTransformer {
@@ -35,8 +38,9 @@ public class ChargesApiTransformer {
     public static final String FILING_HISTORY = "/filing-history/";
     public static final String CHARGES = "/charges/";
     public static final String DEFAULT_FILING_TYPE = "";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
     private final ChargeApiMapper chargeApiMapper;
-    private final Logger logger;
     private EncoderUtil encoderUtil;
 
     /**
@@ -44,11 +48,9 @@ public class ChargesApiTransformer {
      */
     @Autowired
     public ChargesApiTransformer(ChargeApiMapper descriptiveChargeApiMapper,
-            EncoderUtil encoderUtil,
-            Logger logger) {
+            EncoderUtil encoderUtil) {
         this.chargeApiMapper = descriptiveChargeApiMapper;
         this.encoderUtil = encoderUtil;
-        this.logger = logger;
     }
 
     /**
@@ -59,8 +61,8 @@ public class ChargesApiTransformer {
      * @return source object mapped to InternalChargeApi
      */
     public InternalChargeApi transform(Charge charge, MessageHeaders headers) {
-        logger.trace(String.format("DSND-498: Charge message to be transformed "
-                + ": %s", charge));
+        LOGGER.trace(String.format("Charge message to be transformed "
+                + ": %s", charge), DataMapHolder.getLogMap());
         try {
             ChargeApi chargeApi = chargeApiMapper.chargeToChargeApi(charge,
                     charge.getCompanyNumber());
@@ -71,8 +73,8 @@ public class ChargesApiTransformer {
                     getKafkaHeader(headers, KafkaHeaders.RECEIVED_TOPIC),
                     getKafkaHeader(headers, KafkaHeaders.RECEIVED_PARTITION_ID),
                     getKafkaHeader(headers, KafkaHeaders.OFFSET), internalChargeApi, charge);
-            logger.trace(String.format("DSND-498: Charge message transformed to InternalChargeApi "
-                    + ": %s", internalChargeApi));
+            LOGGER.trace(String.format("Charge message transformed to InternalChargeApi "
+                    + ": %s", internalChargeApi), DataMapHolder.getLogMap());
             return internalChargeApi;
         } catch (Exception ex) {
             throw new RetryableErrorException("Unable to map Charge delta to Charge API object",
@@ -149,10 +151,9 @@ public class ChargesApiTransformer {
     }
 
     private String getFilingType(Charge charge) {
-        String filingType = NoticeTypeMapperUtils.map.get(trim(charge.getNoticeType())) != null
+        return NoticeTypeMapperUtils.map.get(trim(charge.getNoticeType())) != null
                 ? NoticeTypeMapperUtils.map.get(trim(charge.getNoticeType()))
                 .getFilingType(charge.getTransDesc()) : DEFAULT_FILING_TYPE;
-        return filingType;
     }
 
     private String encode(String companyNumber, String id) {

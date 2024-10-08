@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @Import(TestConfig.class)
-public class ChargesApiTransformerTest {
+class ChargesApiTransformerTest {
 
     @Autowired
     private ChargeApiMapper descriptiveChargeApiMapper;
@@ -50,7 +50,7 @@ public class ChargesApiTransformerTest {
 
     @BeforeEach
     public void setup() {
-        transformer = new ChargesApiTransformer(descriptiveChargeApiMapper, encoderUtil, logger);
+        transformer = new ChargesApiTransformer(descriptiveChargeApiMapper, encoderUtil);
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.setDateFormat(new SimpleDateFormat("yyyyMMdd"));

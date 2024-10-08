@@ -1,13 +1,14 @@
 package uk.gov.companieshouse.charges.delta.steps;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.common.Metadata.metadata;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.admin.model.GetServeEventsResult;
@@ -28,16 +29,13 @@ import uk.gov.companieshouse.charges.delta.common.TestConstants;
 import uk.gov.companieshouse.charges.delta.consumer.ResettableCountDownLatch;
 import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
 import uk.gov.companieshouse.delta.ChsDelta;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.put;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.common.Metadata.metadata;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class ChargesConsumerErrorSteps {
 
@@ -166,7 +164,7 @@ public class ChargesConsumerErrorSteps {
             .filter(header -> header.key().equalsIgnoreCase(RETRY_TOPIC_ATTEMPTS))
             .collect(Collectors.toList());
 
-        assertThat(retryList.size()).isEqualTo(Integer.parseInt(requiredRetries) + 1);
+        assertThat(retryList).hasSize(Integer.parseInt(requiredRetries) + 1);
     }
 
     private void sendKafkaMessage(Object deltaMessage) throws InterruptedException, ExecutionException, TimeoutException {

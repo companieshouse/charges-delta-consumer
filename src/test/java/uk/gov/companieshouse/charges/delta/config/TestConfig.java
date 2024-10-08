@@ -4,7 +4,6 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import uk.gov.companieshouse.charges.delta.mapper.ChargeApiMapper;
-import uk.gov.companieshouse.charges.delta.mapper.ClassificationApiMapper;
 import uk.gov.companieshouse.charges.delta.mapper.DescriptiveChargeApiMapper;
 import uk.gov.companieshouse.charges.delta.mapper.InsolvencyCasesApiMapper;
 import uk.gov.companieshouse.charges.delta.mapper.PersonsEntitledApiMapper;
@@ -35,11 +34,6 @@ public class TestConfig {
     @Bean
     public PersonsEntitledApiMapper personsEntitledApiMapper() {
         return Mappers.getMapper(PersonsEntitledApiMapper.class);
-    }
-
-    @Bean
-    public ClassificationApiMapper classificationApiMapper() {
-        return Mappers.getMapper(ClassificationApiMapper.class);
     }
 
     @Bean

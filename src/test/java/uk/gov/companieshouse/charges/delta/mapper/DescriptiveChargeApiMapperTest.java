@@ -1,5 +1,10 @@
 package uk.gov.companieshouse.charges.delta.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -11,18 +16,11 @@ import uk.gov.companieshouse.api.charges.PersonsEntitledApi;
 import uk.gov.companieshouse.api.charges.SecuredDetailsApi;
 import uk.gov.companieshouse.api.delta.Charge;
 import uk.gov.companieshouse.logging.Logger;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
-public class DescriptiveChargeApiMapperTest {
+class DescriptiveChargeApiMapperTest {
 
     @Mock
     private ChargeApiMapper delegate;
