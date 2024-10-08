@@ -66,8 +66,8 @@ public class ChargesDeltaProcessor {
 
         // Assuming we always get only one charge item inside charges delta
         Charge charge = chargesDelta.getCharges().get(0);
-        String rawChargeId = Optional.ofNullable(charge.getId()).orElseThrow(
-                () -> new NonRetryableErrorException("Charge Id is empty"));
+        String rawChargeId = Optional.ofNullable(charge.getId()).filter(Predicate.not(String::isEmpty))
+                .orElseThrow(() -> new NonRetryableErrorException("Charge Id is empty"));
 
         DataMapHolder.get().mortgageId(rawChargeId);
         DataMapHolder.get().companyNumber(charge.getCompanyNumber());

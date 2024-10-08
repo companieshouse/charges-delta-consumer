@@ -44,13 +44,11 @@ class ChargesDeltaProcessorTest {
     @Mock
     private ApiClientService apiClientService;
 
-    private EncoderUtil encoderUtil;
-
     private TestSupport testSupport;
 
     @BeforeEach
     void setUp() {
-        encoderUtil = new EncoderUtil("some_salt", "transId_salt");
+        EncoderUtil encoderUtil = new EncoderUtil("some_salt", "transId_salt");
         deltaProcessor = new ChargesDeltaProcessor(transformer, apiClientService, encoderUtil);
         testSupport = new TestSupport();
     }
@@ -226,7 +224,6 @@ class ChargesDeltaProcessorTest {
     void When_ChsDelta_with_null_chargeId_Expect_ErrorResponse(String jsonFileName) throws IOException {
         Message<ChsDelta> mockChsChargesDeltaMessage = testSupport.createChsDeltaMessage(
                 jsonFileName, false);
-        when(transformer.transform(any(Charge.class), any(MessageHeaders.class))).thenReturn(testSupport.mockInternalChargeApi());
 
         assertThrows( NonRetryableErrorException.class,
                 () -> deltaProcessor.processDelta(mockChsChargesDeltaMessage));
