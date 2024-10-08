@@ -60,16 +60,13 @@ public class ChargesDeltaProcessor {
     public void processDelta(Message<ChsDelta> chsDelta) {
         final ChargesDelta chargesDelta =
                 mapToChargesDelta(chsDelta.getPayload(), ChargesDelta.class);
-
         if (chargesDelta.getCharges().isEmpty()) {
             throw new NonRetryableErrorException("No charge items found inside ChargesDelta");
         }
 
         // Assuming we always get only one charge item inside charges delta
         Charge charge = chargesDelta.getCharges().get(0);
-        Optional<String> chargeIdOptional = Optional.ofNullable(charge.getId())
-                .filter(Predicate.not(String::isEmpty));
-        String rawChargeId = chargeIdOptional.orElseThrow(
+        String rawChargeId = Optional.ofNullable(charge.getId()).orElseThrow(
                 () -> new NonRetryableErrorException("Charge Id is empty"));
 
         DataMapHolder.get().mortgageId(rawChargeId);
