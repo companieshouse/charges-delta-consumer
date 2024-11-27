@@ -10,7 +10,7 @@ Feature: Process Charges Delete Delta information with happy and error condition
 
     Examples:
       | response |  deltaMessage                       | companyNumber | chargeId                    | responseCode |
-      | 200      |  charges-delete-delta-source-1.json | 0             | NLVXY861zxOTr3NExemI3q4Nq4Y | 200          |
+      | 200      |  charges-delete-delta-source-1.json | 12345678      | NLVXY861zxOTr3NExemI3q4Nq4Y | 200          |
 
 
   Scenario Outline: Consume a valid Charges Delete message in avro format message with an invalid json payload,

@@ -87,6 +87,7 @@ public class ChargesDeltaProcessor {
     public void processDelete(Message<ChsDelta> chsDelta) {
         final ChargesDeleteDelta chargesDeleteDelta =
                 mapToChargesDelta(chsDelta.getPayload(), ChargesDeleteDelta.class);
+        String deltaAt = chargesDeleteDelta.getDeltaAt();
         DataMapHolder.get().mortgageId(chargesDeleteDelta.getChargesId());
 
         Optional<String> chargeIdOptional = Optional.ofNullable(chargesDeleteDelta.getChargesId())
@@ -96,7 +97,7 @@ public class ChargesDeltaProcessor {
         final String chargeId = encoderUtil.encodeWithSha1(chargeIdOptional.orElseThrow(
                 () -> new NonRetryableErrorException("Charge Id is empty!")));
 
-        final ApiResponse<Void> apiResponse = deleteCharge(chargeId);
+        final ApiResponse<Void> apiResponse = deleteCharge(chargeId, deltaAt);
 
         handleDeleteResponse(HttpStatus.valueOf(apiResponse.getStatusCode()));
     }
@@ -157,8 +158,8 @@ public class ChargesDeltaProcessor {
     /**
      * Invoke Charges Data API to update charges database.
      */
-    private ApiResponse<Void> deleteCharge(String chargeId) {
-        return apiClientService.deleteCharge("0", chargeId);
+    private ApiResponse<Void> deleteCharge(String chargeId, String deltaAt) {
+        return apiClientService.deleteCharge("0", chargeId, deltaAt);
     }
 
     private void handleDeleteResponse(final HttpStatus httpStatus) {

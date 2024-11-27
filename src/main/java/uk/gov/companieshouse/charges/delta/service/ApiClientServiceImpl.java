@@ -65,7 +65,7 @@ public class ApiClientServiceImpl implements ApiClientService {
     }
 
     @Override
-    public ApiResponse<Void> deleteCharge(String companyNumber, String chargeId) {
+    public ApiResponse<Void> deleteCharge(String companyNumber, String chargeId, String deltaAt) {
         final String formattedUri = String.format(DELETE_CHARGE_URI, companyNumber, chargeId);
         DataMapHolder.get().uri(formattedUri);
 
@@ -74,7 +74,7 @@ public class ApiClientServiceImpl implements ApiClientService {
 
         PrivateChargesDelete executor = internalApiClient
                 .privateDeltaChargeResourceHandler()
-                .deleteCharge(formattedUri);
+                .deleteCharge(formattedUri, deltaAt);
 
         return execute(executor);
     }
