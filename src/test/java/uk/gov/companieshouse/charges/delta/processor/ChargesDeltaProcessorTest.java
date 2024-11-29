@@ -35,7 +35,7 @@ import uk.gov.companieshouse.delta.ChsDelta;
 
 @ExtendWith(MockitoExtension.class)
 class ChargesDeltaProcessorTest {
-    private static final String COMPANY_NUMBER = "0";
+    private static final String COMPANY_NUMBER = "12345678";
     private static final String CHARGE_ID = "yt6cQ-A2DqNpqwAMDWxKX12Axv4";
     private static final String DELTA_AT = "20230724093435661593";
 

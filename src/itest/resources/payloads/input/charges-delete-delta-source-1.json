@@ -1,5 +1,6 @@
 {
   "charges_id": "3000606655",
   "action": "DELETE",
-  "delta_at": "20230724093435661593"
+  "delta_at": "20230724093435661593",
+  "company_number" : "12345678"
 }
