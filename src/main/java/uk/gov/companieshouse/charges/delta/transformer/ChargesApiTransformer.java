@@ -71,7 +71,7 @@ public class ChargesApiTransformer {
             internalChargeApi.setExternalData(chargeApi);
             updateInternalChargeApi(
                     getKafkaHeader(headers, KafkaHeaders.RECEIVED_TOPIC),
-                    getKafkaHeader(headers, KafkaHeaders.RECEIVED_PARTITION_ID),
+                    getKafkaHeader(headers, KafkaHeaders.RECEIVED_PARTITION),
                     getKafkaHeader(headers, KafkaHeaders.OFFSET), internalChargeApi, charge);
             LOGGER.trace(String.format("Charge message transformed to InternalChargeApi "
                     + ": %s", internalChargeApi), DataMapHolder.getLogMap());
