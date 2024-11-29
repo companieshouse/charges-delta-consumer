@@ -75,8 +75,9 @@ public class ChargesDeltaProcessor {
         InternalChargeApi internalChargeApi = transformer.transform(charge, chsDelta.getHeaders());
 
         removeBrokenFilingLinks(internalChargeApi, charge.getCompanyNumber());
+        String chargeId = encoderUtil.encodeWithSha1(rawChargeId);
 
-        ApiResponse<Void> apiResponse = updateChargesData(rawChargeId, charge, internalChargeApi);
+        ApiResponse<Void> apiResponse = apiClientService.putCharge(charge.getCompanyNumber(), chargeId, internalChargeApi);;
 
         handleResponse(HttpStatus.valueOf(apiResponse.getStatusCode()));
     }
@@ -89,7 +90,7 @@ public class ChargesDeltaProcessor {
                 mapToChargesDelta(chsDelta.getPayload(), ChargesDeleteDelta.class);
         String deltaAt = chargesDeleteDelta.getDeltaAt();
         String companyNumber = chargesDeleteDelta.getCompanyNumber();
-        DataMapHolder.get().mortgageId(chargesDeleteDelta.getChargesId());
+        DataMapHolder.get().mortgageId(chargesDeleteDelta.getChargesId()).companyNumber(companyNumber);
 
         Optional<String> chargeIdOptional = Optional.ofNullable(chargesDeleteDelta.getChargesId())
                 .filter(Predicate.not(String::isEmpty));
@@ -98,7 +99,7 @@ public class ChargesDeltaProcessor {
         final String chargeId = encoderUtil.encodeWithSha1(chargeIdOptional.orElseThrow(
                 () -> new NonRetryableErrorException("Charge Id is empty!")));
 
-        final ApiResponse<Void> apiResponse = deleteCharge(companyNumber, chargeId, deltaAt);
+        final ApiResponse<Void> apiResponse = apiClientService.deleteCharge(companyNumber, chargeId, deltaAt);
 
         handleDeleteResponse(HttpStatus.valueOf(apiResponse.getStatusCode()));
     }
@@ -125,17 +126,6 @@ public class ChargesDeltaProcessor {
         }
     }
 
-    /**
-     * Invoke Charges Data API to update charges database.
-     */
-    private ApiResponse<Void> updateChargesData(String rawChargeId, Charge charge, InternalChargeApi internalChargeApi) {
-
-        //pass in the chargeId and encode it with base64 after doing a SHA1 hash
-        final String chargeId = encoderUtil.encodeWithSha1(rawChargeId);
-
-        return apiClientService.putCharge(charge.getCompanyNumber(), chargeId, internalChargeApi);
-    }
-
     private void handleResponse(final HttpStatus httpStatus)
             throws NonRetryableErrorException, RetryableErrorException {
         DataMapHolder.get().status(httpStatus.toString());
@@ -154,13 +144,6 @@ public class ChargesDeltaProcessor {
             LOGGER.info(message, DataMapHolder.getLogMap());
             throw new RetryableErrorException(message);
         }
-    }
-
-    /**
-     * Invoke Charges Data API to update charges database.
-     */
-    private ApiResponse<Void> deleteCharge(String companyNumber, String chargeId, String deltaAt) {
-        return apiClientService.deleteCharge(companyNumber, chargeId, deltaAt);
     }
 
     private void handleDeleteResponse(final HttpStatus httpStatus) {
