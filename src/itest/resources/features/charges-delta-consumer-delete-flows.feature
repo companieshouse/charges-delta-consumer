@@ -10,7 +10,7 @@ Feature: Process Charges Delete Delta information with happy and error condition
 
     Examples:
       | response |  deltaMessage                       | companyNumber | chargeId                    | responseCode |
-      | 200      |  charges-delete-delta-source-1.json | 0             | NLVXY861zxOTr3NExemI3q4Nq4Y | 200          |
+      | 200      |  charges-delete-delta-source-1.json | 12345678      | NLVXY861zxOTr3NExemI3q4Nq4Y | 200          |
 
 
   Scenario Outline: Consume a valid Charges Delete message in avro format message with an invalid json payload,
@@ -37,7 +37,7 @@ Feature: Process Charges Delete Delta information with happy and error condition
 
     Examples:
       | response | deltaMessage                       | companyNumber | chargeId                    | responseCode | targetTopic                                  |
-      | 400      | charges-delete-delta-source-1.json | 0             | NLVXY861zxOTr3NExemI3q4Nq4Y | 400          | charges-delta-charges-delta-consumer-invalid |
+      | 400      | charges-delete-delta-source-1.json | 12345678      | NLVXY861zxOTr3NExemI3q4Nq4Y | 400          | charges-delta-charges-delta-consumer-invalid |
 
   Scenario Outline: Consume a valid delete message, Charges Data API delete endpoint returns 503
 
@@ -49,8 +49,8 @@ Feature: Process Charges Delete Delta information with happy and error condition
 
     Examples:
       | response | deltaMessage                       | companyNumber | chargeId                    | responseCode | targetTopic                                | retries |
-      | 503      | charges-delete-delta-source-1.json | 0             | NLVXY861zxOTr3NExemI3q4Nq4Y | 503          | charges-delta-charges-delta-consumer-error | 4       |
-      | 404      | charges-delete-delta-source-1.json | 0             | NLVXY861zxOTr3NExemI3q4Nq4Y | 404          | charges-delta-charges-delta-consumer-error | 4       |
+      | 503      | charges-delete-delta-source-1.json | 12345678      | NLVXY861zxOTr3NExemI3q4Nq4Y | 503          | charges-delta-charges-delta-consumer-error | 4       |
+      | 404      | charges-delete-delta-source-1.json | 12345678      | NLVXY861zxOTr3NExemI3q4Nq4Y | 404          | charges-delta-charges-delta-consumer-error | 4       |
 
   Scenario Outline: Consume a valid delete message, but fails while processing before calling Charges Data API delete endpoint
 
@@ -62,7 +62,7 @@ Feature: Process Charges Delete Delta information with happy and error condition
 
     Examples:
       | response | deltaMessage                       | companyNumber | chargeId                    | responseCode | targetTopic                                | retries |  |
-      | 500      | charges-delete-delta-source-1.json | 0             | NLVXY861zxOTr3NExemI3q4Nq4Y | 500          | charges-delta-charges-delta-consumer-error | 4       |  |
+      | 500      | charges-delete-delta-source-1.json | 12345678      | NLVXY861zxOTr3NExemI3q4Nq4Y | 500          | charges-delta-charges-delta-consumer-error | 4       |  |
 
   Scenario Outline: Consume a Charges Delete message null/empty charge id,
   process it and move to invalid message topic charges data api never called
@@ -75,5 +75,5 @@ Feature: Process Charges Delete Delta information with happy and error condition
 
     Examples:
       | response | targetTopic                                  | deltaMessage                                     | companyNumber | chargeId                    |
-      | 200      | charges-delta-charges-delta-consumer-invalid | charges-delete-delta-source-null_charge-id.json  | 0             | NLVXY861zxOTr3NExemI3q4Nq4Y |
-      | 200      | charges-delta-charges-delta-consumer-invalid | charges-delete-delta-source-empty_charge-id.json | 0             | NLVXY861zxOTr3NExemI3q4Nq4Y |
+      | 200      | charges-delta-charges-delta-consumer-invalid | charges-delete-delta-source-null_charge-id.json  | 12345678      | NLVXY861zxOTr3NExemI3q4Nq4Y |
+      | 200      | charges-delta-charges-delta-consumer-invalid | charges-delete-delta-source-empty_charge-id.json | 12345678      | NLVXY861zxOTr3NExemI3q4Nq4Y |
