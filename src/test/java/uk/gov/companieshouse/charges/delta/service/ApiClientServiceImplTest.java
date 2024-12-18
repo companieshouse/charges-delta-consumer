@@ -8,6 +8,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -33,8 +34,6 @@ import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 import uk.gov.companieshouse.api.http.HttpClient;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.charges.delta.exception.RetryableErrorException;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 @TestPropertySource(
         properties = {
@@ -44,6 +43,9 @@ import java.util.stream.Stream;
 )
 @ExtendWith(MockitoExtension.class)
 class ApiClientServiceImplTest {
+    private static final String COMPANY_NUMBER = "12345678";
+    private static final String CHARGE_ID = "ABC134DEF5678";
+    private static final String DELTA_AT = "20140925171003950844";
 
     @Value("${api.charges-data-api-key}")
     private String apiKey;
@@ -144,18 +146,16 @@ class ApiClientServiceImplTest {
         when(internalApiClientSupplier.get()).thenReturn(internalApiClient);
         when(internalApiClient.getHttpClient()).thenReturn(httpClient);
         when(internalApiClient.privateDeltaChargeResourceHandler()).thenReturn(privateDeltaResourceHandler);
-        when(privateDeltaResourceHandler.deleteCharge(Mockito.anyString())).thenReturn(privateChargesDelete);
+        when(privateDeltaResourceHandler.deleteCharge(anyString(), anyString())).thenReturn(privateChargesDelete);
         when(privateChargesDelete.execute()).thenReturn(response);
 
-        ApiResponse<?> apiResponse = apiClientService.deleteCharge(
-                "0111", "test");
+        ApiResponse<?> apiResponse = apiClientService.deleteCharge(COMPANY_NUMBER, CHARGE_ID, DELTA_AT);
 
         Assertions.assertThat(apiResponse).isNotNull();
 
         verify(internalApiClient, times(1)).getHttpClient();
         verify(internalApiClient, times(1)).privateDeltaChargeResourceHandler();
-        verify(privateDeltaResourceHandler, times(1))
-                .deleteCharge(Mockito.anyString());
+        verify(privateDeltaResourceHandler, times(1)).deleteCharge(anyString(), anyString());
         verify(privateChargesDelete, times(1))
                 .execute();
 
@@ -169,19 +169,18 @@ class ApiClientServiceImplTest {
         when(internalApiClientSupplier.get()).thenReturn(internalApiClient);
         when(internalApiClient.getHttpClient()).thenReturn(httpClient);
         when(internalApiClient.privateDeltaChargeResourceHandler()).thenReturn(privateDeltaResourceHandler);
-        when(privateDeltaResourceHandler.deleteCharge(Mockito.anyString())).thenReturn(privateChargesDelete);
+        when(privateDeltaResourceHandler.deleteCharge(anyString(), anyString())).thenReturn(privateChargesDelete);
         when(privateChargesDelete.execute()).thenReturn(new ApiResponse<>(statusCode, null));
 
-        ApiResponse<?> apiResponse = assertDoesNotThrow(() -> apiClientService.deleteCharge(
-                "0", "test"));
+        ApiResponse<?> apiResponse = assertDoesNotThrow(() ->
+                apiClientService.deleteCharge(COMPANY_NUMBER, CHARGE_ID, DELTA_AT));
 
         Assertions.assertThat(apiResponse).isNotNull();
         Assertions.assertThat(apiResponse.getStatusCode()).isEqualTo(statusCode);
 
         verify(internalApiClient, times(1)).getHttpClient();
         verify(internalApiClient, times(1)).privateDeltaChargeResourceHandler();
-        verify(privateDeltaResourceHandler, times(1))
-                .deleteCharge(Mockito.anyString());
+        verify(privateDeltaResourceHandler, times(1)).deleteCharge(anyString(), anyString());
         verify(privateChargesDelete, times(1))
                 .execute();
 
@@ -194,16 +193,15 @@ class ApiClientServiceImplTest {
         when(internalApiClientSupplier.get()).thenReturn(internalApiClient);
         when(internalApiClient.getHttpClient()).thenReturn(httpClient);
         when(internalApiClient.privateDeltaChargeResourceHandler()).thenReturn(privateDeltaResourceHandler);
-        when(privateDeltaResourceHandler.deleteCharge(Mockito.anyString())).thenReturn(privateChargesDelete);
+        when(privateDeltaResourceHandler.deleteCharge(anyString(), anyString())).thenReturn(privateChargesDelete);
         when(privateChargesDelete.execute()).thenThrow(URIValidationException.class);
 
-        assertThrows(RetryableErrorException.class, () -> apiClientService.deleteCharge(
-                "0", "test"));
+        assertThrows(RetryableErrorException.class, () ->
+                apiClientService.deleteCharge(COMPANY_NUMBER, CHARGE_ID, DELTA_AT));
 
         verify(internalApiClient, times(1)).getHttpClient();
         verify(internalApiClient, times(1)).privateDeltaChargeResourceHandler();
-        verify(privateDeltaResourceHandler, times(1))
-                .deleteCharge(Mockito.anyString());
+        verify(privateDeltaResourceHandler, times(1)).deleteCharge(anyString(), anyString());
         verify(privateChargesDelete, times(1))
                 .execute();
 

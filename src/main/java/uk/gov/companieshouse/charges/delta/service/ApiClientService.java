@@ -12,20 +12,16 @@ import uk.gov.companieshouse.api.model.ApiResponse;
 public interface ApiClientService {
 
     String PUT_CHARGE_URI = "/company/%s/charge/%s/internal";
-    String DELETE_CHARGE_URI = "/company/%s/charges/%s";
+    String DELETE_CHARGE_URI = "/company/%s/charge/%s/internal";
 
     /**
      * Submit charge.
      */
     ApiResponse<Void> putCharge(
-            final String companyNumber,
-            final String chargeId,
-            final InternalChargeApi internalChargeApi);
+            final String companyNumber, final String chargeId, final InternalChargeApi internalChargeApi);
 
     /**
      * Delete charge.
      */
-    ApiResponse<Void> deleteCharge(
-            final String companyNumber,
-            final String chargeId);
+    ApiResponse<Void> deleteCharge(final String companyNumber, final String chargeId, final String deltaAt);
 }

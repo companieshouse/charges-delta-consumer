@@ -47,7 +47,7 @@ public class ChargesConsumerDeleteSteps {
     public static final String TAGS = "tags";
     public static final String STUBBED_FOR_DELETE_TEST = "stubbed_for_delete_test";
     public static final String RETRY_TOPIC_ATTEMPTS = "retry_topic-attempts";
-    public static final String DELETE_URL = "/company/%s/charges/%s";
+    public static final String DELETE_URL = "/company/%s/charge/%s/internal";
 
     @Autowired
     public KafkaTemplate<String, Object> kafkaTemplate;
