@@ -89,7 +89,7 @@ public class TestSupport {
                 .withPayload(mockChsDelta)
                 .setHeader(KafkaHeaders.RECEIVED_TOPIC, "test")
                 .setHeader("CHARGES_DELTA_RETRY_COUNT", 1)
-                .setHeader(KafkaHeaders.RECEIVED_PARTITION_ID, "partition_1")
+                .setHeader(KafkaHeaders.RECEIVED_PARTITION, "partition_1")
                 .setHeader(KafkaHeaders.OFFSET, "offset_1")
                 .build();
     }
@@ -106,7 +106,7 @@ public class TestSupport {
                 .withPayload(mockChsDelta)
                 .setHeader(KafkaHeaders.RECEIVED_TOPIC, "test")
                 .setHeader("CHARGES_DELTA_RETRY_COUNT", 1)
-                .setHeader(KafkaHeaders.RECEIVED_PARTITION_ID, "partition_1")
+                .setHeader(KafkaHeaders.RECEIVED_PARTITION, "partition_1")
                 .setHeader(KafkaHeaders.OFFSET, "offset_1")
                 .build();
     }
@@ -157,7 +157,7 @@ public class TestSupport {
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(KafkaHeaders.RECEIVED_TOPIC, "test");
-        map.put(KafkaHeaders.RECEIVED_PARTITION_ID, "partition_1");
+        map.put(KafkaHeaders.RECEIVED_PARTITION, "partition_1");
         map.put(KafkaHeaders.OFFSET, "offset_1");
         map.put("CHARGES_DELTA_RETRY_COUNT", 1);
         MessageHeaders messageHeaders = new MessageHeaders(map);

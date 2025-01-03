@@ -30,6 +30,7 @@ import uk.gov.companieshouse.charges.delta.consumer.ResettableCountDownLatch;
 import uk.gov.companieshouse.charges.delta.processor.EncoderUtil;
 import uk.gov.companieshouse.delta.ChsDelta;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -130,7 +131,7 @@ public class ChargesConsumerErrorSteps {
     @Then("the message should be moved to topic {string}")
     public void the_message_should_be_moved_to_topic(String destinatonTopic) {
         ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer,
-                destinatonTopic, 5000L);
+                destinatonTopic, Duration.ofMillis(5000L));
         assertNotNull(singleRecord);
     }
 
@@ -157,7 +158,7 @@ public class ChargesConsumerErrorSteps {
     @Then("the message should be retried {string} on retry topic {string}")
     public void theMessageShouldBeRetried(String requiredRetries, String retryTopic) {
         ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer,
-                retryTopic, 5000L);
+                retryTopic, Duration.ofMillis(5000L));
 
         assertThat(singleRecord.value()).isNotNull();
         List<Header> retryList = StreamSupport.stream(singleRecord.headers().spliterator(), false)

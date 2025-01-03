@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
@@ -47,8 +48,8 @@ public class ChargesApiTransformer {
      * The constructor.
      */
     @Autowired
-    public ChargesApiTransformer(ChargeApiMapper descriptiveChargeApiMapper,
-            EncoderUtil encoderUtil) {
+    public ChargesApiTransformer(@Qualifier("descriptiveChargeApiMapper") ChargeApiMapper descriptiveChargeApiMapper,
+                                 EncoderUtil encoderUtil) {
         this.chargeApiMapper = descriptiveChargeApiMapper;
         this.encoderUtil = encoderUtil;
     }
@@ -71,7 +72,7 @@ public class ChargesApiTransformer {
             internalChargeApi.setExternalData(chargeApi);
             updateInternalChargeApi(
                     getKafkaHeader(headers, KafkaHeaders.RECEIVED_TOPIC),
-                    getKafkaHeader(headers, KafkaHeaders.RECEIVED_PARTITION_ID),
+                    getKafkaHeader(headers, KafkaHeaders.RECEIVED_PARTITION),
                     getKafkaHeader(headers, KafkaHeaders.OFFSET), internalChargeApi, charge);
             LOGGER.trace(String.format("Charge message transformed to InternalChargeApi "
                     + ": %s", internalChargeApi), DataMapHolder.getLogMap());

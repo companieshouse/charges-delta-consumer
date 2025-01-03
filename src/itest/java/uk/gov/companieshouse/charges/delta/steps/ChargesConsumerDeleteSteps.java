@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.charges.delta.steps;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +47,7 @@ public class ChargesConsumerDeleteSteps {
     public static final String TAGS = "tags";
     public static final String STUBBED_FOR_DELETE_TEST = "stubbed_for_delete_test";
     public static final String RETRY_TOPIC_ATTEMPTS = "retry_topic-attempts";
-    public static final String DELETE_URL = "/company/%s/charges/%s";
+    public static final String DELETE_URL = "/company/%s/charge/%s/internal";
 
     @Autowired
     public KafkaTemplate<String, Object> kafkaTemplate;
@@ -93,7 +94,7 @@ public class ChargesConsumerDeleteSteps {
     @Then("delete message should be moved to topic {string}")
     public void the_message_should_be_moved_to_topic(String destinatonTopic) {
         ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer,
-                destinatonTopic, 5000L);
+                destinatonTopic, Duration.ofMillis(5000L));
         assertNotNull(singleRecord);
     }
 
@@ -136,7 +137,7 @@ public class ChargesConsumerDeleteSteps {
     @Then("delete message should be retried {string} on retry topic and moved to {string}")
     public void theMessageShouldBeRetried(String requiredRetries, String retryTopic) {
         ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer,
-                retryTopic, 5000L);
+                retryTopic, Duration.ofMillis(5000L));
 
         assertThat(singleRecord.value()).isNotNull();
         List<Header> retryList = StreamSupport.stream(singleRecord.headers().spliterator(), false)
