@@ -21,12 +21,13 @@
 
         <main.class>uk.gov.companieshouse.charges.delta.ChargesDeltaConsumerApplication</main.class>
 
+        <spring.boot.version>3.4.0</spring.boot.version>
         <map-struct.version>1.6.3</map-struct.version>
         <maven-build-helper-plugin.version>3.6.0</maven-build-helper-plugin.version>
         <ch-kafka.version>3.0.3</ch-kafka.version>
         <structured-logging.version>3.0.20</structured-logging.version>
         <kafka-models.version>3.0.8</kafka-models.version>
-        <private-api-sdk-java.version>4.0.99</private-api-sdk-java.version>
+        <private-api-sdk-java.version>4.0.255</private-api-sdk-java.version>
         <api-sdk-manager-java-library.version>3.0.6</api-sdk-manager-java-library.version>
         <jib-maven-plugin.version>3.4.3</jib-maven-plugin.version>
         <wiremock.standalone.version>3.9.1</wiremock.standalone.version>
@@ -55,7 +56,6 @@
         <sonar.verbose>true</sonar.verbose>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.jacoco.reports>${project.basedir}/target/site</sonar.jacoco.reports>
-        <spring.boot.version>3.3.5</spring.boot.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
@@ -104,6 +104,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-logging</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -168,6 +174,12 @@
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>structured-logging</artifactId>
             <version>${structured-logging.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -484,7 +496,7 @@
                         <image>416670754337.dkr.ecr.eu-west-2.amazonaws.com/ci-corretto-build-21:latest</image>
                     </from>
                     <to>
-                        <image>416670754337.dkr.ecr.eu-west-2.amazonaws.com/confirmation-statement-api:latest</image>
+                        <image>416670754337.dkr.ecr.eu-west-2.amazonaws.com/charges-delta-consumer:latest</image>
                     </to>
                 </configuration>
             </plugin>

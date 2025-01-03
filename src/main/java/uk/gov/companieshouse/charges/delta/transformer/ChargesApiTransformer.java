@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
@@ -47,8 +48,8 @@ public class ChargesApiTransformer {
      * The constructor.
      */
     @Autowired
-    public ChargesApiTransformer(ChargeApiMapper descriptiveChargeApiMapper,
-            EncoderUtil encoderUtil) {
+    public ChargesApiTransformer(@Qualifier("descriptiveChargeApiMapper") ChargeApiMapper descriptiveChargeApiMapper,
+                                 EncoderUtil encoderUtil) {
         this.chargeApiMapper = descriptiveChargeApiMapper;
         this.encoderUtil = encoderUtil;
     }
