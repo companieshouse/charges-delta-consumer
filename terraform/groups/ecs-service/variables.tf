@@ -112,7 +112,7 @@ variable "use_set_environment_files" {
   description = "Toggle default global and shared environment files"
 }
 
-variable "charges_delta_delta_consumer_version" {
+variable "charges_delta_consumer_version" {
   type        = string
-  description = "The version of the charges-delta-delta-consumer container to run."
+  description = "The version of the charges-delta-consumer container to run."
 }
