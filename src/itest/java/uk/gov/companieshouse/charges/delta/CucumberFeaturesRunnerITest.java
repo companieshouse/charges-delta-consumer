@@ -12,4 +12,11 @@ import org.junit.runner.RunWith;
 @CucumberContextConfiguration
 public class CucumberFeaturesRunnerITest extends AbstractIntegrationTest {
 
+    public static void start() {
+        mongoDBContainer.start();
+    }
+
+    public static void stop() {
+        mongoDBContainer.stop();
+    }
 }
