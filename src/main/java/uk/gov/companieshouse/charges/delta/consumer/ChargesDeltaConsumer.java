@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.retrytopic.DltStrategy;
-import org.springframework.kafka.retrytopic.FixedDelayStrategy;
+import org.springframework.kafka.retrytopic.SameIntervalTopicReuseStrategy;
 import org.springframework.kafka.retrytopic.RetryTopicHeaders;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
@@ -31,7 +31,7 @@ public class ChargesDeltaConsumer {
      */
     @RetryableTopic(attempts = "${charges.delta.retry-attempts}",
             backoff = @Backoff(delayExpression = "${charges.delta.backoff-delay}"),
-            fixedDelayTopicStrategy = FixedDelayStrategy.SINGLE_TOPIC,
+            sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC,
             retryTopicSuffix = "-${charges.delta.group-id}-retry",
             dltTopicSuffix = "-${charges.delta.group-id}-error",
             dltStrategy = DltStrategy.FAIL_ON_ERROR,
@@ -43,7 +43,7 @@ public class ChargesDeltaConsumer {
     public void receiveMainMessages(Message<ChsDelta> message,
                                     @Header(name = RetryTopicHeaders.DEFAULT_HEADER_ATTEMPTS, required = false) Integer attempt,
                                     @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                                    @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
+                                    @Header(KafkaHeaders.RECEIVED_PARTITION) Integer partition,
                                     @Header(KafkaHeaders.OFFSET) Long offset) {
 
         if (Boolean.TRUE.equals(message.getPayload().getIsDelete())) {
