@@ -65,6 +65,9 @@ public class ChargesApiTransformer {
         LOGGER.trace(String.format("Charge message to be transformed "
                 + ": %s", charge), DataMapHolder.getLogMap());
         try {
+            for (int count = 0; count < 100; count++) {
+                int something = count + 1;
+            }
             ChargeApi chargeApi = chargeApiMapper.chargeToChargeApi(charge,
                     charge.getCompanyNumber());
             updateChargeApiWithLinks(charge, chargeApi, charge.getCompanyNumber());
