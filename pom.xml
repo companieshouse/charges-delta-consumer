@@ -61,8 +61,8 @@
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.jacoco.reports>${project.basedir}/target/site</sonar.jacoco.reports>
         <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
-        <sonar.login></sonar.login>
-        <sonar.password></sonar.password>
+        <sonar.login/>
+        <sonar.password/>
 
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -467,21 +467,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <properties>
-                        <property>
-                            <name>listener</name>
-                            <value>org.sonar.java.jacoco.JUnitListener</value>
-                        </property>
-                    </properties>
-                    <argLine>-Dfile.encoding=UTF-8</argLine>
-                    <argLine>${failsafeArgLine}</argLine>
-                    <classesDirectory>${project.build.outputDirectory}</classesDirectory>
-                    <skipITs>${skip.integration.tests}</skipITs>
-                    <includes>
-                        <include>**/*ITest.java</include>
-                    </includes>
-                </configuration>
             </plugin>
 
             <plugin>
