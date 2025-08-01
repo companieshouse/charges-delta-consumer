@@ -1,13 +1,5 @@
 artifact_name       := charges-delta-consumer
 version             := unversioned
-feature/JU-1794-tech-debt-migration
-
-# dependency_check_suppressions_repo_branch
-# The branch of the dependency-check-suppressions repository to use
-# as the source of the suppressions file.
-# This should point to "main" branch when being used for release,
-# but can point to a different branch for experimentation/development.
-
 
 # Create help from comments in Makefile
 help:
