@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
@@ -100,7 +100,7 @@ public interface ChargeApiMapper {
         ParticularsApi particularsApi = chargeApi.getParticulars() == null
                 ? new ParticularsApi() : chargeApi.getParticulars();
         ShortParticularFlags shortParticularFlags = charge.getShortParticularFlags() == null
-                ? null : charge.getShortParticularFlags().get(0);
+                ? null : charge.getShortParticularFlags().getFirst();
         if (shortParticularFlags != null) {
             mapShortParticularFlagsToParticularsApi(particularsApi, shortParticularFlags, charge);
         }
@@ -246,26 +246,26 @@ public interface ChargeApiMapper {
 
     @AfterMapping
     default void setDates(@MappingTarget ChargeApi chargeApi, Charge charge) {
-        chargeApi.setDeliveredOn(parseDate(charge.getDeliveredOn(), YYYY_MM_DD));
+        chargeApi.setDeliveredOn(parseDate(charge.getDeliveredOn()));
 
-        chargeApi.setCreatedOn(parseDate(charge.getCreatedOn(), YYYY_MM_DD));
+        chargeApi.setCreatedOn(parseDate(charge.getCreatedOn()));
 
-        chargeApi.setSatisfiedOn(parseDate(charge.getSatisfiedOn(), YYYY_MM_DD));
+        chargeApi.setSatisfiedOn(parseDate(charge.getSatisfiedOn()));
 
-        chargeApi.setAcquiredOn(parseDate(charge.getAcquiredOn(), YYYY_MM_DD));
+        chargeApi.setAcquiredOn(parseDate(charge.getAcquiredOn()));
 
-        chargeApi.setCoveringInstrumentDate(parseDate(charge.getCoveringInstrumentDate(),
-                YYYY_MM_DD));
+        chargeApi.setCoveringInstrumentDate(parseDate(charge.getCoveringInstrumentDate()
+        ));
 
     }
 
     /**
      * Format string dates of format yyyyMMdd to LocalDate.
      */
-    private LocalDate parseDate(String sourceDate, String format) {
+    private LocalDate parseDate(String sourceDate) {
         if (!isEmpty(trim(sourceDate))) {
             return LocalDate.parse(sourceDate,
-                    DateTimeFormatter.ofPattern(format));
+                    DateTimeFormatter.ofPattern(ChargeApiMapper.YYYY_MM_DD));
         }
         return null;
     }
