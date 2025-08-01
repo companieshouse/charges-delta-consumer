@@ -22,7 +22,7 @@
 
         <main.class>uk.gov.companieshouse.charges.delta.ChargesDeltaConsumerApplication</main.class>
 
-        <spring.boot.version>3.5.3</spring.boot.version>
+        <spring.boot.version>3.5.4</spring.boot.version>
         <map-struct.version>1.6.3</map-struct.version>
         <maven-build-helper-plugin.version>3.6.1</maven-build-helper-plugin.version>
         <jib-maven-plugin.version>3.4.6</jib-maven-plugin.version>
