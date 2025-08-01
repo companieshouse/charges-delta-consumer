@@ -1,5 +1,6 @@
 artifact_name       := charges-delta-consumer
 version             := unversioned
+feature/JU-1794-tech-debt-migration
 
 # dependency_check_suppressions_repo_branch
 # The branch of the dependency-check-suppressions repository to use
