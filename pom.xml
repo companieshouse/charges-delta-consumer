@@ -22,16 +22,20 @@
 
         <main.class>uk.gov.companieshouse.charges.delta.ChargesDeltaConsumerApplication</main.class>
 
-        <spring.boot.version>3.5.4</spring.boot.version>
+        <spring.boot.version>3.5.9</spring.boot.version>
         <map-struct.version>1.6.3</map-struct.version>
         <maven-build-helper-plugin.version>3.6.1</maven-build-helper-plugin.version>
         <jib-maven-plugin.version>3.4.6</jib-maven-plugin.version>
         <wiremock.standalone.version>3.13.1</wiremock.standalone.version>
-        <commons-text.version>1.13.1</commons-text.version>
+        <commons-text.version>1.15.0</commons-text.version>
         <commons-io.version>2.19.0</commons-io.version>
         <avro.version>1.12.0</avro.version>
         <opentelemetry-instrumentation-bom.version>2.14.0</opentelemetry-instrumentation-bom.version>
         <apache-commons-lang3.version>3.18.0</apache-commons-lang3.version>
+
+        <!-- Security vulnerability fixes for transitive dependencies -->
+        <netty.version>4.1.125.Final</netty.version>
+        <jose4j.version>0.9.6</jose4j.version>
 
         <!-- Companies house -->
         <ch-kafka.version>3.0.6</ch-kafka.version>
@@ -95,6 +99,19 @@
                 <version>${test-containers.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!-- Security fixes for transitive dependencies -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>${netty.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.bitbucket.b_c</groupId>
+                <artifactId>jose4j</artifactId>
+                <version>${jose4j.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
