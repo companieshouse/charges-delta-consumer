@@ -40,7 +40,6 @@
         <jetty.version>12.0.33</jetty.version>
         <zookeeper.version>3.8.6</zookeeper.version>
         <guava.version>33.5.0-jre</guava.version>
-        <okhttp.version>4.12.0</okhttp.version>
 
         <!-- Companies house -->
         <ch-kafka.version>3.0.6</ch-kafka.version>
@@ -102,11 +101,6 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>okhttp</artifactId>
-                <version>${okhttp.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.opentelemetry.instrumentation</groupId>
